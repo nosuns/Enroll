@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["AV"] = factory();
+		exports["complexAV"] = factory();
 	else
-		root["AV"] = factory();
+		root["complexAV"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -1643,7 +1643,7 @@ var md5 = __webpack_require__(56);
 var Promise = __webpack_require__(2);
 var Cache = __webpack_require__(17);
 var AVError = __webpack_require__(3);
-var AV = __webpack_require__(4);
+var complexAV = __webpack_require__(4);
 var _ = __webpack_require__(0);
 
 var _require = __webpack_require__(5),
@@ -1711,37 +1711,37 @@ var setHeaders = function setHeaders() {
   var authOptions = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   var headers = {
-    'X-LC-Id': AV.applicationId,
+    'X-LC-Id': complexAV.applicationId,
     'Content-Type': 'application/json;charset=UTF-8'
   };
   var useMasterKey = false;
   if (typeof authOptions.useMasterKey === 'boolean') {
     useMasterKey = authOptions.useMasterKey;
-  } else if (typeof AV._useMasterKey === 'boolean') {
-    useMasterKey = AV._useMasterKey;
+  } else if (typeof complexAV._useMasterKey === 'boolean') {
+    useMasterKey = complexAV._useMasterKey;
   }
   if (useMasterKey) {
-    if (AV.masterKey) {
-      headers['X-LC-Sign'] = sign(AV.masterKey, true);
+    if (complexAV.masterKey) {
+      headers['X-LC-Sign'] = sign(complexAV.masterKey, true);
     } else {
       console.warn('masterKey is not set, fall back to use appKey');
-      headers['X-LC-Sign'] = sign(AV.applicationKey);
+      headers['X-LC-Sign'] = sign(complexAV.applicationKey);
     }
   } else {
-    headers['X-LC-Sign'] = sign(AV.applicationKey);
+    headers['X-LC-Sign'] = sign(complexAV.applicationKey);
   }
-  if (AV._config.applicationProduction !== null) {
-    headers['X-LC-Prod'] = AV._config.applicationProduction;
+  if (complexAV._config.applicationProduction !== null) {
+    headers['X-LC-Prod'] = complexAV._config.applicationProduction;
   }
-  headers[AV._config.isNode ? 'User-Agent' : 'X-LC-UA'] = AV._config.userAgent;
+  headers[complexAV._config.isNode ? 'User-Agent' : 'X-LC-UA'] = complexAV._config.userAgent;
 
   return Promise.resolve().then(function () {
     // Pass the session token
     var sessionToken = getSessionToken(authOptions);
     if (sessionToken) {
       headers['X-LC-Session'] = sessionToken;
-    } else if (!AV._config.disableCurrentUser) {
-      return AV.User.currentAsync().then(function (currentUser) {
+    } else if (!complexAV._config.disableCurrentUser) {
+      return complexAV.User.currentAsync().then(function (currentUser) {
         if (currentUser && currentUser._sessionToken) {
           headers['X-LC-Session'] = currentUser._sessionToken;
         }
@@ -1753,13 +1753,13 @@ var setHeaders = function setHeaders() {
 };
 
 var createApiUrl = function createApiUrl(route, className, objectId, method, dataObject) {
-  // TODO: 兼容 AV.serverURL 旧方式设置 API Host，后续去掉
-  if (AV.serverURL) {
-    AV._config.APIServerURL = AV.serverURL;
-    console.warn('Please use AV._config.APIServerURL to replace AV.serverURL, and it is an internal interface.');
+  // TODO: 兼容 complexAV.serverURL 旧方式设置 API Host，后续去掉
+  if (complexAV.serverURL) {
+    complexAV._config.APIServerURL = complexAV.serverURL;
+    console.warn('Please use complexAV._config.APIServerURL to replace complexAV.serverURL, and it is an internal interface.');
   }
 
-  var apiURL = AV._config.APIServerURL || API_HOST.cn;
+  var apiURL = complexAV._config.APIServerURL || API_HOST.cn;
 
   if (apiURL.charAt(apiURL.length - 1) !== '/') {
     apiURL += '/';
@@ -1805,7 +1805,7 @@ var cacheServerURL = function cacheServerURL(serverURL, ttl) {
   return Cache.setAsync('APIServerURL', serverURL, ttl * 1000);
 };
 
-// handle AV._request Error
+// handle complexAV._request Error
 var handleError = function handleError(res) {
   return new Promise(function (resolve, reject) {
     /**
@@ -1840,19 +1840,19 @@ var handleError = function handleError(res) {
 };
 
 var setServerUrl = function setServerUrl(serverURL) {
-  AV._config.APIServerURL = 'https://' + serverURL;
+  complexAV._config.APIServerURL = 'https://' + serverURL;
 
   // 根据新 URL 重新设置区域
   var newRegion = _.findKey(API_HOST, function (item) {
-    return item === AV._config.APIServerURL;
+    return item === complexAV._config.APIServerURL;
   });
   if (newRegion) {
-    AV._config.region = newRegion;
+    complexAV._config.region = newRegion;
   }
 };
 
 var refreshServerUrlByRouter = function refreshServerUrlByRouter() {
-  var url = 'https://app-router.leancloud.cn/1/route?appId=' + AV.applicationId;
+  var url = 'https://app-router.leancloud.cn/1/route?appId=' + complexAV.applicationId;
   return ajax('get', url).then(function (servers) {
     if (servers.api_server) {
       setServerUrl(servers.api_server);
@@ -1871,7 +1871,7 @@ var setServerUrlByRegion = function setServerUrlByRegion() {
 
   getServerURLPromise = new Promise(function (resolve, reject) {
     // 如果用户在 init 之前设置了 APIServerURL，则跳过请求 router
-    if (AV._config.APIServerURL) {
+    if (complexAV._config.APIServerURL) {
       resolve();
       return;
     }
@@ -1889,8 +1889,8 @@ var setServerUrlByRegion = function setServerUrlByRegion() {
         reject(error);
       });
     } else {
-      AV._config.region = region;
-      AV._config.APIServerURL = API_HOST[region];
+      complexAV._config.region = region;
+      complexAV._config.APIServerURL = API_HOST[region];
       resolve();
     }
   });
@@ -1907,12 +1907,12 @@ var AVRequest = function AVRequest(route, className, objectId, method) {
   var dataObject = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
   var authOptions = arguments[5];
 
-  if (!AV.applicationId) {
-    throw new Error('You must specify your applicationId using AV.init()');
+  if (!complexAV.applicationId) {
+    throw new Error('You must specify your applicationId using complexAV.init()');
   }
 
-  if (!AV.applicationKey && !AV.masterKey) {
-    throw new Error('You must specify a AppKey using AV.init()');
+  if (!complexAV.applicationKey && !complexAV.masterKey) {
+    throw new Error('You must specify a AppKey using complexAV.init()');
   }
 
   checkRouter(route);
@@ -1969,7 +1969,7 @@ module.exports = Promise;
 var _ = __webpack_require__(0);
 
 /**
- * @class AV.Error
+ * @class complexAV.Error
  */
 
 function AVError(code, message) {
@@ -1978,7 +1978,7 @@ function AVError(code, message) {
   return error;
 }
 
-_.extend(AVError, /** @lends AV.Error */{
+_.extend(AVError, /** @lends complexAV.Error */{
   /**
    * Error code indicating some error other than those enumerated here.
    * @constant
@@ -1987,14 +1987,14 @@ _.extend(AVError, /** @lends AV.Error */{
 
   /**
    * Error code indicating that something has gone wrong with the server.
-   * If you get this error code, it is AV's fault. Contact us at
+   * If you get this error code, it is complexAV's fault. Contact us at
    * https://avoscloud.com/help
    * @constant
    */
   INTERNAL_SERVER_ERROR: 1,
 
   /**
-   * Error code indicating the connection to the AV servers failed.
+   * Error code indicating the connection to the complexAV servers failed.
    * @constant
    */
   CONNECTION_FAILED: 100,
@@ -2035,7 +2035,7 @@ _.extend(AVError, /** @lends AV.Error */{
 
   /**
    * Error code indicating a malformed pointer. You should not see this unless
-   * you have been mucking about changing internal AV code.
+   * you have been mucking about changing internal complexAV code.
    * @constant
    */
   INVALID_POINTER: 106,
@@ -2056,7 +2056,7 @@ _.extend(AVError, /** @lends AV.Error */{
   COMMAND_UNAVAILABLE: 108,
 
   /**
-   * You must call AV.initialize before using the AV library.
+   * You must call complexAV.initialize before using the complexAV library.
    * @constant
    */
   NOT_INITIALIZED: 109,
@@ -2319,11 +2319,11 @@ var userAgent = __webpack_require__(42);
 var _require = __webpack_require__(5),
     isNullOrUndefined = _require.isNullOrUndefined;
 
-var AV = global.AV || {};
+var complexAV = global.complexAV || {};
 
 // All internal configuration items
-AV._config = AV._config || {};
-var AVConfig = AV._config;
+complexAV._config = complexAV._config || {};
+var AVConfig = complexAV._config;
 
 _.extend(AVConfig, {
 
@@ -2348,8 +2348,8 @@ _.extend(AVConfig, {
 });
 
 /**
- * Contains all AV API classes and functions.
- * @namespace AV
+ * Contains all complexAV API classes and functions.
+ * @namespace complexAV
  */
 
 // Check whether we are running in Node.js.
@@ -2412,11 +2412,11 @@ var inherits = function inherits(parent, protoProps, staticProps) {
 
 /**
  * Call this method to set production environment variable.
- * @function AV.setProduction
+ * @function complexAV.setProduction
  * @param {Boolean} production True is production environment,and
  *  it's true by default.
  */
-AV.setProduction = function (production) {
+complexAV.setProduction = function (production) {
   if (!isNullOrUndefined(production)) {
     AVConfig.applicationProduction = production ? 1 : 0;
   } else {
@@ -2426,15 +2426,15 @@ AV.setProduction = function (production) {
 };
 
 /**
- * Returns prefix for localStorage keys used by this instance of AV.
+ * Returns prefix for localStorage keys used by this instance of complexAV.
  * @param {String} path The relative suffix to append to it.
  *     null or undefined is treated as the empty string.
  * @return {String} The full key name.
  * @private
  */
-AV._getAVPath = function (path) {
-  if (!AV.applicationId) {
-    throw "You need to call AV.initialize before using AV.";
+complexAV._getAVPath = function (path) {
+  if (!complexAV.applicationId) {
+    throw "You need to call complexAV.initialize before using complexAV.";
   }
   if (!path) {
     path = "";
@@ -2445,7 +2445,7 @@ AV._getAVPath = function (path) {
   if (path[0] === "/") {
     path = path.substring(1);
   }
-  return "AV/" + AV.applicationId + "/" + path;
+  return "complexAV/" + complexAV.applicationId + "/" + path;
 };
 
 /**
@@ -2453,31 +2453,31 @@ AV._getAVPath = function (path) {
  * Gets reset when localStorage is cleared.
  * @private
  */
-AV._installationId = null;
-AV._getInstallationId = function () {
+complexAV._installationId = null;
+complexAV._getInstallationId = function () {
   // See if it's cached in RAM.
-  if (AV._installationId) {
-    return AV.Promise.resolve(AV._installationId);
+  if (complexAV._installationId) {
+    return complexAV.Promise.resolve(complexAV._installationId);
   }
 
   // Try to get it from localStorage.
-  var path = AV._getAVPath("installationId");
-  return AV.localStorage.getItemAsync(path).then(function (_installationId) {
-    AV._installationId = _installationId;
-    if (!AV._installationId) {
+  var path = complexAV._getAVPath("installationId");
+  return complexAV.localStorage.getItemAsync(path).then(function (_installationId) {
+    complexAV._installationId = _installationId;
+    if (!complexAV._installationId) {
       // It wasn't in localStorage, so create a new one.
       var hexOctet = function hexOctet() {
         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
       };
-      AV._installationId = hexOctet() + hexOctet() + "-" + hexOctet() + "-" + hexOctet() + "-" + hexOctet() + "-" + hexOctet() + hexOctet() + hexOctet();
-      return AV.localStorage.setItemAsync(path, AV._installationId);
+      complexAV._installationId = hexOctet() + hexOctet() + "-" + hexOctet() + "-" + hexOctet() + "-" + hexOctet() + "-" + hexOctet() + hexOctet() + hexOctet();
+      return complexAV.localStorage.setItemAsync(path, complexAV._installationId);
     } else {
       return _installationId;
     }
   });
 };
 
-AV._parseDate = function (iso8601) {
+complexAV._parseDate = function (iso8601) {
   var regexp = new RegExp("^([0-9]{1,4})-([0-9]{1,2})-([0-9]{1,2})" + "T" + "([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})" + "(.([0-9]+))?" + "Z$");
   var match = regexp.exec(iso8601);
   if (!match) {
@@ -2496,7 +2496,7 @@ AV._parseDate = function (iso8601) {
 };
 
 // A self-propagating extend function.
-AV._extend = function (protoProps, classProps) {
+complexAV._extend = function (protoProps, classProps) {
   var child = inherits(this, protoProps, classProps);
   child.extend = this.extend;
   return child;
@@ -2504,7 +2504,7 @@ AV._extend = function (protoProps, classProps) {
 
 // Helper function to get a value from a Backbone object as a property
 // or as a function.
-AV._getValue = function (object, prop) {
+complexAV._getValue = function (object, prop) {
   if (!(object && object[prop])) {
     return null;
   }
@@ -2512,53 +2512,53 @@ AV._getValue = function (object, prop) {
 };
 
 /**
- * Converts a value in a AV Object into the appropriate representation.
- * This is the JS equivalent of Java's AV.maybeReferenceAndEncode(Object)
- * if seenObjects is falsey. Otherwise any AV.Objects not in
+ * Converts a value in a complexAV Object into the appropriate representation.
+ * This is the JS equivalent of Java's complexAV.maybeReferenceAndEncode(Object)
+ * if seenObjects is falsey. Otherwise any complexAV.Objects not in
  * seenObjects will be fully embedded rather than encoded
  * as a pointer.  This array will be used to prevent going into an infinite
  * loop because we have circular references.  If <seenObjects>
- * is set, then none of the AV Objects that are serialized can be dirty.
+ * is set, then none of the complexAV Objects that are serialized can be dirty.
  * @private
  */
-AV._encode = function (value, seenObjects, disallowObjects) {
-  if (value instanceof AV.Object) {
+complexAV._encode = function (value, seenObjects, disallowObjects) {
+  if (value instanceof complexAV.Object) {
     if (disallowObjects) {
-      throw "AV.Objects not allowed here";
+      throw "complexAV.Objects not allowed here";
     }
     if (!seenObjects || _.include(seenObjects, value) || !value._hasData) {
       return value._toPointer();
     }
     if (!value.dirty()) {
       seenObjects = seenObjects.concat(value);
-      return AV._encode(value._toFullJSON(seenObjects), seenObjects, disallowObjects);
+      return complexAV._encode(value._toFullJSON(seenObjects), seenObjects, disallowObjects);
     }
     throw "Tried to save an object with a pointer to a new, unsaved object.";
   }
-  if (value instanceof AV.ACL) {
+  if (value instanceof complexAV.ACL) {
     return value.toJSON();
   }
   if (_.isDate(value)) {
     return { "__type": "Date", "iso": value.toJSON() };
   }
-  if (value instanceof AV.GeoPoint) {
+  if (value instanceof complexAV.GeoPoint) {
     return value.toJSON();
   }
   if (_.isArray(value)) {
     return _.map(value, function (x) {
-      return AV._encode(x, seenObjects, disallowObjects);
+      return complexAV._encode(x, seenObjects, disallowObjects);
     });
   }
   if (_.isRegExp(value)) {
     return value.source;
   }
-  if (value instanceof AV.Relation) {
+  if (value instanceof complexAV.Relation) {
     return value.toJSON();
   }
-  if (value instanceof AV.Op) {
+  if (value instanceof complexAV.Op) {
     return value.toJSON();
   }
-  if (value instanceof AV.File) {
+  if (value instanceof complexAV.File) {
     if (!value.url() && !value.id) {
       throw "Tried to save an object containing an unsaved file.";
     }
@@ -2571,8 +2571,8 @@ AV._encode = function (value, seenObjects, disallowObjects) {
   }
   if (_.isObject(value)) {
     var output = {};
-    AV._objectEach(value, function (v, k) {
-      output[k] = AV._encode(v, seenObjects, disallowObjects);
+    complexAV._objectEach(value, function (v, k) {
+      output[k] = complexAV._encode(v, seenObjects, disallowObjects);
     });
     return output;
   }
@@ -2580,36 +2580,36 @@ AV._encode = function (value, seenObjects, disallowObjects) {
 };
 
 /**
- * The inverse function of AV._encode.
+ * The inverse function of complexAV._encode.
  * TODO: make decode not mutate value.
  * @private
  */
-AV._decode = function (key, value) {
+complexAV._decode = function (key, value) {
   if (!_.isObject(value)) {
     return value;
   }
   if (_.isArray(value)) {
-    AV._arrayEach(value, function (v, k) {
-      value[k] = AV._decode(k, v);
+    complexAV._arrayEach(value, function (v, k) {
+      value[k] = complexAV._decode(k, v);
     });
     return value;
   }
-  if (value instanceof AV.Object) {
+  if (value instanceof complexAV.Object) {
     return value;
   }
-  if (value instanceof AV.File) {
+  if (value instanceof complexAV.File) {
     return value;
   }
-  if (value instanceof AV.Op) {
+  if (value instanceof complexAV.Op) {
     return value;
   }
   if (value.__op) {
-    return AV.Op._decode(value);
+    return complexAV.Op._decode(value);
   }
   var className;
   if (value.__type === "Pointer") {
     className = value.className;
-    var pointer = AV.Object._create(className);
+    var pointer = complexAV.Object._create(className);
     if (Object.keys(value).length > 3) {
       delete value.__type;
       delete value.className;
@@ -2624,51 +2624,51 @@ AV._decode = function (key, value) {
     className = value.className;
     delete value.__type;
     delete value.className;
-    var object = AV.Object._create(className);
+    var object = complexAV.Object._create(className);
     object._finishFetch(value, true);
     return object;
   }
   if (value.__type === "Date") {
-    return AV._parseDate(value.iso);
+    return complexAV._parseDate(value.iso);
   }
   if (value.__type === "GeoPoint") {
-    return new AV.GeoPoint({
+    return new complexAV.GeoPoint({
       latitude: value.latitude,
       longitude: value.longitude
     });
   }
   if (key === "ACL") {
-    if (value instanceof AV.ACL) {
+    if (value instanceof complexAV.ACL) {
       return value;
     }
-    return new AV.ACL(value);
+    return new complexAV.ACL(value);
   }
   if (value.__type === "Relation") {
-    var relation = new AV.Relation(null, key);
+    var relation = new complexAV.Relation(null, key);
     relation.targetClassName = value.className;
     return relation;
   }
   if (value.__type === 'File') {
-    var file = new AV.File(value.name);
+    var file = new complexAV.File(value.name);
     file.attributes.metaData = value.metaData || {};
     file.attributes.url = value.url;
     file.id = value.objectId;
     return file;
   }
-  AV._objectEach(value, function (v, k) {
-    value[k] = AV._decode(k, v);
+  complexAV._objectEach(value, function (v, k) {
+    value[k] = complexAV._decode(k, v);
   });
   return value;
 };
 
-AV._encodeObjectOrArray = function (value) {
+complexAV._encodeObjectOrArray = function (value) {
   var encodeAVObject = function encodeAVObject(object) {
     if (object && object._toFullJSON) {
       object = object._toFullJSON([]);
     }
 
     return _.mapObject(object, function (value) {
-      return AV._encode(value, []);
+      return complexAV._encode(value, []);
     });
   };
 
@@ -2681,7 +2681,7 @@ AV._encodeObjectOrArray = function (value) {
   }
 };
 
-AV._arrayEach = _.each;
+complexAV._arrayEach = _.each;
 
 /**
  * Does a deep traversal of every item in object, calling func on every one.
@@ -2692,25 +2692,25 @@ AV._arrayEach = _.each;
  * @returns {} the result of calling func on the top-level object itself.
  * @private
  */
-AV._traverse = function (object, func, seen) {
-  if (object instanceof AV.Object) {
+complexAV._traverse = function (object, func, seen) {
+  if (object instanceof complexAV.Object) {
     seen = seen || [];
     if (_.indexOf(seen, object) >= 0) {
       // We've already visited this object in this call.
       return;
     }
     seen.push(object);
-    AV._traverse(object.attributes, func, seen);
+    complexAV._traverse(object.attributes, func, seen);
     return func(object);
   }
-  if (object instanceof AV.Relation || object instanceof AV.File) {
+  if (object instanceof complexAV.Relation || object instanceof complexAV.File) {
     // Nothing needs to be done, but we don't want to recurse into the
     // object's parent infinitely, so we catch this case.
     return func(object);
   }
   if (_.isArray(object)) {
     _.each(object, function (child, index) {
-      var newChild = AV._traverse(child, func, seen);
+      var newChild = complexAV._traverse(child, func, seen);
       if (newChild) {
         object[index] = newChild;
       }
@@ -2718,8 +2718,8 @@ AV._traverse = function (object, func, seen) {
     return func(object);
   }
   if (_.isObject(object)) {
-    AV._each(object, function (child, key) {
-      var newChild = AV._traverse(child, func, seen);
+    complexAV._each(object, function (child, key) {
+      var newChild = complexAV._traverse(child, func, seen);
       if (newChild) {
         object[key] = newChild;
       }
@@ -2735,7 +2735,7 @@ AV._traverse = function (object, func, seen) {
  * * it does work for dictionaries with a "length" attribute.
  * @private
  */
-AV._objectEach = AV._each = function (obj, callback) {
+complexAV._objectEach = complexAV._each = function (obj, callback) {
   if (_.isObject(obj)) {
     _.each(_.keys(obj), function (key) {
       callback(obj[key], key);
@@ -2745,7 +2745,7 @@ AV._objectEach = AV._each = function (obj, callback) {
   }
 };
 
-module.exports = AV;
+module.exports = complexAV;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(6)))
 
 /***/ },
@@ -4896,7 +4896,7 @@ module.exports = XMLHttpRequest;
 'use strict';
 
 var storage = __webpack_require__(18);
-var AV = __webpack_require__(4);
+var complexAV = __webpack_require__(4);
 
 var removeAsync = exports.removeAsync = storage.removeItemAsync.bind(storage);
 
@@ -4919,7 +4919,7 @@ var getCacheData = function getCacheData(cacheData, key) {
 };
 
 exports.getAsync = function (key) {
-  key = AV.applicationId + '/' + key;
+  key = complexAV.applicationId + '/' + key;
   return storage.getItemAsync(key).then(function (cache) {
     return getCacheData(cache, key);
   });
@@ -4930,7 +4930,7 @@ exports.setAsync = function (key, value, ttl) {
   if (typeof ttl === 'number') {
     cache.expiredAt = Date.now() + ttl;
   }
-  return storage.setItemAsync(AV.applicationId + '/' + key, JSON.stringify(cache));
+  return storage.setItemAsync(complexAV.applicationId + '/' + key, JSON.stringify(cache));
 };
 
 /***/ },
@@ -5272,39 +5272,39 @@ try {
  * The LeanCloud JavaScript SDK is freely distributable under the MIT license.
  */
 
-var AV = __webpack_require__(4);
+var complexAV = __webpack_require__(4);
 
-AV._ = __webpack_require__(0);
-AV.version = __webpack_require__(19);
-AV.Promise = __webpack_require__(2);
-AV.localStorage = __webpack_require__(18);
-AV.Cache = __webpack_require__(17);
-AV.Error = __webpack_require__(3);
+complexAV._ = __webpack_require__(0);
+complexAV.version = __webpack_require__(19);
+complexAV.Promise = __webpack_require__(2);
+complexAV.localStorage = __webpack_require__(18);
+complexAV.Cache = __webpack_require__(17);
+complexAV.Error = __webpack_require__(3);
 
 __webpack_require__(31);
-__webpack_require__(28)(AV);
-__webpack_require__(30)(AV);
-__webpack_require__(26)(AV);
-__webpack_require__(34)(AV);
-__webpack_require__(37)(AV);
-__webpack_require__(29)(AV);
-__webpack_require__(33)(AV);
-__webpack_require__(38)(AV);
-__webpack_require__(46)(AV);
-__webpack_require__(36)(AV);
-__webpack_require__(27)(AV);
-__webpack_require__(35)(AV);
-__webpack_require__(40)(AV);
-__webpack_require__(39)(AV);
-__webpack_require__(32)(AV);
+__webpack_require__(28)(complexAV);
+__webpack_require__(30)(complexAV);
+__webpack_require__(26)(complexAV);
+__webpack_require__(34)(complexAV);
+__webpack_require__(37)(complexAV);
+__webpack_require__(29)(complexAV);
+__webpack_require__(33)(complexAV);
+__webpack_require__(38)(complexAV);
+__webpack_require__(46)(complexAV);
+__webpack_require__(36)(complexAV);
+__webpack_require__(27)(complexAV);
+__webpack_require__(35)(complexAV);
+__webpack_require__(40)(complexAV);
+__webpack_require__(39)(complexAV);
+__webpack_require__(32)(complexAV);
 
-module.exports = AV;
+module.exports = complexAV;
 
 /**
  * Options to controll the authentication for an operation
  * @typedef {Object} AuthOptions
  * @property {String} [sessionToken] Specify a user to excute the operation as.
- * @property {AV.User} [user] Specify a user to excute the operation as. The user must have _sessionToken. This option will be ignored if sessionToken option provided.
+ * @property {complexAV.User} [user] Specify a user to excute the operation as. The user must have _sessionToken. This option will be ignored if sessionToken option provided.
  * @property {Boolean} [useMasterKey] Indicates whether masterKey is used for this operation. Only valid when masterKey is set.
  */
 
@@ -5359,40 +5359,40 @@ module.exports = {
 
 var _ = __webpack_require__(0);
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   var PUBLIC_KEY = "*";
 
   /**
    * Creates a new ACL.
    * If no argument is given, the ACL has no permissions for anyone.
-   * If the argument is a AV.User, the ACL will have read and write
+   * If the argument is a complexAV.User, the ACL will have read and write
    *   permission for only that user.
    * If the argument is any other JSON object, that object will be interpretted
    *   as a serialized ACL created with toJSON().
-   * @see AV.Object#setACL
+   * @see complexAV.Object#setACL
    * @class
    *
    * <p>An ACL, or Access Control List can be added to any
-   * <code>AV.Object</code> to restrict access to only a subset of users
+   * <code>complexAV.Object</code> to restrict access to only a subset of users
    * of your application.</p>
    */
-  AV.ACL = function (arg1) {
+  complexAV.ACL = function (arg1) {
     var self = this;
     self.permissionsById = {};
     if (_.isObject(arg1)) {
-      if (arg1 instanceof AV.User) {
+      if (arg1 instanceof complexAV.User) {
         self.setReadAccess(arg1, true);
         self.setWriteAccess(arg1, true);
       } else {
         if (_.isFunction(arg1)) {
-          throw "AV.ACL() called with a function.  Did you forget ()?";
+          throw "complexAV.ACL() called with a function.  Did you forget ()?";
         }
-        AV._objectEach(arg1, function (accessList, userId) {
+        complexAV._objectEach(arg1, function (accessList, userId) {
           if (!_.isString(userId)) {
             throw "Tried to create an ACL with an invalid userId.";
           }
           self.permissionsById[userId] = {};
-          AV._objectEach(accessList, function (allowed, permission) {
+          complexAV._objectEach(accessList, function (allowed, permission) {
             if (permission !== "read" && permission !== "write") {
               throw "Tried to create an ACL with an invalid permission type.";
             }
@@ -5410,14 +5410,14 @@ module.exports = function (AV) {
    * Returns a JSON-encoded version of the ACL.
    * @return {Object}
    */
-  AV.ACL.prototype.toJSON = function () {
+  complexAV.ACL.prototype.toJSON = function () {
     return _.clone(this.permissionsById);
   };
 
-  AV.ACL.prototype._setAccess = function (accessType, userId, allowed) {
-    if (userId instanceof AV.User) {
+  complexAV.ACL.prototype._setAccess = function (accessType, userId, allowed) {
+    if (userId instanceof complexAV.User) {
       userId = userId.id;
-    } else if (userId instanceof AV.Role) {
+    } else if (userId instanceof complexAV.Role) {
       userId = "role:" + userId.getName();
     }
     if (!_.isString(userId)) {
@@ -5447,10 +5447,10 @@ module.exports = function (AV) {
     }
   };
 
-  AV.ACL.prototype._getAccess = function (accessType, userId) {
-    if (userId instanceof AV.User) {
+  complexAV.ACL.prototype._getAccess = function (accessType, userId) {
+    if (userId instanceof complexAV.User) {
       userId = userId.id;
-    } else if (userId instanceof AV.Role) {
+    } else if (userId instanceof complexAV.Role) {
       userId = "role:" + userId.getName();
     }
     var permissions = this.permissionsById[userId];
@@ -5462,10 +5462,10 @@ module.exports = function (AV) {
 
   /**
    * Set whether the given user is allowed to read this object.
-   * @param userId An instance of AV.User or its objectId.
+   * @param userId An instance of complexAV.User or its objectId.
    * @param {Boolean} allowed Whether that user should have read access.
    */
-  AV.ACL.prototype.setReadAccess = function (userId, allowed) {
+  complexAV.ACL.prototype.setReadAccess = function (userId, allowed) {
     this._setAccess("read", userId, allowed);
   };
 
@@ -5474,19 +5474,19 @@ module.exports = function (AV) {
    * Even if this returns false, the user may still be able to access it if
    * getPublicReadAccess returns true or a role that the user belongs to has
    * write access.
-   * @param userId An instance of AV.User or its objectId, or a AV.Role.
+   * @param userId An instance of complexAV.User or its objectId, or a complexAV.Role.
    * @return {Boolean}
    */
-  AV.ACL.prototype.getReadAccess = function (userId) {
+  complexAV.ACL.prototype.getReadAccess = function (userId) {
     return this._getAccess("read", userId);
   };
 
   /**
    * Set whether the given user id is allowed to write this object.
-   * @param userId An instance of AV.User or its objectId, or a AV.Role..
+   * @param userId An instance of complexAV.User or its objectId, or a complexAV.Role..
    * @param {Boolean} allowed Whether that user should have write access.
    */
-  AV.ACL.prototype.setWriteAccess = function (userId, allowed) {
+  complexAV.ACL.prototype.setWriteAccess = function (userId, allowed) {
     this._setAccess("write", userId, allowed);
   };
 
@@ -5495,10 +5495,10 @@ module.exports = function (AV) {
    * Even if this returns false, the user may still be able to write it if
    * getPublicWriteAccess returns true or a role that the user belongs to has
    * write access.
-   * @param userId An instance of AV.User or its objectId, or a AV.Role.
+   * @param userId An instance of complexAV.User or its objectId, or a complexAV.Role.
    * @return {Boolean}
    */
-  AV.ACL.prototype.getWriteAccess = function (userId) {
+  complexAV.ACL.prototype.getWriteAccess = function (userId) {
     return this._getAccess("write", userId);
   };
 
@@ -5506,7 +5506,7 @@ module.exports = function (AV) {
    * Set whether the public is allowed to read this object.
    * @param {Boolean} allowed
    */
-  AV.ACL.prototype.setPublicReadAccess = function (allowed) {
+  complexAV.ACL.prototype.setPublicReadAccess = function (allowed) {
     this.setReadAccess(PUBLIC_KEY, allowed);
   };
 
@@ -5514,7 +5514,7 @@ module.exports = function (AV) {
    * Get whether the public is allowed to read this object.
    * @return {Boolean}
    */
-  AV.ACL.prototype.getPublicReadAccess = function () {
+  complexAV.ACL.prototype.getPublicReadAccess = function () {
     return this.getReadAccess(PUBLIC_KEY);
   };
 
@@ -5522,7 +5522,7 @@ module.exports = function (AV) {
    * Set whether the public is allowed to write this object.
    * @param {Boolean} allowed
    */
-  AV.ACL.prototype.setPublicWriteAccess = function (allowed) {
+  complexAV.ACL.prototype.setPublicWriteAccess = function (allowed) {
     this.setWriteAccess(PUBLIC_KEY, allowed);
   };
 
@@ -5530,7 +5530,7 @@ module.exports = function (AV) {
    * Get whether the public is allowed to write this object.
    * @return {Boolean}
    */
-  AV.ACL.prototype.getPublicWriteAccess = function () {
+  complexAV.ACL.prototype.getPublicWriteAccess = function () {
     return this.getWriteAccess(PUBLIC_KEY);
   };
 
@@ -5539,19 +5539,19 @@ module.exports = function (AV) {
    * to read this object. Even if this returns false, the role may
    * still be able to write it if a parent role has read access.
    *
-   * @param role The name of the role, or a AV.Role object.
+   * @param role The name of the role, or a complexAV.Role object.
    * @return {Boolean} true if the role has read access. false otherwise.
-   * @throws {String} If role is neither a AV.Role nor a String.
+   * @throws {String} If role is neither a complexAV.Role nor a String.
    */
-  AV.ACL.prototype.getRoleReadAccess = function (role) {
-    if (role instanceof AV.Role) {
+  complexAV.ACL.prototype.getRoleReadAccess = function (role) {
+    if (role instanceof complexAV.Role) {
       // Normalize to the String name
       role = role.getName();
     }
     if (_.isString(role)) {
       return this.getReadAccess("role:" + role);
     }
-    throw "role must be a AV.Role or a String";
+    throw "role must be a complexAV.Role or a String";
   };
 
   /**
@@ -5559,31 +5559,31 @@ module.exports = function (AV) {
    * to write this object. Even if this returns false, the role may
    * still be able to write it if a parent role has write access.
    *
-   * @param role The name of the role, or a AV.Role object.
+   * @param role The name of the role, or a complexAV.Role object.
    * @return {Boolean} true if the role has write access. false otherwise.
-   * @throws {String} If role is neither a AV.Role nor a String.
+   * @throws {String} If role is neither a complexAV.Role nor a String.
    */
-  AV.ACL.prototype.getRoleWriteAccess = function (role) {
-    if (role instanceof AV.Role) {
+  complexAV.ACL.prototype.getRoleWriteAccess = function (role) {
+    if (role instanceof complexAV.Role) {
       // Normalize to the String name
       role = role.getName();
     }
     if (_.isString(role)) {
       return this.getWriteAccess("role:" + role);
     }
-    throw "role must be a AV.Role or a String";
+    throw "role must be a complexAV.Role or a String";
   };
 
   /**
    * Set whether users belonging to the given role are allowed
    * to read this object.
    *
-   * @param role The name of the role, or a AV.Role object.
+   * @param role The name of the role, or a complexAV.Role object.
    * @param {Boolean} allowed Whether the given role can read this object.
-   * @throws {String} If role is neither a AV.Role nor a String.
+   * @throws {String} If role is neither a complexAV.Role nor a String.
    */
-  AV.ACL.prototype.setRoleReadAccess = function (role, allowed) {
-    if (role instanceof AV.Role) {
+  complexAV.ACL.prototype.setRoleReadAccess = function (role, allowed) {
+    if (role instanceof complexAV.Role) {
       // Normalize to the String name
       role = role.getName();
     }
@@ -5591,19 +5591,19 @@ module.exports = function (AV) {
       this.setReadAccess("role:" + role, allowed);
       return;
     }
-    throw "role must be a AV.Role or a String";
+    throw "role must be a complexAV.Role or a String";
   };
 
   /**
    * Set whether users belonging to the given role are allowed
    * to write this object.
    *
-   * @param role The name of the role, or a AV.Role object.
+   * @param role The name of the role, or a complexAV.Role object.
    * @param {Boolean} allowed Whether the given role can write this object.
-   * @throws {String} If role is neither a AV.Role nor a String.
+   * @throws {String} If role is neither a complexAV.Role nor a String.
    */
-  AV.ACL.prototype.setRoleWriteAccess = function (role, allowed) {
-    if (role instanceof AV.Role) {
+  complexAV.ACL.prototype.setRoleWriteAccess = function (role, allowed) {
+    if (role instanceof complexAV.Role) {
       // Normalize to the String name
       role = role.getName();
     }
@@ -5611,7 +5611,7 @@ module.exports = function (AV) {
       this.setWriteAccess("role:" + role, allowed);
       return;
     }
-    throw "role must be a AV.Role or a String";
+    throw "role must be a complexAV.Role or a String";
   };
 };
 
@@ -5625,7 +5625,7 @@ module.exports = function (AV) {
 var _ = __webpack_require__(0);
 var AVRequest = __webpack_require__(1).request;
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   /**
    * Contains functions for calling and declaring
    * <p><strong><em>
@@ -5634,9 +5634,9 @@ module.exports = function (AV) {
    *
    * @namespace
    */
-  AV.Cloud = AV.Cloud || {};
+  complexAV.Cloud = complexAV.Cloud || {};
 
-  _.extend(AV.Cloud, /** @lends AV.Cloud */{
+  _.extend(complexAV.Cloud, /** @lends complexAV.Cloud */{
     /**
      * Makes a call to a cloud function.
      * @param {String} name The function name.
@@ -5646,16 +5646,16 @@ module.exports = function (AV) {
      * of the function.
      */
     run: function run(name, data, options) {
-      var request = AVRequest('functions', name, null, 'POST', AV._encode(data, null, true), options);
+      var request = AVRequest('functions', name, null, 'POST', complexAV._encode(data, null, true), options);
 
       return request.then(function (resp) {
-        return AV._decode(null, resp).result;
+        return complexAV._decode(null, resp).result;
       });
     },
 
     /**
-     * Makes a call to a cloud function, you can send {AV.Object} as param or a field of param; the response
-     * from server will also be parsed as an {AV.Object}, array of {AV.Object}, or object includes {AV.Object}
+     * Makes a call to a cloud function, you can send {complexAV.Object} as param or a field of param; the response
+     * from server will also be parsed as an {complexAV.Object}, array of {complexAV.Object}, or object includes {complexAV.Object}
      * @param {String} name The function name.
      * @param {Object} data The parameters to send to the cloud function.
      * @param {AuthOptions} options
@@ -5666,8 +5666,8 @@ module.exports = function (AV) {
         return Promise.reject(new Error('Can\'t pass Array as the param of rpc function in JavaScript SDK.'));
       }
 
-      return AVRequest('call', name, null, 'POST', AV._encodeObjectOrArray(data), options).then(function (resp) {
-        return AV._decode('', resp).result;
+      return AVRequest('call', name, null, 'POST', complexAV._encodeObjectOrArray(data), options).then(function (resp) {
+        return complexAV._decode('', resp).result;
       });
     },
 
@@ -5681,7 +5681,7 @@ module.exports = function (AV) {
       var request = AVRequest("date", null, null, 'GET');
 
       return request.then(function (resp) {
-        return AV._decode(null, resp);
+        return complexAV._decode(null, resp);
       });
     },
 
@@ -5704,8 +5704,8 @@ module.exports = function (AV) {
     },
 
     /**
-     * Makes a call to verify sms code that sent by AV.Cloud.requestSmsCode
-     * @param {String} code The sms code sent by AV.Cloud.requestSmsCode
+     * Makes a call to verify sms code that sent by complexAV.Cloud.requestSmsCode
+     * @param {String} code The sms code sent by complexAV.Cloud.requestSmsCode
      * @param {phone} phone The mobile phoner number(optional).
      * @return {Promise} A promise that will be resolved with the result
      * of the function.
@@ -5732,14 +5732,14 @@ module.exports = function (AV) {
 
 var _ = __webpack_require__(0);
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   var eventSplitter = /\s+/;
   var slice = Array.prototype.slice;
 
   /**
    * @class
    *
-   * <p>AV.Events is a fork of Backbone's Events module, provided for your
+   * <p>complexAV.Events is a fork of Backbone's Events module, provided for your
    * convenience.</p>
    *
    * <p>A module that can be mixed in to any object in order to provide
@@ -5754,12 +5754,12 @@ module.exports = function (AV) {
    *
    * @example
    * var object = {};
-   * _.extend(object, AV.Events);
+   * _.extend(object, complexAV.Events);
    * object.on('expand', function(){ alert('expanded'); });
    * object.trigger('expand');</pre></p>
    *
    */
-  AV.Events = {
+  complexAV.Events = {
     /**
      * Bind one or more space separated events, `events`, to a `callback`
      * function. Passing `"all"` will bind the callback to all events fired.
@@ -5878,12 +5878,12 @@ module.exports = function (AV) {
   /**
    * @function
    */
-  AV.Events.bind = AV.Events.on;
+  complexAV.Events.bind = complexAV.Events.on;
 
   /**
    * @function
    */
-  AV.Events.unbind = AV.Events.off;
+  complexAV.Events.unbind = complexAV.Events.off;
 };
 
 /***/ },
@@ -5901,10 +5901,10 @@ var AVError = __webpack_require__(3);
 var AVRequest = __webpack_require__(1).request;
 var Promise = __webpack_require__(2);
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
 
   // 挂载一些配置
-  var avConfig = AV._config;
+  var avConfig = complexAV._config;
 
   // port from browserify path module
   // since react-native packager won't shim node modules.
@@ -6155,7 +6155,7 @@ module.exports = function (AV) {
   };
 
   /**
-   * An AV.File is a local representation of a file that is saved to the AV
+   * An complexAV.File is a local representation of a file that is saved to the complexAV
    * cloud.
    * @param name {String} The file's name. This will change to a unique value
    *     once the file has finished saving.
@@ -6171,11 +6171,11 @@ module.exports = function (AV) {
    * if (fileUploadControl.files.length > 0) {
    *   var file = fileUploadControl.files[0];
    *   var name = "photo.jpg";
-   *   var file = new AV.File(name, file);
+   *   var file = new complexAV.File(name, file);
    *   file.save().then(function() {
-   *     // The file has been saved to AV.
+   *     // The file has been saved to complexAV.
    *   }, function(error) {
-   *     // The file either could not be read, or could not be saved to AV.
+   *     // The file either could not be read, or could not be saved to complexAV.
    *   });
    * }</pre>
    *
@@ -6184,7 +6184,7 @@ module.exports = function (AV) {
    *     this is omitted, the content type will be inferred from the name's
    *     extension.
    */
-  AV.File = function (name, data, type) {
+  complexAV.File = function (name, data, type) {
 
     this.attributes = {
       name: name,
@@ -6197,12 +6197,12 @@ module.exports = function (AV) {
     var owner = void 0;
     if (data && data.owner) {
       owner = data.owner;
-    } else if (!AV._config.disableCurrentUser) {
+    } else if (!complexAV._config.disableCurrentUser) {
       try {
-        owner = AV.User.current();
+        owner = complexAV.User.current();
       } catch (error) {
         if ('SYNC_API_NOT_AVAILABLE' === error.code) {
-          console.warn('Get current user failed. It seems this runtime use an async storage system, please create AV.File in the callback of AV.User.currentAsync().');
+          console.warn('Get current user failed. It seems this runtime use an async storage system, please create complexAV.File in the callback of complexAV.User.currentAsync().');
         } else {
           throw error;
         }
@@ -6244,25 +6244,25 @@ module.exports = function (AV) {
       this.attributes.metaData.size = data.length;
       this._source = Promise.resolve({ data: data, type: guessedType });
     } else if (_.isString(data)) {
-      throw new Error("Creating a AV.File from a String is not yet supported.");
+      throw new Error("Creating a complexAV.File from a String is not yet supported.");
     }
   };
 
   /**
-   * Creates a fresh AV.File object with exists url for saving to AVOS Cloud.
+   * Creates a fresh complexAV.File object with exists url for saving to AVOS Cloud.
    * @param {String} name the file name
    * @param {String} url the file url.
    * @param {Object} [metaData] the file metadata object.
    * @param {String} [type] Content-Type header to use for the file. If
    *     this is omitted, the content type will be inferred from the name's
    *     extension.
-   * @return {AV.File} the file object
+   * @return {complexAV.File} the file object
    */
-  AV.File.withURL = function (name, url, metaData, type) {
+  complexAV.File.withURL = function (name, url, metaData, type) {
     if (!name || !url) {
       throw "Please provide file name and url";
     }
-    var file = new AV.File(name, null, type);
+    var file = new complexAV.File(name, null, type);
     //copy metaData properties to file.
     if (metaData) {
       for (var prop in metaData) {
@@ -6278,24 +6278,24 @@ module.exports = function (AV) {
   /**
    * Creates a file object with exists objectId.
    * @param {String} objectId The objectId string
-   * @return {AV.File} the file object
+   * @return {complexAV.File} the file object
    */
-  AV.File.createWithoutData = function (objectId) {
-    var file = new AV.File();
+  complexAV.File.createWithoutData = function (objectId) {
+    var file = new complexAV.File();
     file.id = objectId;
     return file;
   };
 
-  AV.File.prototype = {
+  complexAV.File.prototype = {
     className: '_File',
 
     toJSON: function toJSON() {
-      return AV._encode(this);
+      return complexAV._encode(this);
     },
 
     /**
      * Returns the ACL for this file.
-     * @returns {AV.ACL} An instance of AV.ACL.
+     * @returns {complexAV.ACL} An instance of complexAV.ACL.
      */
     getACL: function getACL() {
       return this._acl;
@@ -6303,11 +6303,11 @@ module.exports = function (AV) {
 
     /**
      * Sets the ACL to be used for this file.
-     * @param {AV.ACL} acl An instance of AV.ACL.
+     * @param {complexAV.ACL} acl An instance of complexAV.ACL.
      */
     setACL: function setACL(acl) {
-      if (!(acl instanceof AV.ACL)) {
-        return new AVError(AVError.OTHER_CAUSE, 'ACL must be a AV.ACL.');
+      if (!(acl instanceof complexAV.ACL)) {
+        return new AVError(AVError.OTHER_CAUSE, 'ACL must be a complexAV.ACL.');
       }
       this._acl = acl;
     },
@@ -6323,7 +6323,7 @@ module.exports = function (AV) {
 
     /**
      * Gets the url of the file. It is only available after you save the file or
-     * after you get the file from a AV.Object.
+     * after you get the file from a complexAV.Object.
      * @return {String}
      */
     url: function url() {
@@ -6510,7 +6510,7 @@ module.exports = function (AV) {
      * @param {XMLHttpRequestProgressEvent} event - The progress event with 'loaded' and 'total' attributes
      */
     /**
-     * Saves the file to the AV cloud.
+     * Saves the file to the complexAV cloud.
      * @param {Object} [options]
      * @param {UploadProgressCallback} [options.onprogress] 文件上传进度，在 Node.js 与小程序中无效，回调参数说明详见 {@link UploadProgressCallback}。
      * @return {Promise} Promise that is resolved when the save finishes.
@@ -6519,7 +6519,7 @@ module.exports = function (AV) {
       var _this2 = this;
 
       if (this.id) {
-        throw new Error('File already saved. If you want to manipulate a file, use AV.Query to get it.');
+        throw new Error('File already saved. If you want to manipulate a file, use complexAV.Query to get it.');
       }
       if (!this._previousSave) {
         if (this._source) {
@@ -6584,7 +6584,7 @@ module.exports = function (AV) {
 
       var request = AVRequest('files', null, this.id, 'GET', options);
       return request.then(function (response) {
-        var value = AV.Object.prototype.parse(response);
+        var value = complexAV.Object.prototype.parse(response);
         value.attributes = {
           name: value.name,
           url: value.url
@@ -6612,7 +6612,7 @@ module.exports = function (AV) {
 var _ = __webpack_require__(0);
 
 /*global navigator: false */
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   /**
    * Creates a new GeoPoint with any of the following forms:<br>
    * @example
@@ -6630,22 +6630,22 @@ module.exports = function (AV) {
    * <p>Only one key in a class may contain a GeoPoint.</p>
    *
    * <p>Example:<pre>
-   *   var point = new AV.GeoPoint(30.0, -20.0);
-   *   var object = new AV.Object("PlaceObject");
+   *   var point = new complexAV.GeoPoint(30.0, -20.0);
+   *   var object = new complexAV.Object("PlaceObject");
    *   object.set("location", point);
    *   object.save();</pre></p>
    */
-  AV.GeoPoint = function (arg1, arg2) {
+  complexAV.GeoPoint = function (arg1, arg2) {
     if (_.isArray(arg1)) {
-      AV.GeoPoint._validate(arg1[0], arg1[1]);
+      complexAV.GeoPoint._validate(arg1[0], arg1[1]);
       this.latitude = arg1[0];
       this.longitude = arg1[1];
     } else if (_.isObject(arg1)) {
-      AV.GeoPoint._validate(arg1.latitude, arg1.longitude);
+      complexAV.GeoPoint._validate(arg1.latitude, arg1.longitude);
       this.latitude = arg1.latitude;
       this.longitude = arg1.longitude;
     } else if (_.isNumber(arg1) && _.isNumber(arg2)) {
-      AV.GeoPoint._validate(arg1, arg2);
+      complexAV.GeoPoint._validate(arg1, arg2);
       this.latitude = arg1;
       this.longitude = arg2;
     } else {
@@ -6668,18 +6668,18 @@ module.exports = function (AV) {
         return self._longitude;
       });
       this.__defineSetter__("latitude", function (val) {
-        AV.GeoPoint._validate(val, self.longitude);
+        complexAV.GeoPoint._validate(val, self.longitude);
         self._latitude = val;
       });
       this.__defineSetter__("longitude", function (val) {
-        AV.GeoPoint._validate(self.latitude, val);
+        complexAV.GeoPoint._validate(self.latitude, val);
         self._longitude = val;
       });
     }
   };
 
   /**
-   * @lends AV.GeoPoint.prototype
+   * @lends complexAV.GeoPoint.prototype
    * @property {float} latitude North-south portion of the coordinate, in range
    *   [-90, 90].  Throws an exception if set out of range in a modern browser.
    * @property {float} longitude East-west portion of the coordinate, in range
@@ -6690,29 +6690,29 @@ module.exports = function (AV) {
    * Throws an exception if the given lat-long is out of bounds.
    * @private
    */
-  AV.GeoPoint._validate = function (latitude, longitude) {
+  complexAV.GeoPoint._validate = function (latitude, longitude) {
     if (latitude < -90.0) {
-      throw new Error("AV.GeoPoint latitude " + latitude + " < -90.0.");
+      throw new Error("complexAV.GeoPoint latitude " + latitude + " < -90.0.");
     }
     if (latitude > 90.0) {
-      throw new Error("AV.GeoPoint latitude " + latitude + " > 90.0.");
+      throw new Error("complexAV.GeoPoint latitude " + latitude + " > 90.0.");
     }
     if (longitude < -180.0) {
-      throw new Error("AV.GeoPoint longitude " + longitude + " < -180.0.");
+      throw new Error("complexAV.GeoPoint longitude " + longitude + " < -180.0.");
     }
     if (longitude > 180.0) {
-      throw new Error("AV.GeoPoint longitude " + longitude + " > 180.0.");
+      throw new Error("complexAV.GeoPoint longitude " + longitude + " > 180.0.");
     }
   };
 
   /**
    * Creates a GeoPoint with the user's current location, if available.
-   * @return {Promise.<AV.GeoPoint>}
+   * @return {Promise.<complexAV.GeoPoint>}
    */
-  AV.GeoPoint.current = function () {
-    return new AV.Promise(function (resolve, reject) {
+  complexAV.GeoPoint.current = function () {
+    return new complexAV.Promise(function (resolve, reject) {
       navigator.geolocation.getCurrentPosition(function (location) {
-        resolve(new AV.GeoPoint({
+        resolve(new complexAV.GeoPoint({
           latitude: location.coords.latitude,
           longitude: location.coords.longitude
         }));
@@ -6720,13 +6720,13 @@ module.exports = function (AV) {
     });
   };
 
-  AV.GeoPoint.prototype = {
+  complexAV.GeoPoint.prototype = {
     /**
-     * Returns a JSON representation of the GeoPoint, suitable for AV.
+     * Returns a JSON representation of the GeoPoint, suitable for complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
-      AV.GeoPoint._validate(this.latitude, this.longitude);
+      complexAV.GeoPoint._validate(this.latitude, this.longitude);
       return {
         "__type": "GeoPoint",
         latitude: this.latitude,
@@ -6736,7 +6736,7 @@ module.exports = function (AV) {
 
     /**
      * Returns the distance from this GeoPoint to another in radians.
-     * @param {AV.GeoPoint} point the other AV.GeoPoint.
+     * @param {complexAV.GeoPoint} point the other complexAV.GeoPoint.
      * @return {Number}
      */
     radiansTo: function radiansTo(point) {
@@ -6757,7 +6757,7 @@ module.exports = function (AV) {
 
     /**
      * Returns the distance from this GeoPoint to another in kilometers.
-     * @param {AV.GeoPoint} point the other AV.GeoPoint.
+     * @param {complexAV.GeoPoint} point the other complexAV.GeoPoint.
      * @return {Number}
      */
     kilometersTo: function kilometersTo(point) {
@@ -6766,7 +6766,7 @@ module.exports = function (AV) {
 
     /**
      * Returns the distance from this GeoPoint to another in miles.
-     * @param {AV.GeoPoint} point the other AV.GeoPoint.
+     * @param {complexAV.GeoPoint} point the other complexAV.GeoPoint.
      * @return {Number}
      */
     milesTo: function milesTo(point) {
@@ -6784,17 +6784,17 @@ module.exports = function (AV) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var AV = __webpack_require__(4);
+var complexAV = __webpack_require__(4);
 var request = __webpack_require__(1);
 
 var initialize = function initialize(appId, appKey, masterKey) {
-  if (AV.applicationId && appId !== AV.applicationId && appKey !== AV.applicationKey && masterKey !== AV.masterKey) {
+  if (complexAV.applicationId && appId !== complexAV.applicationId && appKey !== complexAV.applicationKey && masterKey !== complexAV.masterKey) {
     console.warn('LeanCloud SDK is already initialized, please do not reinitialize it.');
   }
-  AV.applicationId = appId;
-  AV.applicationKey = appKey;
-  AV.masterKey = masterKey;
-  AV._useMasterKey = false;
+  complexAV.applicationId = appId;
+  complexAV.applicationKey = appKey;
+  complexAV.masterKey = masterKey;
+  complexAV._useMasterKey = false;
 };
 
 var masterKeyWarn = function masterKeyWarn() {
@@ -6802,35 +6802,35 @@ var masterKeyWarn = function masterKeyWarn() {
 };
 
 /**
-  * Call this method first to set up your authentication tokens for AV.
+  * Call this method first to set up your authentication tokens for complexAV.
   * You can get your app keys from the LeanCloud dashboard on http://leancloud.cn .
-  * @function AV.init
+  * @function complexAV.init
   * @param {Object} options
   * @param {String} options.appId application id
   * @param {String} options.appKey application key
   * @param {String} options.masterKey application master key
 */
 
-AV.init = function () {
+complexAV.init = function () {
   switch (arguments.length) {
     case 1:
       var options = arguments.length <= 0 ? undefined : arguments[0];
       if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) === 'object') {
-        if (!AV._config.isNode && options.masterKey) {
+        if (!complexAV._config.isNode && options.masterKey) {
           masterKeyWarn();
         }
         initialize(options.appId, options.appKey, options.masterKey);
         request.setServerUrlByRegion(options.region);
-        AV._config.disableCurrentUser = options.disableCurrentUser;
+        complexAV._config.disableCurrentUser = options.disableCurrentUser;
       } else {
-        throw new Error('AV.init(): Parameter is not correct.');
+        throw new Error('complexAV.init(): Parameter is not correct.');
       }
       break;
     // 兼容旧版本的初始化方法
     case 2:
     case 3:
-      console.warn('Please use AV.init() to replace AV.initialize(), ' + 'AV.init() need an Object param, like { appId: \'YOUR_APP_ID\', appKey: \'YOUR_APP_KEY\' } . ' + 'Docs: https://leancloud.cn/docs/sdk_setup-js.html');
-      if (!AV._config.isNode && arguments.length === 3) {
+      console.warn('Please use complexAV.init() to replace complexAV.initialize(), ' + 'complexAV.init() need an Object param, like { appId: \'YOUR_APP_ID\', appKey: \'YOUR_APP_KEY\' } . ' + 'Docs: https://leancloud.cn/docs/sdk_setup-js.html');
+      if (!complexAV._config.isNode && arguments.length === 3) {
         masterKeyWarn();
       }
       initialize.apply(undefined, arguments);
@@ -6840,8 +6840,8 @@ AV.init = function () {
 };
 
 // If we're running in node.js, allow using the master key.
-if (AV._config.isNode) {
-  AV.Cloud = AV.Cloud || {};
+if (complexAV._config.isNode) {
+  complexAV.Cloud = complexAV.Cloud || {};
   /**
    * Switches the LeanCloud SDK to using the Master key.  The Master key grants
    * priveleged access to the data in LeanCloud and can be used to bypass ACLs and
@@ -6849,13 +6849,13 @@ if (AV._config.isNode) {
    * <p><strong><em>Available in Cloud Code and Node.js only.</em></strong>
    * </p>
    */
-  AV.Cloud.useMasterKey = function () {
-    AV._useMasterKey = true;
+  complexAV.Cloud.useMasterKey = function () {
+    complexAV._useMasterKey = true;
   };
 }
 
 // 兼容老版本的初始化方法
-AV.initialize = AV.init;
+complexAV.initialize = complexAV.init;
 
 /***/ },
 /* 32 */
@@ -6868,7 +6868,7 @@ var _ = __webpack_require__(0);
 var AVError = __webpack_require__(3);
 var AVRequest = __webpack_require__(1).request;
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   /**
    * 包含了使用了 LeanCloud
    *  <a href='/docs/leaninsight_guide.html'>离线数据分析功能</a>的函数。
@@ -6877,13 +6877,13 @@ module.exports = function (AV) {
    * </em></strong></p>
    * @namespace
    */
-  AV.Insight = AV.Insight || {};
+  complexAV.Insight = complexAV.Insight || {};
 
-  _.extend(AV.Insight, /** @lends AV.Insight */{
+  _.extend(complexAV.Insight, /** @lends complexAV.Insight */{
 
     /**
      * 开始一个 Insight 任务。结果里将返回 Job id，你可以拿得到的 id 使用
-     * AV.Insight.JobQuery 查询任务状态和结果。
+     * complexAV.Insight.JobQuery 查询任务状态和结果。
      * @param {Object} jobConfig 任务配置的 JSON 对象，例如：<code><pre>
      *                   { "sql" : "select count(*) as c,gender from _User group by gender",
      *                     "saveAs": {
@@ -6903,12 +6903,12 @@ module.exports = function (AV) {
       }
       var data = {
         jobConfig: jobConfig,
-        appId: AV.applicationId
+        appId: complexAV.applicationId
       };
-      var request = AVRequest("bigquery", 'jobs', null, 'POST', AV._encode(data, null, true), options);
+      var request = AVRequest("bigquery", 'jobs', null, 'POST', complexAV._encode(data, null, true), options);
 
       return request.then(function (resp) {
-        return AV._decode(null, resp).id;
+        return complexAV._decode(null, resp).id;
       });
     },
 
@@ -6919,7 +6919,7 @@ module.exports = function (AV) {
      *  </em></strong></p>
      * @param {String} event 监听的事件，目前仅支持 'end' ，表示任务完成
      * @param {Function} 监听回调函数，接收 (err, id) 两个参数，err 表示错误信息，
-     *                   id 表示任务 id。接下来你可以拿这个 id 使用AV.Insight.JobQuery 查询任务状态和结果。
+     *                   id 表示任务 id。接下来你可以拿这个 id 使用complexAV.Insight.JobQuery 查询任务状态和结果。
      *
      */
     on: function on(event, cb) {}
@@ -6931,7 +6931,7 @@ module.exports = function (AV) {
    * @param {String} id 任务 id
    * @since 0.5.5
    */
-  AV.Insight.JobQuery = function (id, className) {
+  complexAV.Insight.JobQuery = function (id, className) {
     if (!id) {
       throw new Error('Please provide the job id.');
     }
@@ -6941,14 +6941,14 @@ module.exports = function (AV) {
     this._limit = 100;
   };
 
-  AV.Insight.JobQuery.prototype = {
+  complexAV.Insight.JobQuery.prototype = {
 
     /**
      * Sets the number of results to skip before returning any results.
      * This is useful for pagination.
      * Default is to skip zero results.
      * @param {Number} n the number of results to skip.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     skip: function skip(n) {
       this._skip = n;
@@ -6959,7 +6959,7 @@ module.exports = function (AV) {
      * Sets the limit of the number of results to return. The default limit is
      * 100, with a maximum of 1000 results being returned at a time.
      * @param {Number} n the number of results to limit to.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     limit: function limit(n) {
       this._limit = n;
@@ -6986,9 +6986,9 @@ module.exports = function (AV) {
       var self = this;
       return request.then(function (response) {
         if (response.error) {
-          return AV.Promise.reject(new AVError(response.code, response.error));
+          return complexAV.Promise.reject(new AVError(response.code, response.error));
         }
-        return AV.Promise.resolve(response);
+        return complexAV.Promise.resolve(response);
       });
     }
 
@@ -7014,41 +7014,41 @@ var checkReservedKey = function checkReservedKey(key) {
   }
 };
 
-// AV.Object is analogous to the Java AVObject.
+// complexAV.Object is analogous to the Java AVObject.
 // It also implements the same interface as a Backbone model.
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   /**
    * Creates a new model with defined attributes. A client id (cid) is
    * automatically generated and assigned for you.
    *
    * <p>You won't normally call this method directly.  It is recommended that
-   * you use a subclass of <code>AV.Object</code> instead, created by calling
+   * you use a subclass of <code>complexAV.Object</code> instead, created by calling
    * <code>extend</code>.</p>
    *
    * <p>However, if you don't want to use a subclass, or aren't sure which
    * subclass is appropriate, you can use this form:<pre>
-   *     var object = new AV.Object("ClassName");
+   *     var object = new complexAV.Object("ClassName");
    * </pre>
    * That is basically equivalent to:<pre>
-   *     var MyClass = AV.Object.extend("ClassName");
+   *     var MyClass = complexAV.Object.extend("ClassName");
    *     var object = new MyClass();
    * </pre></p>
    *
    * @param {Object} attributes The initial set of data to store in the object.
    * @param {Object} options A set of Backbone-like options for creating the
    *     object.  The only option currently supported is "collection".
-   * @see AV.Object.extend
+   * @see complexAV.Object.extend
    *
    * @class
    *
-   * <p>The fundamental unit of AV data, which implements the Backbone Model
+   * <p>The fundamental unit of complexAV data, which implements the Backbone Model
    * interface.</p>
    */
-  AV.Object = function (attributes, options) {
-    // Allow new AV.Object("ClassName") as a shortcut to _create.
+  complexAV.Object = function (attributes, options) {
+    // Allow new complexAV.Object("ClassName") as a shortcut to _create.
     if (_.isString(attributes)) {
-      return AV.Object._create.apply(this, arguments);
+      return complexAV.Object._create.apply(this, arguments);
     }
 
     attributes = attributes || {};
@@ -7056,7 +7056,7 @@ module.exports = function (AV) {
       attributes = this.parse(attributes);
       attributes = this._mergeMagicFields(attributes);
     }
-    var defaults = AV._getValue(this, 'defaults');
+    var defaults = complexAV._getValue(this, 'defaults');
     if (defaults) {
       attributes = _.extend({}, defaults, attributes);
     }
@@ -7084,37 +7084,37 @@ module.exports = function (AV) {
   };
 
   /**
-   * @lends AV.Object.prototype
-   * @property {String} id The objectId of the AV Object.
+   * @lends complexAV.Object.prototype
+   * @property {String} id The objectId of the complexAV Object.
    */
 
   /**
-   * Saves the given list of AV.Object.
+   * Saves the given list of complexAV.Object.
    * If any error is encountered, stops and calls the error handler.
    *
    * <pre>
-   *   AV.Object.saveAll([object1, object2, ...]).then(function(list) {
+   *   complexAV.Object.saveAll([object1, object2, ...]).then(function(list) {
    *     // All the objects were saved.
    *   }, function(error) {
    *     // An error occurred while saving one of the objects.
    *   });
    *
-   * @param {Array} list A list of <code>AV.Object</code>.
+   * @param {Array} list A list of <code>complexAV.Object</code>.
    */
-  AV.Object.saveAll = function (list, options) {
-    return AV.Object._deepSaveAsync(list, null, options);
+  complexAV.Object.saveAll = function (list, options) {
+    return complexAV.Object._deepSaveAsync(list, null, options);
   };
 
   /**
-   * Fetch the given list of AV.Object.
+   * Fetch the given list of complexAV.Object.
    *
-   * @param {AV.Object[]} objects A list of <code>AV.Object</code>
+   * @param {complexAV.Object[]} objects A list of <code>complexAV.Object</code>
    * @param {AuthOptions} options
-   * @return {Promise.<AV.Object[]>} The given list of <code>AV.Object</code>, updated
+   * @return {Promise.<complexAV.Object[]>} The given list of <code>complexAV.Object</code>, updated
    */
 
-  AV.Object.fetchAll = function (objects, options) {
-    return AV.Promise.resolve().then(function () {
+  complexAV.Object.fetchAll = function (objects, options) {
+    return complexAV.Promise.resolve().then(function () {
       return AVRequest('batch', null, null, 'POST', {
         requests: _.map(objects, function (object) {
           if (!object.className) throw new Error('object must have className to fetch');
@@ -7140,9 +7140,9 @@ module.exports = function (AV) {
     });
   };
 
-  // Attach all inheritable methods to the AV.Object prototype.
-  _.extend(AV.Object.prototype, AV.Events,
-  /** @lends AV.Object.prototype */{
+  // Attach all inheritable methods to the complexAV.Object prototype.
+  _.extend(complexAV.Object.prototype, complexAV.Events,
+  /** @lends complexAV.Object.prototype */{
     _fetchWhenSave: false,
 
     /**
@@ -7156,11 +7156,11 @@ module.exports = function (AV) {
       * When set true, SDK would fetch the latest object after saving.
       * Default is false.
       *
-      * @deprecated use AV.Object#save with options.fetchWhenSave instead
+      * @deprecated use complexAV.Object#save with options.fetchWhenSave instead
       * @param {boolean} enable  true to enable fetchWhenSave option.
       */
     fetchWhenSave: function fetchWhenSave(enable) {
-      console.warn('AV.Object#fetchWhenSave is deprecated, use AV.Object#save with options.fetchWhenSave instead.');
+      console.warn('complexAV.Object#fetchWhenSave is deprecated, use complexAV.Object#save with options.fetchWhenSave instead.');
       if (!_.isBoolean(enable)) {
         throw "Expect boolean value for fetchWhenSave";
       }
@@ -7192,12 +7192,12 @@ module.exports = function (AV) {
     },
 
     /**
-     * Returns a JSON version of the object suitable for saving to AV.
+     * Returns a JSON version of the object suitable for saving to complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
       var json = this._toFullJSON();
-      AV._arrayEach(["__type", "className"], function (key) {
+      complexAV._arrayEach(["__type", "className"], function (key) {
         delete json[key];
       });
       return json;
@@ -7205,10 +7205,10 @@ module.exports = function (AV) {
 
     _toFullJSON: function _toFullJSON(seenObjects) {
       var json = _.clone(this.attributes);
-      AV._objectEach(json, function (val, key) {
-        json[key] = AV._encode(val, seenObjects);
+      complexAV._objectEach(json, function (val, key) {
+        json[key] = complexAV._encode(val, seenObjects);
       });
-      AV._objectEach(this._operations, function (val, key) {
+      complexAV._objectEach(this._operations, function (val, key) {
         json[key] = val;
       });
 
@@ -7246,12 +7246,12 @@ module.exports = function (AV) {
         return;
       }
       self._refreshingCache = true;
-      AV._objectEach(this.attributes, function (value, key) {
-        if (value instanceof AV.Object) {
+      complexAV._objectEach(this.attributes, function (value, key) {
+        if (value instanceof complexAV.Object) {
           value._refreshCache();
         } else if (_.isObject(value)) {
           if (self._resetCacheForKey(key)) {
-            self.set(key, new AV.Op.Set(value), { silent: true });
+            self.set(key, new complexAV.Op.Set(value), { silent: true });
           }
         }
       });
@@ -7288,7 +7288,7 @@ module.exports = function (AV) {
      */
     _toPointer: function _toPointer() {
       // if (!this.id) {
-      //   throw new Error("Can't serialize an unsaved AV.Object");
+      //   throw new Error("Can't serialize an unsaved complexAV.Object");
       // }
       return { __type: "Pointer",
         className: this.className,
@@ -7314,18 +7314,18 @@ module.exports = function (AV) {
     /**
      * Gets a relation on the given class for the attribute.
      * @param {String} attr The attribute to get the relation for.
-     * @return {AV.Relation}
+     * @return {complexAV.Relation}
      */
     relation: function relation(attr) {
       var value = this.get(attr);
       if (value) {
-        if (!(value instanceof AV.Relation)) {
+        if (!(value instanceof complexAV.Relation)) {
           throw "Called relation() on non-relation field " + attr;
         }
         value._ensureParentAndKey(this, attr);
         return value;
       } else {
-        return new AV.Relation(this, attr);
+        return new complexAV.Relation(this, attr);
       }
     },
 
@@ -7361,19 +7361,19 @@ module.exports = function (AV) {
     /**
      * Pulls "special" fields like objectId, createdAt, etc. out of attrs
      * and puts them on "this" directly.  Removes them from attrs.
-     * @param attrs - A dictionary with the data for this AV.Object.
+     * @param attrs - A dictionary with the data for this complexAV.Object.
      * @private
      */
     _mergeMagicFields: function _mergeMagicFields(attrs) {
       // Check for changes of magic fields.
       var model = this;
       var specialFields = ["objectId", "createdAt", "updatedAt"];
-      AV._arrayEach(specialFields, function (attr) {
+      complexAV._arrayEach(specialFields, function (attr) {
         if (attrs[attr]) {
           if (attr === "objectId") {
             model.id = attrs[attr];
           } else if ((attr === "createdAt" || attr === "updatedAt") && !_.isDate(attrs[attr])) {
-            model[attr] = AV._parseDate(attrs[attr]);
+            model[attr] = complexAV._parseDate(attrs[attr]);
           } else {
             model[attr] = attrs[attr];
           }
@@ -7409,7 +7409,7 @@ module.exports = function (AV) {
       var failedChanges = _.first(this._opSetQueue);
       this._opSetQueue = _.rest(this._opSetQueue);
       var nextChanges = _.first(this._opSetQueue);
-      AV._objectEach(failedChanges, function (op, key) {
+      complexAV._objectEach(failedChanges, function (op, key) {
         var op1 = failedChanges[key];
         var op2 = nextChanges[key];
         if (op1 && op2) {
@@ -7433,8 +7433,8 @@ module.exports = function (AV) {
       // Note that doing it like this means we will unify separate copies of the
       // same object, but that's a risk we have to take.
       var fetchedObjects = {};
-      AV._traverse(this.attributes, function (object) {
-        if (object instanceof AV.Object && object.id && object._hasData) {
+      complexAV._traverse(this.attributes, function (object) {
+        if (object instanceof complexAV.Object && object.id && object._hasData) {
           fetchedObjects[object.id] = object;
         }
       });
@@ -7444,13 +7444,13 @@ module.exports = function (AV) {
       this._applyOpSet(savedChanges, this._serverData);
       this._mergeMagicFields(serverData);
       var self = this;
-      AV._objectEach(serverData, function (value, key) {
-        self._serverData[key] = AV._decode(key, value);
+      complexAV._objectEach(serverData, function (value, key) {
+        self._serverData[key] = complexAV._decode(key, value);
 
         // Look for any objects that might have become unfetched and fix them
         // by replacing their values with the previously observed values.
-        var fetched = AV._traverse(self._serverData[key], function (object) {
-          if (object instanceof AV.Object && fetchedObjects[object.id]) {
+        var fetched = complexAV._traverse(self._serverData[key], function (object) {
+          if (object instanceof complexAV.Object && fetchedObjects[object.id]) {
             return fetchedObjects[object.id];
           }
         });
@@ -7474,8 +7474,8 @@ module.exports = function (AV) {
       // Bring in all the new server data.
       this._mergeMagicFields(serverData);
       var self = this;
-      AV._objectEach(serverData, function (value, key) {
-        self._serverData[key] = AV._decode(key, value);
+      complexAV._objectEach(serverData, function (value, key) {
+        self._serverData[key] = complexAV._decode(key, value);
       });
 
       // Refresh the attributes.
@@ -7489,14 +7489,14 @@ module.exports = function (AV) {
     },
 
     /**
-     * Applies the set of AV.Op in opSet to the object target.
+     * Applies the set of complexAV.Op in opSet to the object target.
      * @private
      */
     _applyOpSet: function _applyOpSet(opSet, target) {
       var self = this;
-      AV._objectEach(opSet, function (change, key) {
+      complexAV._objectEach(opSet, function (change, key) {
         target[key] = change._estimate(target[key], self, key);
-        if (target[key] === AV.Op._UNSET) {
+        if (target[key] === complexAV.Op._UNSET) {
           delete target[key];
         }
       });
@@ -7509,7 +7509,7 @@ module.exports = function (AV) {
      */
     _resetCacheForKey: function _resetCacheForKey(key) {
       var value = this.attributes[key];
-      if (_.isObject(value) && !(value instanceof AV.Object) && !(value instanceof AV.File)) {
+      if (_.isObject(value) && !(value instanceof complexAV.Object) && !(value instanceof complexAV.File)) {
 
         value = value.toJSON ? value.toJSON() : value;
         var json = JSON.stringify(value);
@@ -7534,11 +7534,11 @@ module.exports = function (AV) {
       if (this._serverData[key]) {
         this.attributes[key] = this._serverData[key];
       }
-      AV._arrayEach(this._opSetQueue, function (opSet) {
+      complexAV._arrayEach(this._opSetQueue, function (opSet) {
         var op = opSet[key];
         if (op) {
           self.attributes[key] = op._estimate(self.attributes[key], self, key);
-          if (self.attributes[key] === AV.Op._UNSET) {
+          if (self.attributes[key] === complexAV.Op._UNSET) {
             delete self.attributes[key];
           } else {
             self._resetCacheForKey(key);
@@ -7559,20 +7559,20 @@ module.exports = function (AV) {
       var previousAttributes = _.clone(this.attributes);
 
       this.attributes = _.clone(this._serverData);
-      AV._arrayEach(this._opSetQueue, function (opSet) {
+      complexAV._arrayEach(this._opSetQueue, function (opSet) {
         self._applyOpSet(opSet, self.attributes);
-        AV._objectEach(opSet, function (op, key) {
+        complexAV._objectEach(opSet, function (op, key) {
           self._resetCacheForKey(key);
         });
       });
 
       // Trigger change events for anything that changed because of the fetch.
-      AV._objectEach(previousAttributes, function (oldValue, key) {
+      complexAV._objectEach(previousAttributes, function (oldValue, key) {
         if (self.attributes[key] !== oldValue) {
           self.trigger('change:' + key, self, self.attributes[key], {});
         }
       });
-      AV._objectEach(this.attributes, function (newValue, key) {
+      complexAV._objectEach(this.attributes, function (newValue, key) {
         if (!_.has(previousAttributes, key)) {
           self.trigger('change:' + key, self, newValue, {});
         }
@@ -7606,22 +7606,22 @@ module.exports = function (AV) {
      * @param {Any} value The value to give it.
      * @param {Object} [options]
      * @param {Boolean} [options.silent]
-     * @return {AV.Object} self if succeeded, throws if the value is not valid.
-     * @see AV.Object#validate
+     * @return {complexAV.Object} self if succeeded, throws if the value is not valid.
+     * @see complexAV.Object#validate
      */
     set: function set(key, value, options) {
       var attrs, attr;
       if (_.isObject(key) || utils.isNullOrUndefined(key)) {
         attrs = key;
-        AV._objectEach(attrs, function (v, k) {
+        complexAV._objectEach(attrs, function (v, k) {
           checkReservedKey(k);
-          attrs[k] = AV._decode(k, v);
+          attrs[k] = complexAV._decode(k, v);
         });
         options = value;
       } else {
         attrs = {};
         checkReservedKey(key);
-        attrs[key] = AV._decode(key, value);
+        attrs[key] = complexAV._decode(key, value);
       }
 
       // Extract attributes and options.
@@ -7629,24 +7629,24 @@ module.exports = function (AV) {
       if (!attrs) {
         return this;
       }
-      if (attrs instanceof AV.Object) {
+      if (attrs instanceof complexAV.Object) {
         attrs = attrs.attributes;
       }
 
       // If the unset option is used, every attribute should be a Unset.
       if (options.unset) {
-        AV._objectEach(attrs, function (unused_value, key) {
-          attrs[key] = new AV.Op.Unset();
+        complexAV._objectEach(attrs, function (unused_value, key) {
+          attrs[key] = new complexAV.Op.Unset();
         });
       }
 
       // Apply all the attributes to get the estimated values.
       var dataToValidate = _.clone(attrs);
       var self = this;
-      AV._objectEach(dataToValidate, function (value, key) {
-        if (value instanceof AV.Op) {
+      complexAV._objectEach(dataToValidate, function (value, key) {
+        if (value instanceof complexAV.Op) {
           dataToValidate[key] = value._estimate(self.attributes[key], self, key);
-          if (dataToValidate[key] === AV.Op._UNSET) {
+          if (dataToValidate[key] === complexAV.Op._UNSET) {
             delete dataToValidate[key];
           }
         }
@@ -7660,23 +7660,23 @@ module.exports = function (AV) {
       var prev = this._previousAttributes || {};
 
       // Update attributes.
-      AV._arrayEach(_.keys(attrs), function (attr) {
+      complexAV._arrayEach(_.keys(attrs), function (attr) {
         var val = attrs[attr];
 
         // If this is a relation object we need to set the parent correctly,
         // since the location where it was parsed does not have access to
         // this object.
-        if (val instanceof AV.Relation) {
+        if (val instanceof complexAV.Relation) {
           val.parent = self;
         }
 
-        if (!(val instanceof AV.Op)) {
-          val = new AV.Op.Set(val);
+        if (!(val instanceof complexAV.Op)) {
+          val = new complexAV.Op.Set(val);
         }
 
         // See if this change will actually have any effect.
         var isRealChange = true;
-        if (val instanceof AV.Op.Set && _.isEqual(self.attributes[attr], val.value)) {
+        if (val instanceof complexAV.Op.Set && _.isEqual(self.attributes[attr], val.value)) {
           isRealChange = false;
         }
 
@@ -7732,7 +7732,7 @@ module.exports = function (AV) {
       if (_.isUndefined(amount) || _.isNull(amount)) {
         amount = 1;
       }
-      return this.set(attr, new AV.Op.Increment(amount));
+      return this.set(attr, new complexAV.Op.Increment(amount));
     },
 
     /**
@@ -7742,7 +7742,7 @@ module.exports = function (AV) {
      * @param item {} The item to add.
      */
     add: function add(attr, item) {
-      return this.set(attr, new AV.Op.Add(utils.ensureArray(item)));
+      return this.set(attr, new complexAV.Op.Add(utils.ensureArray(item)));
     },
 
     /**
@@ -7754,7 +7754,7 @@ module.exports = function (AV) {
      * @param item {} The object to add.
      */
     addUnique: function addUnique(attr, item) {
-      return this.set(attr, new AV.Op.AddUnique(utils.ensureArray(item)));
+      return this.set(attr, new complexAV.Op.AddUnique(utils.ensureArray(item)));
     },
 
     /**
@@ -7765,17 +7765,17 @@ module.exports = function (AV) {
      * @param item {} The object to remove.
      */
     remove: function remove(attr, item) {
-      return this.set(attr, new AV.Op.Remove(utils.ensureArray(item)));
+      return this.set(attr, new complexAV.Op.Remove(utils.ensureArray(item)));
     },
 
     /**
-     * Returns an instance of a subclass of AV.Op describing what kind of
+     * Returns an instance of a subclass of complexAV.Op describing what kind of
      * modification has been performed on this field since the last time it was
      * saved. For example, after calling object.increment("x"), calling
-     * object.op("x") would return an instance of AV.Op.Increment.
+     * object.op("x") would return an instance of complexAV.Op.Increment.
      *
      * @param attr {String} The key.
-     * @returns {AV.Op} The operation, or undefined if none.
+     * @returns {complexAV.Op} The operation, or undefined if none.
      */
     op: function op(attr) {
       return _.last(this._opSetQueue)[attr];
@@ -7799,7 +7799,7 @@ module.exports = function (AV) {
      */
     _getSaveJSON: function _getSaveJSON() {
       var json = _.clone(_.first(this._opSetQueue));
-      AV._objectEach(json, function (op, key) {
+      complexAV._objectEach(json, function (op, key) {
         json[key] = op.toJSON();
       });
       return json;
@@ -7810,7 +7810,7 @@ module.exports = function (AV) {
      * @private
      */
     _canBeSerialized: function _canBeSerialized() {
-      return AV.Object._canBeSerializedAsValue(this.attributes);
+      return complexAV.Object._canBeSerializedAsValue(this.attributes);
     },
 
     /**
@@ -7865,8 +7865,8 @@ module.exports = function (AV) {
      *   });</pre>
      * @param {AuthOptions} options AuthOptions plus:
      * @param {Boolean} options.fetchWhenSave fetch and update object after save succeeded
-     * @param {AV.Query} options.query Save object only when it matches the query
-     * @return {AV.Promise} A promise that is fulfilled when the save
+     * @param {complexAV.Query} options.query Save object only when it matches the query
+     * @return {complexAV.Promise} A promise that is fulfilled when the save
      *     completes.
      * @see AVError
      */
@@ -7901,9 +7901,9 @@ module.exports = function (AV) {
 
       var unsavedChildren = [];
       var unsavedFiles = [];
-      AV.Object._findUnsavedChildren(model.attributes, unsavedChildren, unsavedFiles);
+      complexAV.Object._findUnsavedChildren(model.attributes, unsavedChildren, unsavedFiles);
       if (unsavedChildren.length + unsavedFiles.length > 0) {
-        return AV.Object._deepSaveAsync(this.attributes, model, options).then(function () {
+        return complexAV.Object._deepSaveAsync(this.attributes, model, options).then(function () {
           return model.save(null, options);
         });
       }
@@ -7911,7 +7911,7 @@ module.exports = function (AV) {
       this._startSave();
       this._saving = (this._saving || 0) + 1;
 
-      this._allPreviousSaves = this._allPreviousSaves || AV.Promise.resolve();
+      this._allPreviousSaves = this._allPreviousSaves || complexAV.Promise.resolve();
       this._allPreviousSaves = this._allPreviousSaves.catch(function (e) {}).then(function () {
         var method = model.id ? 'PUT' : 'POST';
 
@@ -7934,7 +7934,7 @@ module.exports = function (AV) {
             }
           }
           if (!json._where) {
-            var error = new Error('options.query is not an AV.Query');
+            var error = new Error('options.query is not an complexAV.Query');
             throw error;
           }
         }
@@ -8013,7 +8013,7 @@ module.exports = function (AV) {
       var output = _.clone(resp);
       _(["createdAt", "updatedAt"]).each(function (key) {
         if (output[key]) {
-          output[key] = AV._parseDate(output[key]);
+          output[key] = complexAV._parseDate(output[key]);
         }
       });
       if (!output.updatedAt) {
@@ -8024,14 +8024,14 @@ module.exports = function (AV) {
 
     /**
      * Creates a new model with identical attributes to this one.
-     * @return {AV.Object}
+     * @return {complexAV.Object}
      */
     clone: function clone() {
       return new this.constructor(this.attributes);
     },
 
     /**
-     * Returns true if this object has never been saved to AV.
+     * Returns true if this object has never been saved to complexAV.
      * @return {Boolean}
      */
     isNew: function isNew() {
@@ -8050,14 +8050,14 @@ module.exports = function (AV) {
 
       // Silent changes become pending changes.
       var self = this;
-      AV._objectEach(this._silent, function (attr) {
+      complexAV._objectEach(this._silent, function (attr) {
         self._pending[attr] = true;
       });
 
       // Silent changes are triggered.
       var changes = _.extend({}, options.changes, this._silent);
       this._silent = {};
-      AV._objectEach(changes, function (unused_value, attr) {
+      complexAV._objectEach(changes, function (unused_value, attr) {
         self.trigger('change:' + attr, self, self.get(attr), options);
       });
       if (changing) {
@@ -8076,7 +8076,7 @@ module.exports = function (AV) {
         this._pending = {};
         this.trigger('change', this, options);
         // Pending and silent changes still remain.
-        AV._objectEach(this.changed, deleteChanged);
+        complexAV._objectEach(this.changed, deleteChanged);
         self._previousAttributes = _.clone(this.attributes);
       }
 
@@ -8112,7 +8112,7 @@ module.exports = function (AV) {
       }
       var changed = {};
       var old = this._previousAttributes;
-      AV._objectEach(diff, function (diffVal, attr) {
+      complexAV._objectEach(diff, function (diffVal, attr) {
         if (!_.isEqual(old[attr], diffVal)) {
           changed[attr] = diffVal;
         }
@@ -8157,17 +8157,17 @@ module.exports = function (AV) {
 
     /**
      * You should not call this function directly unless you subclass
-     * <code>AV.Object</code>, in which case you can override this method
+     * <code>complexAV.Object</code>, in which case you can override this method
      * to provide additional validation on <code>set</code> and
      * <code>save</code>.  Your implementation should throw an Error if
      * the attrs is invalid
      *
      * @param {Object} attrs The current data to validate.
-     * @see AV.Object#set
+     * @see complexAV.Object#set
      */
     validate: function validate(attrs) {
-      if (_.has(attrs, "ACL") && !(attrs.ACL instanceof AV.ACL)) {
-        throw new AVError(AVError.OTHER_CAUSE, "ACL must be a AV.ACL.");
+      if (_.has(attrs, "ACL") && !(attrs.ACL instanceof complexAV.ACL)) {
+        throw new AVError(AVError.OTHER_CAUSE, "ACL must be a complexAV.ACL.");
       }
     },
 
@@ -8187,8 +8187,8 @@ module.exports = function (AV) {
 
     /**
      * Returns the ACL for this object.
-     * @returns {AV.ACL} An instance of AV.ACL.
-     * @see AV.Object#get
+     * @returns {complexAV.ACL} An instance of complexAV.ACL.
+     * @see complexAV.Object#get
      */
     getACL: function getACL() {
       return this.get("ACL");
@@ -8196,11 +8196,11 @@ module.exports = function (AV) {
 
     /**
      * Sets the ACL to be used for this object.
-     * @param {AV.ACL} acl An instance of AV.ACL.
+     * @param {complexAV.ACL} acl An instance of complexAV.ACL.
      * @param {Object} options Optional Backbone-like options object to be
      *     passed in to set.
      * @return {Boolean} Whether the set passed validation.
-     * @see AV.Object#set
+     * @see complexAV.Object#set
      */
     setACL: function setACL(acl, options) {
       return this.set("ACL", acl, options);
@@ -8209,35 +8209,35 @@ module.exports = function (AV) {
   });
 
   /**
-   * Creates an instance of a subclass of AV.Object for the give classname
+   * Creates an instance of a subclass of complexAV.Object for the give classname
    * and id.
-   * @param  {String} className The name of the AV class backing this model.
+   * @param  {String} className The name of the complexAV class backing this model.
    * @param {String} id The object id of this model.
-   * @return {AV.Object} A new subclass instance of AV.Object.
+   * @return {complexAV.Object} A new subclass instance of complexAV.Object.
    */
-  AV.Object.createWithoutData = function (className, id, hasData) {
-    var result = new AV.Object(className);
+  complexAV.Object.createWithoutData = function (className, id, hasData) {
+    var result = new complexAV.Object(className);
     result.id = id;
     result._hasData = hasData;
     return result;
   };
   /**
    * Delete objects in batch.The objects className must be the same.
-   * @param {Array} The <code>AV.Object</code> array to be deleted.
+   * @param {Array} The <code>complexAV.Object</code> array to be deleted.
    * @param {AuthOptions} options
    * @return {Promise} A promise that is fulfilled when the save
    *     completes.
    */
-  AV.Object.destroyAll = function (objects, options) {
+  complexAV.Object.destroyAll = function (objects, options) {
     options = options || {};
     if (!objects || objects.length === 0) {
-      return AV.Promise.resolve();
+      return complexAV.Promise.resolve();
     }
     var className = objects[0].className;
     var id = "";
     var wasFirst = true;
     objects.forEach(function (obj) {
-      if (obj.className != className) throw "AV.Object.destroyAll requires the argument object array's classNames must be the same";
+      if (obj.className != className) throw "complexAV.Object.destroyAll requires the argument object array's classNames must be the same";
       if (!obj.id) throw "Could not delete unsaved object";
       if (wasFirst) {
         id = obj.id;
@@ -8255,87 +8255,87 @@ module.exports = function (AV) {
    * className string.
    * @private
    */
-  AV.Object._getSubclass = function (className) {
+  complexAV.Object._getSubclass = function (className) {
     if (!_.isString(className)) {
-      throw "AV.Object._getSubclass requires a string argument.";
+      throw "complexAV.Object._getSubclass requires a string argument.";
     }
-    var ObjectClass = AV.Object._classMap[className];
+    var ObjectClass = complexAV.Object._classMap[className];
     if (!ObjectClass) {
-      ObjectClass = AV.Object.extend(className);
-      AV.Object._classMap[className] = ObjectClass;
+      ObjectClass = complexAV.Object.extend(className);
+      complexAV.Object._classMap[className] = ObjectClass;
     }
     return ObjectClass;
   };
 
   /**
-   * Creates an instance of a subclass of AV.Object for the given classname.
+   * Creates an instance of a subclass of complexAV.Object for the given classname.
    * @private
    */
-  AV.Object._create = function (className, attributes, options) {
-    var ObjectClass = AV.Object._getSubclass(className);
+  complexAV.Object._create = function (className, attributes, options) {
+    var ObjectClass = complexAV.Object._getSubclass(className);
     return new ObjectClass(attributes, options);
   };
 
   // Set up a map of className to class so that we can create new instances of
-  // AV Objects from JSON automatically.
-  AV.Object._classMap = {};
+  // complexAV Objects from JSON automatically.
+  complexAV.Object._classMap = {};
 
-  AV.Object._extend = AV._extend;
+  complexAV.Object._extend = complexAV._extend;
 
   /**
    * Creates a new model with defined attributes,
    * It's the same with
    * <pre>
-   *   new AV.Object(attributes, options);
+   *   new complexAV.Object(attributes, options);
    *  </pre>
    * @param {Object} attributes The initial set of data to store in the object.
    * @param {Object} options A set of Backbone-like options for creating the
    *     object.  The only option currently supported is "collection".
-   * @return {AV.Object}
+   * @return {complexAV.Object}
    * @since v0.4.4
-   * @see AV.Object
-   * @see AV.Object.extend
+   * @see complexAV.Object
+   * @see complexAV.Object.extend
    */
-  AV.Object['new'] = function (attributes, options) {
-    return new AV.Object(attributes, options);
+  complexAV.Object['new'] = function (attributes, options) {
+    return new complexAV.Object(attributes, options);
   };
 
   /**
-   * Creates a new subclass of AV.Object for the given AV class name.
+   * Creates a new subclass of complexAV.Object for the given complexAV class name.
    *
-   * <p>Every extension of a AV class will inherit from the most recent
-   * previous extension of that class. When a AV.Object is automatically
+   * <p>Every extension of a complexAV class will inherit from the most recent
+   * previous extension of that class. When a complexAV.Object is automatically
    * created by parsing JSON, it will use the most recent extension of that
    * class.</p>
    *
    * <p>You should call either:<pre>
-   *     var MyClass = AV.Object.extend("MyClass", {
+   *     var MyClass = complexAV.Object.extend("MyClass", {
    *         <i>Instance properties</i>
    *     }, {
    *         <i>Class properties</i>
    *     });</pre>
    * or, for Backbone compatibility:<pre>
-   *     var MyClass = AV.Object.extend({
+   *     var MyClass = complexAV.Object.extend({
    *         className: "MyClass",
    *         <i>Other instance properties</i>
    *     }, {
    *         <i>Class properties</i>
    *     });</pre></p>
    *
-   * @param {String} className The name of the AV class backing this model.
+   * @param {String} className The name of the complexAV class backing this model.
    * @param {Object} protoProps Instance properties to add to instances of the
    *     class returned from this method.
    * @param {Object} classProps Class properties to add the class returned from
    *     this method.
-   * @return {Class} A new subclass of AV.Object.
+   * @return {Class} A new subclass of complexAV.Object.
    */
-  AV.Object.extend = function (className, protoProps, classProps) {
+  complexAV.Object.extend = function (className, protoProps, classProps) {
     // Handle the case with only two args.
     if (!_.isString(className)) {
       if (className && _.has(className, "className")) {
-        return AV.Object.extend(className.className, className, protoProps);
+        return complexAV.Object.extend(className.className, className, protoProps);
       } else {
-        throw new Error("AV.Object.extend's first argument should be the className.");
+        throw new Error("complexAV.Object.extend's first argument should be the className.");
       }
     }
 
@@ -8345,8 +8345,8 @@ module.exports = function (AV) {
     }
 
     var NewClassObject = null;
-    if (_.has(AV.Object._classMap, className)) {
-      var OldClassObject = AV.Object._classMap[className];
+    if (_.has(complexAV.Object._classMap, className)) {
+      var OldClassObject = complexAV.Object._classMap[className];
       // This new subclass has been told to extend both from "this" and from
       // OldClassObject. This is multiple inheritance, which isn't supported.
       // For now, let's just pick one.
@@ -8363,20 +8363,20 @@ module.exports = function (AV) {
     // Extending a subclass should reuse the classname automatically.
     NewClassObject.extend = function (arg0) {
       if (_.isString(arg0) || arg0 && _.has(arg0, "className")) {
-        return AV.Object.extend.apply(NewClassObject, arguments);
+        return complexAV.Object.extend.apply(NewClassObject, arguments);
       }
       var newArguments = [className].concat(_.toArray(arguments));
-      return AV.Object.extend.apply(NewClassObject, newArguments);
+      return complexAV.Object.extend.apply(NewClassObject, newArguments);
     };
     NewClassObject['new'] = function (attributes, options) {
       return new NewClassObject(attributes, options);
     };
-    AV.Object._classMap[className] = NewClassObject;
+    complexAV.Object._classMap[className] = NewClassObject;
     return NewClassObject;
   };
 
   // ES6 class syntax support
-  Object.defineProperty(AV.Object.prototype, 'className', {
+  Object.defineProperty(complexAV.Object.prototype, 'className', {
     get: function get() {
       var className = this._className || this.constructor.name;
       // If someone tries to subclass "User", coerce it to the right type.
@@ -8387,20 +8387,20 @@ module.exports = function (AV) {
     }
   });
 
-  AV.Object.register = function (klass) {
-    if (!(klass.prototype instanceof AV.Object)) {
-      throw new Error('registered class is not a subclass of AV.Object');
+  complexAV.Object.register = function (klass) {
+    if (!(klass.prototype instanceof complexAV.Object)) {
+      throw new Error('registered class is not a subclass of complexAV.Object');
     }
     var className = klass.name;
     if (!className.length) {
       throw new Error('registered class must be named');
     }
-    AV.Object._classMap[className] = klass;
+    complexAV.Object._classMap[className] = klass;
   };
 
-  AV.Object._findUnsavedChildren = function (object, children, files) {
-    AV._traverse(object, function (object) {
-      if (object instanceof AV.Object) {
+  complexAV.Object._findUnsavedChildren = function (object, children, files) {
+    complexAV._traverse(object, function (object) {
+      if (object instanceof complexAV.Object) {
         object._refreshCache();
         if (object.dirty()) {
           children.push(object);
@@ -8408,7 +8408,7 @@ module.exports = function (AV) {
         return;
       }
 
-      if (object instanceof AV.File) {
+      if (object instanceof complexAV.File) {
         if (!object.url() && !object.id) {
           files.push(object);
         }
@@ -8417,20 +8417,20 @@ module.exports = function (AV) {
     });
   };
 
-  AV.Object._canBeSerializedAsValue = function (object) {
+  complexAV.Object._canBeSerializedAsValue = function (object) {
     var canBeSerializedAsValue = true;
 
-    if (object instanceof AV.Object || object instanceof AV.File) {
+    if (object instanceof complexAV.Object || object instanceof complexAV.File) {
       canBeSerializedAsValue = !!object.id;
     } else if (_.isArray(object)) {
-      AV._arrayEach(object, function (child) {
-        if (!AV.Object._canBeSerializedAsValue(child)) {
+      complexAV._arrayEach(object, function (child) {
+        if (!complexAV.Object._canBeSerializedAsValue(child)) {
           canBeSerializedAsValue = false;
         }
       });
     } else if (_.isObject(object)) {
-      AV._objectEach(object, function (child) {
-        if (!AV.Object._canBeSerializedAsValue(child)) {
+      complexAV._objectEach(object, function (child) {
+        if (!complexAV.Object._canBeSerializedAsValue(child)) {
           canBeSerializedAsValue = false;
         }
       });
@@ -8439,17 +8439,17 @@ module.exports = function (AV) {
     return canBeSerializedAsValue;
   };
 
-  AV.Object._deepSaveAsync = function (object, model, options) {
+  complexAV.Object._deepSaveAsync = function (object, model, options) {
     var unsavedChildren = [];
     var unsavedFiles = [];
-    AV.Object._findUnsavedChildren(object, unsavedChildren, unsavedFiles);
+    complexAV.Object._findUnsavedChildren(object, unsavedChildren, unsavedFiles);
     if (model) {
       unsavedChildren = _.filter(unsavedChildren, function (object) {
         return object != model;
       });
     }
 
-    var promise = AV.Promise.resolve();
+    var promise = complexAV.Promise.resolve();
     _.each(unsavedFiles, function (file) {
       promise = promise.then(function () {
         return file.save();
@@ -8460,14 +8460,14 @@ module.exports = function (AV) {
     var remaining = _.uniq(objects);
 
     return promise.then(function () {
-      return AV.Promise._continueWhile(function () {
+      return complexAV.Promise._continueWhile(function () {
         return remaining.length > 0;
       }, function () {
 
         // Gather up all the objects that can be saved in this batch.
         var batch = [];
         var newRemaining = [];
-        AV._arrayEach(remaining, function (object) {
+        complexAV._arrayEach(remaining, function (object) {
           // Limit batches to 20 objects.
           if (batch.length > 20) {
             newRemaining.push(object);
@@ -8484,12 +8484,12 @@ module.exports = function (AV) {
 
         // If we can't save any objects, there must be a circular reference.
         if (batch.length === 0) {
-          return AV.Promise.reject(new AVError(AVError.OTHER_CAUSE, "Tried to save a batch with a cycle."));
+          return complexAV.Promise.reject(new AVError(AVError.OTHER_CAUSE, "Tried to save a batch with a cycle."));
         }
 
         // Reserve a spot in every object's save queue.
-        var readyToStart = AV.Promise.resolve(_.map(batch, function (object) {
-          return object._allPreviousSaves || AV.Promise.resolve();
+        var readyToStart = complexAV.Promise.resolve(_.map(batch, function (object) {
+          return object._allPreviousSaves || complexAV.Promise.resolve();
         }));
 
         // Save a single batch, whether previous saves succeeded or failed.
@@ -8516,7 +8516,7 @@ module.exports = function (AV) {
 
           }, options).then(function (response) {
             var error;
-            AV._arrayEach(batch, function (object, i) {
+            complexAV._arrayEach(batch, function (object, i) {
               if (response[i].success) {
                 object._finishSave(object.parse(response[i].success));
               } else {
@@ -8525,11 +8525,11 @@ module.exports = function (AV) {
               }
             });
             if (error) {
-              return AV.Promise.reject(new AVError(error.code, error.error));
+              return complexAV.Promise.reject(new AVError(error.code, error.error));
             }
           });
         });
-        AV._arrayEach(batch, function (object) {
+        complexAV._arrayEach(batch, function (object) {
           object._allPreviousSaves = bathSavePromise;
         });
         return bathSavePromise;
@@ -8549,54 +8549,54 @@ module.exports = function (AV) {
 
 var _ = __webpack_require__(0);
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
 
   /**
    * @private
    * @class
-   * A AV.Op is an atomic operation that can be applied to a field in a
-   * AV.Object. For example, calling <code>object.set("foo", "bar")</code>
-   * is an example of a AV.Op.Set. Calling <code>object.unset("foo")</code>
-   * is a AV.Op.Unset. These operations are stored in a AV.Object and
+   * A complexAV.Op is an atomic operation that can be applied to a field in a
+   * complexAV.Object. For example, calling <code>object.set("foo", "bar")</code>
+   * is an example of a complexAV.Op.Set. Calling <code>object.unset("foo")</code>
+   * is a complexAV.Op.Unset. These operations are stored in a complexAV.Object and
    * sent to the server as part of <code>object.save()</code> operations.
-   * Instances of AV.Op should be immutable.
+   * Instances of complexAV.Op should be immutable.
    *
-   * You should not create subclasses of AV.Op or instantiate AV.Op
+   * You should not create subclasses of complexAV.Op or instantiate complexAV.Op
    * directly.
    */
-  AV.Op = function () {
+  complexAV.Op = function () {
     this._initialize.apply(this, arguments);
   };
 
-  AV.Op.prototype = {
+  complexAV.Op.prototype = {
     _initialize: function _initialize() {}
   };
 
-  _.extend(AV.Op, {
+  _.extend(complexAV.Op, {
     /**
-     * To create a new Op, call AV.Op._extend();
+     * To create a new Op, call complexAV.Op._extend();
      * @private
      */
-    _extend: AV._extend,
+    _extend: complexAV._extend,
 
     // A map of __op string to decoder function.
     _opDecoderMap: {},
 
     /**
      * Registers a function to convert a json object with an __op field into an
-     * instance of a subclass of AV.Op.
+     * instance of a subclass of complexAV.Op.
      * @private
      */
     _registerDecoder: function _registerDecoder(opName, decoder) {
-      AV.Op._opDecoderMap[opName] = decoder;
+      complexAV.Op._opDecoderMap[opName] = decoder;
     },
 
     /**
-     * Converts a json object into an instance of a subclass of AV.Op.
+     * Converts a json object into an instance of a subclass of complexAV.Op.
      * @private
      */
     _decode: function _decode(json) {
-      var decoder = AV.Op._opDecoderMap[json.__op];
+      var decoder = complexAV.Op._opDecoderMap[json.__op];
       if (decoder) {
         return decoder(json);
       } else {
@@ -8608,10 +8608,10 @@ module.exports = function (AV) {
   /*
    * Add a handler for Batch ops.
    */
-  AV.Op._registerDecoder("Batch", function (json) {
+  complexAV.Op._registerDecoder("Batch", function (json) {
     var op = null;
-    AV._arrayEach(json.ops, function (nextOp) {
-      nextOp = AV.Op._decode(nextOp);
+    complexAV._arrayEach(json.ops, function (nextOp) {
+      nextOp = complexAV.Op._decode(nextOp);
       op = nextOp._mergeWithPrevious(op);
     });
     return op;
@@ -8621,10 +8621,10 @@ module.exports = function (AV) {
    * @private
    * @class
    * A Set operation indicates that either the field was changed using
-   * AV.Object.set, or it is a mutable container that was detected as being
+   * complexAV.Object.set, or it is a mutable container that was detected as being
    * changed.
    */
-  AV.Op.Set = AV.Op._extend( /** @lends AV.Op.Set.prototype */{
+  complexAV.Op.Set = complexAV.Op._extend( /** @lends complexAV.Op.Set.prototype */{
     _initialize: function _initialize(value) {
       this._value = value;
     },
@@ -8637,11 +8637,11 @@ module.exports = function (AV) {
     },
 
     /**
-     * Returns a JSON version of the operation suitable for sending to AV.
+     * Returns a JSON version of the operation suitable for sending to complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
-      return AV._encode(this.value());
+      return complexAV._encode(this.value());
     },
 
     _mergeWithPrevious: function _mergeWithPrevious(previous) {
@@ -8654,11 +8654,11 @@ module.exports = function (AV) {
   });
 
   /**
-   * A sentinel value that is returned by AV.Op.Unset._estimate to
+   * A sentinel value that is returned by complexAV.Op.Unset._estimate to
    * indicate the field should be deleted. Basically, if you find _UNSET as a
    * value in your object, you should remove that key.
    */
-  AV.Op._UNSET = {};
+  complexAV.Op._UNSET = {};
 
   /**
    * @private
@@ -8666,9 +8666,9 @@ module.exports = function (AV) {
    * An Unset operation indicates that this field has been deleted from the
    * object.
    */
-  AV.Op.Unset = AV.Op._extend( /** @lends AV.Op.Unset.prototype */{
+  complexAV.Op.Unset = complexAV.Op._extend( /** @lends complexAV.Op.Unset.prototype */{
     /**
-     * Returns a JSON version of the operation suitable for sending to AV.
+     * Returns a JSON version of the operation suitable for sending to complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
@@ -8680,12 +8680,12 @@ module.exports = function (AV) {
     },
 
     _estimate: function _estimate(oldValue) {
-      return AV.Op._UNSET;
+      return complexAV.Op._UNSET;
     }
   });
 
-  AV.Op._registerDecoder("Delete", function (json) {
-    return new AV.Op.Unset();
+  complexAV.Op._registerDecoder("Delete", function (json) {
+    return new complexAV.Op.Unset();
   });
 
   /**
@@ -8694,8 +8694,8 @@ module.exports = function (AV) {
    * An Increment is an atomic operation where the numeric value for the field
    * will be increased by a given amount.
    */
-  AV.Op.Increment = AV.Op._extend(
-  /** @lends AV.Op.Increment.prototype */{
+  complexAV.Op.Increment = complexAV.Op._extend(
+  /** @lends complexAV.Op.Increment.prototype */{
 
     _initialize: function _initialize(amount) {
       this._amount = amount;
@@ -8710,7 +8710,7 @@ module.exports = function (AV) {
     },
 
     /**
-     * Returns a JSON version of the operation suitable for sending to AV.
+     * Returns a JSON version of the operation suitable for sending to complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
@@ -8720,12 +8720,12 @@ module.exports = function (AV) {
     _mergeWithPrevious: function _mergeWithPrevious(previous) {
       if (!previous) {
         return this;
-      } else if (previous instanceof AV.Op.Unset) {
-        return new AV.Op.Set(this.amount());
-      } else if (previous instanceof AV.Op.Set) {
-        return new AV.Op.Set(previous.value() + this.amount());
-      } else if (previous instanceof AV.Op.Increment) {
-        return new AV.Op.Increment(this.amount() + previous.amount());
+      } else if (previous instanceof complexAV.Op.Unset) {
+        return new complexAV.Op.Set(this.amount());
+      } else if (previous instanceof complexAV.Op.Set) {
+        return new complexAV.Op.Set(previous.value() + this.amount());
+      } else if (previous instanceof complexAV.Op.Increment) {
+        return new complexAV.Op.Increment(this.amount() + previous.amount());
       } else {
         throw "Op is invalid after previous op.";
       }
@@ -8739,8 +8739,8 @@ module.exports = function (AV) {
     }
   });
 
-  AV.Op._registerDecoder("Increment", function (json) {
-    return new AV.Op.Increment(json.amount);
+  complexAV.Op._registerDecoder("Increment", function (json) {
+    return new complexAV.Op.Increment(json.amount);
   });
 
   /**
@@ -8749,7 +8749,7 @@ module.exports = function (AV) {
    * Add is an atomic operation where the given objects will be appended to the
    * array that is stored in this field.
    */
-  AV.Op.Add = AV.Op._extend( /** @lends AV.Op.Add.prototype */{
+  complexAV.Op.Add = complexAV.Op._extend( /** @lends complexAV.Op.Add.prototype */{
     _initialize: function _initialize(objects) {
       this._objects = objects;
     },
@@ -8763,22 +8763,22 @@ module.exports = function (AV) {
     },
 
     /**
-     * Returns a JSON version of the operation suitable for sending to AV.
+     * Returns a JSON version of the operation suitable for sending to complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
-      return { __op: "Add", objects: AV._encode(this.objects()) };
+      return { __op: "Add", objects: complexAV._encode(this.objects()) };
     },
 
     _mergeWithPrevious: function _mergeWithPrevious(previous) {
       if (!previous) {
         return this;
-      } else if (previous instanceof AV.Op.Unset) {
-        return new AV.Op.Set(this.objects());
-      } else if (previous instanceof AV.Op.Set) {
-        return new AV.Op.Set(this._estimate(previous.value()));
-      } else if (previous instanceof AV.Op.Add) {
-        return new AV.Op.Add(previous.objects().concat(this.objects()));
+      } else if (previous instanceof complexAV.Op.Unset) {
+        return new complexAV.Op.Set(this.objects());
+      } else if (previous instanceof complexAV.Op.Set) {
+        return new complexAV.Op.Set(this._estimate(previous.value()));
+      } else if (previous instanceof complexAV.Op.Add) {
+        return new complexAV.Op.Add(previous.objects().concat(this.objects()));
       } else {
         throw "Op is invalid after previous op.";
       }
@@ -8793,8 +8793,8 @@ module.exports = function (AV) {
     }
   });
 
-  AV.Op._registerDecoder("Add", function (json) {
-    return new AV.Op.Add(AV._decode(undefined, json.objects));
+  complexAV.Op._registerDecoder("Add", function (json) {
+    return new complexAV.Op.Add(complexAV._decode(undefined, json.objects));
   });
 
   /**
@@ -8804,8 +8804,8 @@ module.exports = function (AV) {
    * the array that is stored in this field only if they were not already
    * present in the array.
    */
-  AV.Op.AddUnique = AV.Op._extend(
-  /** @lends AV.Op.AddUnique.prototype */{
+  complexAV.Op.AddUnique = complexAV.Op._extend(
+  /** @lends complexAV.Op.AddUnique.prototype */{
 
     _initialize: function _initialize(objects) {
       this._objects = _.uniq(objects);
@@ -8820,22 +8820,22 @@ module.exports = function (AV) {
     },
 
     /**
-     * Returns a JSON version of the operation suitable for sending to AV.
+     * Returns a JSON version of the operation suitable for sending to complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
-      return { __op: "AddUnique", objects: AV._encode(this.objects()) };
+      return { __op: "AddUnique", objects: complexAV._encode(this.objects()) };
     },
 
     _mergeWithPrevious: function _mergeWithPrevious(previous) {
       if (!previous) {
         return this;
-      } else if (previous instanceof AV.Op.Unset) {
-        return new AV.Op.Set(this.objects());
-      } else if (previous instanceof AV.Op.Set) {
-        return new AV.Op.Set(this._estimate(previous.value()));
-      } else if (previous instanceof AV.Op.AddUnique) {
-        return new AV.Op.AddUnique(this._estimate(previous.objects()));
+      } else if (previous instanceof complexAV.Op.Unset) {
+        return new complexAV.Op.Set(this.objects());
+      } else if (previous instanceof complexAV.Op.Set) {
+        return new complexAV.Op.Set(this._estimate(previous.value()));
+      } else if (previous instanceof complexAV.Op.AddUnique) {
+        return new complexAV.Op.AddUnique(this._estimate(previous.objects()));
       } else {
         throw "Op is invalid after previous op.";
       }
@@ -8849,10 +8849,10 @@ module.exports = function (AV) {
         // this.objects, because the uniqueness may not apply to oldValue
         // (especially if the oldValue was set via .set())
         var newValue = _.clone(oldValue);
-        AV._arrayEach(this.objects(), function (obj) {
-          if (obj instanceof AV.Object && obj.id) {
+        complexAV._arrayEach(this.objects(), function (obj) {
+          if (obj instanceof complexAV.Object && obj.id) {
             var matchingObj = _.find(newValue, function (anObj) {
-              return anObj instanceof AV.Object && anObj.id === obj.id;
+              return anObj instanceof complexAV.Object && anObj.id === obj.id;
             });
             if (!matchingObj) {
               newValue.push(obj);
@@ -8869,8 +8869,8 @@ module.exports = function (AV) {
     }
   });
 
-  AV.Op._registerDecoder("AddUnique", function (json) {
-    return new AV.Op.AddUnique(AV._decode(undefined, json.objects));
+  complexAV.Op._registerDecoder("AddUnique", function (json) {
+    return new complexAV.Op.AddUnique(complexAV._decode(undefined, json.objects));
   });
 
   /**
@@ -8879,7 +8879,7 @@ module.exports = function (AV) {
    * Remove is an atomic operation where the given objects will be removed from
    * the array that is stored in this field.
    */
-  AV.Op.Remove = AV.Op._extend( /** @lends AV.Op.Remove.prototype */{
+  complexAV.Op.Remove = complexAV.Op._extend( /** @lends complexAV.Op.Remove.prototype */{
     _initialize: function _initialize(objects) {
       this._objects = _.uniq(objects);
     },
@@ -8893,22 +8893,22 @@ module.exports = function (AV) {
     },
 
     /**
-     * Returns a JSON version of the operation suitable for sending to AV.
+     * Returns a JSON version of the operation suitable for sending to complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
-      return { __op: "Remove", objects: AV._encode(this.objects()) };
+      return { __op: "Remove", objects: complexAV._encode(this.objects()) };
     },
 
     _mergeWithPrevious: function _mergeWithPrevious(previous) {
       if (!previous) {
         return this;
-      } else if (previous instanceof AV.Op.Unset) {
+      } else if (previous instanceof complexAV.Op.Unset) {
         return previous;
-      } else if (previous instanceof AV.Op.Set) {
-        return new AV.Op.Set(this._estimate(previous.value()));
-      } else if (previous instanceof AV.Op.Remove) {
-        return new AV.Op.Remove(_.union(previous.objects(), this.objects()));
+      } else if (previous instanceof complexAV.Op.Set) {
+        return new complexAV.Op.Set(this._estimate(previous.value()));
+      } else if (previous instanceof complexAV.Op.Remove) {
+        return new complexAV.Op.Remove(_.union(previous.objects(), this.objects()));
       } else {
         throw "Op is invalid after previous op.";
       }
@@ -8919,11 +8919,11 @@ module.exports = function (AV) {
         return [];
       } else {
         var newValue = _.difference(oldValue, this.objects());
-        // If there are saved AV Objects being removed, also remove them.
-        AV._arrayEach(this.objects(), function (obj) {
-          if (obj instanceof AV.Object && obj.id) {
+        // If there are saved complexAV Objects being removed, also remove them.
+        complexAV._arrayEach(this.objects(), function (obj) {
+          if (obj instanceof complexAV.Object && obj.id) {
             newValue = _.reject(newValue, function (other) {
-              return other instanceof AV.Object && other.id === obj.id;
+              return other instanceof complexAV.Object && other.id === obj.id;
             });
           }
         });
@@ -8932,19 +8932,19 @@ module.exports = function (AV) {
     }
   });
 
-  AV.Op._registerDecoder("Remove", function (json) {
-    return new AV.Op.Remove(AV._decode(undefined, json.objects));
+  complexAV.Op._registerDecoder("Remove", function (json) {
+    return new complexAV.Op.Remove(complexAV._decode(undefined, json.objects));
   });
 
   /**
    * @private
    * @class
    * A Relation operation indicates that the field is an instance of
-   * AV.Relation, and objects are being added to, or removed from, that
+   * complexAV.Relation, and objects are being added to, or removed from, that
    * relation.
    */
-  AV.Op.Relation = AV.Op._extend(
-  /** @lends AV.Op.Relation.prototype */{
+  complexAV.Op.Relation = complexAV.Op._extend(
+  /** @lends complexAV.Op.Relation.prototype */{
 
     _initialize: function _initialize(adds, removes) {
       this._targetClassName = null;
@@ -8952,15 +8952,15 @@ module.exports = function (AV) {
       var self = this;
 
       var pointerToId = function pointerToId(object) {
-        if (object instanceof AV.Object) {
+        if (object instanceof complexAV.Object) {
           if (!object.id) {
-            throw "You can't add an unsaved AV.Object to a relation.";
+            throw "You can't add an unsaved complexAV.Object to a relation.";
           }
           if (!self._targetClassName) {
             self._targetClassName = object.className;
           }
           if (self._targetClassName !== object.className) {
-            throw "Tried to create a AV.Relation with 2 different types: " + self._targetClassName + " and " + object.className + ".";
+            throw "Tried to create a complexAV.Relation with 2 different types: " + self._targetClassName + " and " + object.className + ".";
           }
           return object.id;
         }
@@ -8972,35 +8972,35 @@ module.exports = function (AV) {
     },
 
     /**
-     * Returns an array of unfetched AV.Object that are being added to the
+     * Returns an array of unfetched complexAV.Object that are being added to the
      * relation.
      * @return {Array}
      */
     added: function added() {
       var self = this;
       return _.map(this.relationsToAdd, function (objectId) {
-        var object = AV.Object._create(self._targetClassName);
+        var object = complexAV.Object._create(self._targetClassName);
         object.id = objectId;
         return object;
       });
     },
 
     /**
-     * Returns an array of unfetched AV.Object that are being removed from
+     * Returns an array of unfetched complexAV.Object that are being removed from
      * the relation.
      * @return {Array}
      */
     removed: function removed() {
       var self = this;
       return _.map(this.relationsToRemove, function (objectId) {
-        var object = AV.Object._create(self._targetClassName);
+        var object = complexAV.Object._create(self._targetClassName);
         object.id = objectId;
         return object;
       });
     },
 
     /**
-     * Returns a JSON version of the operation suitable for sending to AV.
+     * Returns a JSON version of the operation suitable for sending to complexAV.
      * @return {Object}
      */
     toJSON: function toJSON() {
@@ -9033,16 +9033,16 @@ module.exports = function (AV) {
     _mergeWithPrevious: function _mergeWithPrevious(previous) {
       if (!previous) {
         return this;
-      } else if (previous instanceof AV.Op.Unset) {
+      } else if (previous instanceof complexAV.Op.Unset) {
         throw "You can't modify a relation after deleting it.";
-      } else if (previous instanceof AV.Op.Relation) {
+      } else if (previous instanceof complexAV.Op.Relation) {
         if (previous._targetClassName && previous._targetClassName !== this._targetClassName) {
           throw "Related object must be of class " + previous._targetClassName + ", but " + this._targetClassName + " was passed in.";
         }
         var newAdd = _.union(_.difference(previous.relationsToAdd, this.relationsToRemove), this.relationsToAdd);
         var newRemove = _.union(_.difference(previous.relationsToRemove, this.relationsToAdd), this.relationsToRemove);
 
-        var newRelation = new AV.Op.Relation(newAdd, newRemove);
+        var newRelation = new complexAV.Op.Relation(newAdd, newRemove);
         newRelation._targetClassName = this._targetClassName;
         return newRelation;
       } else {
@@ -9052,9 +9052,9 @@ module.exports = function (AV) {
 
     _estimate: function _estimate(oldValue, object, key) {
       if (!oldValue) {
-        var relation = new AV.Relation(object, key);
+        var relation = new complexAV.Relation(object, key);
         relation.targetClassName = this._targetClassName;
-      } else if (oldValue instanceof AV.Relation) {
+      } else if (oldValue instanceof complexAV.Relation) {
         if (this._targetClassName) {
           if (oldValue.targetClassName) {
             if (oldValue.targetClassName !== this._targetClassName) {
@@ -9071,11 +9071,11 @@ module.exports = function (AV) {
     }
   });
 
-  AV.Op._registerDecoder("AddRelation", function (json) {
-    return new AV.Op.Relation(AV._decode(undefined, json.objects), []);
+  complexAV.Op._registerDecoder("AddRelation", function (json) {
+    return new complexAV.Op.Relation(complexAV._decode(undefined, json.objects), []);
   });
-  AV.Op._registerDecoder("RemoveRelation", function (json) {
-    return new AV.Op.Relation([], AV._decode(undefined, json.objects));
+  complexAV.Op._registerDecoder("RemoveRelation", function (json) {
+    return new complexAV.Op.Relation([], complexAV._decode(undefined, json.objects));
   });
 };
 
@@ -9088,13 +9088,13 @@ module.exports = function (AV) {
 
 var AVRequest = __webpack_require__(1).request;
 
-module.exports = function (AV) {
-  AV.Installation = AV.Object.extend("_Installation");
+module.exports = function (complexAV) {
+  complexAV.Installation = complexAV.Object.extend("_Installation");
 
   /**
    * @namespace
    */
-  AV.Push = AV.Push || {};
+  complexAV.Push = complexAV.Push || {};
 
   /**
    * Sends a push notification.
@@ -9104,15 +9104,15 @@ module.exports = function (AV) {
    * @param {Date} [data.expiration_time]  A Date object for when to expire
    *         the push.
    * @param {Number} [data.expiration_interval] The seconds from now to expire the push.
-   * @param {AV.Query} [data.where] An AV.Query over AV.Installation that is used to match
+   * @param {complexAV.Query} [data.where] An complexAV.Query over complexAV.Installation that is used to match
    *         a set of installations to push to.
-   * @param {String} [data.cql] A CQL statement over AV.Installation that is used to match
+   * @param {String} [data.cql] A CQL statement over complexAV.Installation that is used to match
    *         a set of installations to push to.
    * @param {Date} data.data The data to send as part of the push
    * @param {AuthOptions} [options]
    * @return {Promise}
    */
-  AV.Push.send = function (data, options) {
+  complexAV.Push.send = function (data, options) {
     if (data.where) {
       data.where = data.where.toJSON().where;
     }
@@ -9158,54 +9158,54 @@ var requires = function requires(value, message) {
   }
 };
 
-// AV.Query is a way to create a list of AV.Objects.
-module.exports = function (AV) {
+// complexAV.Query is a way to create a list of complexAV.Objects.
+module.exports = function (complexAV) {
   /**
-   * Creates a new AV.Query for the given AV.Object subclass.
-   * @param {Class|String} objectClass An instance of a subclass of AV.Object, or a AV className string.
+   * Creates a new complexAV.Query for the given complexAV.Object subclass.
+   * @param {Class|String} objectClass An instance of a subclass of complexAV.Object, or a complexAV className string.
    * @class
    *
-   * <p>AV.Query defines a query that is used to fetch AV.Objects. The
+   * <p>complexAV.Query defines a query that is used to fetch complexAV.Objects. The
    * most common use case is finding all objects that match a query through the
    * <code>find</code> method. For example, this sample code fetches all objects
    * of class <code>MyClass</code>. It calls a different function depending on
    * whether the fetch succeeded or not.
    *
    * <pre>
-   * var query = new AV.Query(MyClass);
+   * var query = new complexAV.Query(MyClass);
    * query.find().then(function(results) {
-   *   // results is an array of AV.Object.
+   *   // results is an array of complexAV.Object.
    * }, function(error) {
    *   // error is an instance of AVError.
    * });</pre></p>
    *
-   * <p>An AV.Query can also be used to retrieve a single object whose id is
+   * <p>An complexAV.Query can also be used to retrieve a single object whose id is
    * known, through the get method. For example, this sample code fetches an
    * object of class <code>MyClass</code> and id <code>myId</code>. It calls a
    * different function depending on whether the fetch succeeded or not.
    *
    * <pre>
-   * var query = new AV.Query(MyClass);
+   * var query = new complexAV.Query(MyClass);
    * query.get(myId).then(function(object) {
-   *   // object is an instance of AV.Object.
+   *   // object is an instance of complexAV.Object.
    * }, function(error) {
    *   // error is an instance of AVError.
    * });</pre></p>
    *
-   * <p>An AV.Query can also be used to count the number of objects that match
+   * <p>An complexAV.Query can also be used to count the number of objects that match
    * the query without retrieving all of those objects. For example, this
    * sample code counts the number of objects of the class <code>MyClass</code>
    * <pre>
-   * var query = new AV.Query(MyClass);
+   * var query = new complexAV.Query(MyClass);
    * query.count().then(function(number) {
    *   // There are number instances of MyClass.
    * }, function(error) {
    *   // error is an instance of AVError.
    * });</pre></p>
    */
-  AV.Query = function (objectClass) {
+  complexAV.Query = function (objectClass) {
     if (_.isString(objectClass)) {
-      objectClass = AV.Object._getSubclass(objectClass);
+      objectClass = complexAV.Object._getSubclass(objectClass);
     }
 
     this.objectClass = objectClass;
@@ -9221,19 +9221,19 @@ module.exports = function (AV) {
   };
 
   /**
-   * Constructs a AV.Query that is the OR of the passed in queries.  For
+   * Constructs a complexAV.Query that is the OR of the passed in queries.  For
    * example:
-   * <pre>var compoundQuery = AV.Query.or(query1, query2, query3);</pre>
+   * <pre>var compoundQuery = complexAV.Query.or(query1, query2, query3);</pre>
    *
    * will create a compoundQuery that is an or of the query1, query2, and
    * query3.
-   * @param {...AV.Query} var_args The list of queries to OR.
-   * @return {AV.Query} The query that is the OR of the passed in queries.
+   * @param {...complexAV.Query} var_args The list of queries to OR.
+   * @return {complexAV.Query} The query that is the OR of the passed in queries.
    */
-  AV.Query.or = function () {
+  complexAV.Query.or = function () {
     var queries = _.toArray(arguments);
     var className = null;
-    AV._arrayEach(queries, function (q) {
+    complexAV._arrayEach(queries, function (q) {
       if (_.isNull(className)) {
         className = q.className;
       }
@@ -9242,25 +9242,25 @@ module.exports = function (AV) {
         throw "All queries must be for the same class";
       }
     });
-    var query = new AV.Query(className);
+    var query = new complexAV.Query(className);
     query._orQuery(queries);
     return query;
   };
 
   /**
-   * Constructs a AV.Query that is the AND of the passed in queries.  For
+   * Constructs a complexAV.Query that is the AND of the passed in queries.  For
    * example:
-   * <pre>var compoundQuery = AV.Query.and(query1, query2, query3);</pre>
+   * <pre>var compoundQuery = complexAV.Query.and(query1, query2, query3);</pre>
    *
    * will create a compoundQuery that is an 'and' of the query1, query2, and
    * query3.
-   * @param {...AV.Query} var_args The list of queries to AND.
-   * @return {AV.Query} The query that is the AND of the passed in queries.
+   * @param {...complexAV.Query} var_args The list of queries to AND.
+   * @return {complexAV.Query} The query that is the AND of the passed in queries.
    */
-  AV.Query.and = function () {
+  complexAV.Query.and = function () {
     var queries = _.toArray(arguments);
     var className = null;
-    AV._arrayEach(queries, function (q) {
+    complexAV._arrayEach(queries, function (q) {
       if (_.isNull(className)) {
         className = q.className;
       }
@@ -9269,7 +9269,7 @@ module.exports = function (AV) {
         throw "All queries must be for the same class";
       }
     });
-    var query = new AV.Query(className);
+    var query = new complexAV.Query(className);
     query._andQuery(queries);
     return query;
   };
@@ -9284,7 +9284,7 @@ module.exports = function (AV) {
    * @return {Promise} A promise that is resolved with the results when
    * the query completes.
    */
-  AV.Query.doCloudQuery = function (cql, pvalues, options) {
+  complexAV.Query.doCloudQuery = function (cql, pvalues, options) {
     var params = { cql: cql };
     if (_.isArray(pvalues)) {
       params.pvalues = pvalues;
@@ -9295,7 +9295,7 @@ module.exports = function (AV) {
     var request = AVRequest('cloudQuery', null, null, 'GET', params, options);
     return request.then(function (response) {
       //query to process results.
-      var query = new AV.Query(response.className);
+      var query = new complexAV.Query(response.className);
       var results = _.map(response.results, function (json) {
         var obj = query._newObject(response);
         if (obj._finishFetch) {
@@ -9311,21 +9311,21 @@ module.exports = function (AV) {
     });
   };
 
-  AV.Query._extend = AV._extend;
+  complexAV.Query._extend = complexAV._extend;
 
-  AV.Query.prototype = {
+  complexAV.Query.prototype = {
     //hook to iterate result. Added by dennis<xzhuang@avoscloud.com>.
     _processResult: function _processResult(obj) {
       return obj;
     },
 
     /**
-     * Constructs an AV.Object whose id is already known by fetching data from
+     * Constructs an complexAV.Object whose id is already known by fetching data from
      * the server.
      *
      * @param {String} objectId The id of the object to be fetched.
      * @param {AuthOptions} options
-     * @return {Promise.<AV.Object>}
+     * @return {Promise.<complexAV.Object>}
      */
     get: function get(objectId, options) {
       if (!objectId) {
@@ -9372,7 +9372,7 @@ module.exports = function (AV) {
         params.order = this._order;
       }
 
-      AV._objectEach(this._extraOptions, function (v, k) {
+      complexAV._objectEach(this._extraOptions, function (v, k) {
         params[k] = v;
       });
 
@@ -9382,7 +9382,7 @@ module.exports = function (AV) {
     _newObject: function _newObject(response) {
       var obj;
       if (response && response.className) {
-        obj = new AV.Object(response.className);
+        obj = new complexAV.Object(response.className);
       } else {
         obj = new this.objectClass();
       }
@@ -9424,7 +9424,7 @@ module.exports = function (AV) {
     destroyAll: function destroyAll(options) {
       var self = this;
       return self.find(options).then(function (objects) {
-        return AV.Object.destroyAll(objects);
+        return complexAV.Object.destroyAll(objects);
       });
     },
 
@@ -9447,7 +9447,7 @@ module.exports = function (AV) {
     },
 
     /**
-     * Retrieves at most one AV.Object that satisfies this query.
+     * Retrieves at most one complexAV.Object that satisfies this query.
      *
      * @param {AuthOptions} options
      * @return {Promise} A promise that is resolved with the object when
@@ -9476,7 +9476,7 @@ module.exports = function (AV) {
      * This is useful for pagination.
      * Default is to skip zero results.
      * @param {Number} n the number of results to skip.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     skip: function skip(n) {
       requires(n, 'undefined is not a valid skip value');
@@ -9488,7 +9488,7 @@ module.exports = function (AV) {
      * Sets the limit of the number of results to return. The default limit is
      * 100, with a maximum of 1000 results being returned at a time.
      * @param {Number} n the number of results to limit to.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     limit: function limit(n) {
       requires(n, 'undefined is not a valid limit value');
@@ -9500,13 +9500,13 @@ module.exports = function (AV) {
      * Add a constraint to the query that requires a particular key's value to
      * be equal to the provided value.
      * @param {String} key The key to check.
-     * @param value The value that the AV.Object must contain.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @param value The value that the complexAV.Object must contain.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     equalTo: function equalTo(key, value) {
       requires(key, 'undefined is not a valid key');
       requires(value, 'undefined is not a valid value');
-      this._where[key] = AV._encode(value);
+      this._where[key] = complexAV._encode(value);
       return this;
     },
 
@@ -9523,7 +9523,7 @@ module.exports = function (AV) {
       if (!this._where[key]) {
         this._where[key] = {};
       }
-      this._where[key][condition] = AV._encode(value);
+      this._where[key][condition] = complexAV._encode(value);
       return this;
     },
 
@@ -9532,7 +9532,7 @@ module.exports = function (AV) {
      * <strong>array</strong> key's length to be equal to the provided value.
      * @param {String} key The array key to check.
      * @param value The length value.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     sizeEqualTo: function sizeEqualTo(key, value) {
       this._addCondition(key, "$size", value);
@@ -9543,7 +9543,7 @@ module.exports = function (AV) {
      * be not equal to the provided value.
      * @param {String} key The key to check.
      * @param value The value that must not be equalled.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     notEqualTo: function notEqualTo(key, value) {
       this._addCondition(key, "$ne", value);
@@ -9555,7 +9555,7 @@ module.exports = function (AV) {
      * be less than the provided value.
      * @param {String} key The key to check.
      * @param value The value that provides an upper bound.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     lessThan: function lessThan(key, value) {
       this._addCondition(key, "$lt", value);
@@ -9567,7 +9567,7 @@ module.exports = function (AV) {
      * be greater than the provided value.
      * @param {String} key The key to check.
      * @param value The value that provides an lower bound.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     greaterThan: function greaterThan(key, value) {
       this._addCondition(key, "$gt", value);
@@ -9579,7 +9579,7 @@ module.exports = function (AV) {
      * be less than or equal to the provided value.
      * @param {String} key The key to check.
      * @param value The value that provides an upper bound.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     lessThanOrEqualTo: function lessThanOrEqualTo(key, value) {
       this._addCondition(key, "$lte", value);
@@ -9591,7 +9591,7 @@ module.exports = function (AV) {
      * be greater than or equal to the provided value.
      * @param {String} key The key to check.
      * @param value The value that provides an lower bound.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     greaterThanOrEqualTo: function greaterThanOrEqualTo(key, value) {
       this._addCondition(key, "$gte", value);
@@ -9603,7 +9603,7 @@ module.exports = function (AV) {
      * be contained in the provided list of values.
      * @param {String} key The key to check.
      * @param {Array} values The values that will match.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     containedIn: function containedIn(key, values) {
       this._addCondition(key, "$in", values);
@@ -9615,7 +9615,7 @@ module.exports = function (AV) {
      * not be contained in the provided list of values.
      * @param {String} key The key to check.
      * @param {Array} values The values that will not match.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     notContainedIn: function notContainedIn(key, values) {
       this._addCondition(key, "$nin", values);
@@ -9627,7 +9627,7 @@ module.exports = function (AV) {
      * contain each one of the provided list of values.
      * @param {String} key The key to check.  This key's value must be an array.
      * @param {Array} values The values that will match.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     containsAll: function containsAll(key, values) {
       this._addCondition(key, "$all", values);
@@ -9637,7 +9637,7 @@ module.exports = function (AV) {
     /**
      * Add a constraint for finding objects that contain the given key.
      * @param {String} key The key that should exist.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     exists: function exists(key) {
       this._addCondition(key, "$exists", true);
@@ -9647,7 +9647,7 @@ module.exports = function (AV) {
     /**
      * Add a constraint for finding objects that do not contain a given key.
      * @param {String} key The key that should not exist
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     doesNotExist: function doesNotExist(key) {
       this._addCondition(key, "$exists", false);
@@ -9660,7 +9660,7 @@ module.exports = function (AV) {
      * This may be slow for large datasets.
      * @param {String} key The key that the string to match is stored in.
      * @param {RegExp} regex The regular expression pattern to match.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     matches: function matches(key, regex, modifiers) {
       this._addCondition(key, "$regex", regex);
@@ -9684,12 +9684,12 @@ module.exports = function (AV) {
     },
 
     /**
-     * Add a constraint that requires that a key's value matches a AV.Query
+     * Add a constraint that requires that a key's value matches a complexAV.Query
      * constraint.
      * @param {String} key The key that the contains the object to match the
      *                     query.
-     * @param {AV.Query} query The query that should match.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @param {complexAV.Query} query The query that should match.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     matchesQuery: function matchesQuery(key, query) {
       var queryJSON = query.toJSON();
@@ -9700,11 +9700,11 @@ module.exports = function (AV) {
 
     /**
       * Add a constraint that requires that a key's value not matches a
-      * AV.Query constraint.
+      * complexAV.Query constraint.
       * @param {String} key The key that the contains the object to match the
       *                     query.
-      * @param {AV.Query} query The query that should not match.
-      * @return {AV.Query} Returns the query, so you can chain this call.
+      * @param {complexAV.Query} query The query that should not match.
+      * @return {complexAV.Query} Returns the query, so you can chain this call.
       */
     doesNotMatchQuery: function doesNotMatchQuery(key, query) {
       var queryJSON = query.toJSON();
@@ -9715,13 +9715,13 @@ module.exports = function (AV) {
 
     /**
      * Add a constraint that requires that a key's value matches a value in
-     * an object returned by a different AV.Query.
+     * an object returned by a different complexAV.Query.
      * @param {String} key The key that contains the value that is being
      *                     matched.
      * @param {String} queryKey The key in the objects returned by the query to
      *                          match against.
-     * @param {AV.Query} query The query to run.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @param {complexAV.Query} query The query to run.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     matchesKeyInQuery: function matchesKeyInQuery(key, queryKey, query) {
       var queryJSON = query.toJSON();
@@ -9732,13 +9732,13 @@ module.exports = function (AV) {
 
     /**
      * Add a constraint that requires that a key's value not match a value in
-     * an object returned by a different AV.Query.
+     * an object returned by a different complexAV.Query.
      * @param {String} key The key that contains the value that is being
      *                     excluded.
      * @param {String} queryKey The key in the objects returned by the query to
      *                          match against.
-     * @param {AV.Query} query The query to run.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @param {complexAV.Query} query The query to run.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     doesNotMatchKeyInQuery: function doesNotMatchKeyInQuery(key, queryKey, query) {
       var queryJSON = query.toJSON();
@@ -9750,7 +9750,7 @@ module.exports = function (AV) {
     /**
      * Add constraint that at least one of the passed in queries matches.
      * @param {Array} queries
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      * @private
      */
     _orQuery: function _orQuery(queries) {
@@ -9765,7 +9765,7 @@ module.exports = function (AV) {
     /**
      * Add constraint that both of the passed in queries matches.
      * @param {Array} queries
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      * @private
      */
     _andQuery: function _andQuery(queries) {
@@ -9792,7 +9792,7 @@ module.exports = function (AV) {
      * string.  This may be slow for large datasets.
      * @param {String} key The key that the string to match is stored in.
      * @param {String} substring The substring that the value must contain.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     contains: function contains(key, value) {
       this._addCondition(key, "$regex", this._quote(value));
@@ -9805,7 +9805,7 @@ module.exports = function (AV) {
      * for large datasets.
      * @param {String} key The key that the string to match is stored in.
      * @param {String} prefix The substring that the value must start with.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     startsWith: function startsWith(key, value) {
       this._addCondition(key, "$regex", "^" + this._quote(value));
@@ -9817,7 +9817,7 @@ module.exports = function (AV) {
      * string.  This will be slow for large datasets.
      * @param {String} key The key that the string to match is stored in.
      * @param {String} suffix The substring that the value must end with.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     endsWith: function endsWith(key, value) {
       this._addCondition(key, "$regex", this._quote(value) + "$");
@@ -9828,7 +9828,7 @@ module.exports = function (AV) {
      * Sorts the results in ascending order by the given key.
      *
      * @param {String} key The key to order by.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     ascending: function ascending(key) {
       requires(key, 'undefined is not a valid key');
@@ -9841,7 +9841,7 @@ module.exports = function (AV) {
      * precedence over this key.
      *
      * @param {String} key The key to order by
-     * @return {AV.Query} Returns the query so you can chain this call.
+     * @return {complexAV.Query} Returns the query so you can chain this call.
      */
     addAscending: function addAscending(key) {
       requires(key, 'undefined is not a valid key');
@@ -9853,7 +9853,7 @@ module.exports = function (AV) {
      * Sorts the results in descending order by the given key.
      *
      * @param {String} key The key to order by.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     descending: function descending(key) {
       requires(key, 'undefined is not a valid key');
@@ -9866,7 +9866,7 @@ module.exports = function (AV) {
     * precedence over this key.
     *
     * @param {String} key The key to order by
-    * @return {AV.Query} Returns the query so you can chain this call.
+    * @return {complexAV.Query} Returns the query so you can chain this call.
     */
     addDescending: function addDescending(key) {
       requires(key, 'undefined is not a valid key');
@@ -9877,14 +9877,14 @@ module.exports = function (AV) {
     /**
      * Add a proximity based constraint for finding objects with key point
      * values near the point given.
-     * @param {String} key The key that the AV.GeoPoint is stored in.
-     * @param {AV.GeoPoint} point The reference AV.GeoPoint that is used.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @param {String} key The key that the complexAV.GeoPoint is stored in.
+     * @param {complexAV.GeoPoint} point The reference complexAV.GeoPoint that is used.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     near: function near(key, point) {
-      if (!(point instanceof AV.GeoPoint)) {
+      if (!(point instanceof complexAV.GeoPoint)) {
         // Try to cast it to a GeoPoint, so that near("loc", [20,30]) works.
-        point = new AV.GeoPoint(point);
+        point = new complexAV.GeoPoint(point);
       }
       this._addCondition(key, "$nearSphere", point);
       return this;
@@ -9893,10 +9893,10 @@ module.exports = function (AV) {
     /**
      * Add a proximity based constraint for finding objects with key point
      * values near the point given and within the maximum distance given.
-     * @param {String} key The key that the AV.GeoPoint is stored in.
-     * @param {AV.GeoPoint} point The reference AV.GeoPoint that is used.
+     * @param {String} key The key that the complexAV.GeoPoint is stored in.
+     * @param {complexAV.GeoPoint} point The reference complexAV.GeoPoint that is used.
      * @param maxDistance Maximum distance (in radians) of results to return.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     withinRadians: function withinRadians(key, point, distance) {
       this.near(key, point);
@@ -9908,11 +9908,11 @@ module.exports = function (AV) {
      * Add a proximity based constraint for finding objects with key point
      * values near the point given and within the maximum distance given.
      * Radius of earth used is 3958.8 miles.
-     * @param {String} key The key that the AV.GeoPoint is stored in.
-     * @param {AV.GeoPoint} point The reference AV.GeoPoint that is used.
+     * @param {String} key The key that the complexAV.GeoPoint is stored in.
+     * @param {complexAV.GeoPoint} point The reference complexAV.GeoPoint that is used.
      * @param {Number} maxDistance Maximum distance (in miles) of results to
      *     return.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     withinMiles: function withinMiles(key, point, distance) {
       return this.withinRadians(key, point, distance / 3958.8);
@@ -9922,11 +9922,11 @@ module.exports = function (AV) {
      * Add a proximity based constraint for finding objects with key point
      * values near the point given and within the maximum distance given.
      * Radius of earth used is 6371.0 kilometers.
-     * @param {String} key The key that the AV.GeoPoint is stored in.
-     * @param {AV.GeoPoint} point The reference AV.GeoPoint that is used.
+     * @param {String} key The key that the complexAV.GeoPoint is stored in.
+     * @param {complexAV.GeoPoint} point The reference complexAV.GeoPoint that is used.
      * @param {Number} maxDistance Maximum distance (in kilometers) of results
      *     to return.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     withinKilometers: function withinKilometers(key, point, distance) {
       return this.withinRadians(key, point, distance / 6371.0);
@@ -9937,28 +9937,28 @@ module.exports = function (AV) {
      * coordinates be contained within a given rectangular geographic bounding
      * box.
      * @param {String} key The key to be constrained.
-     * @param {AV.GeoPoint} southwest
+     * @param {complexAV.GeoPoint} southwest
      *     The lower-left inclusive corner of the box.
-     * @param {AV.GeoPoint} northeast
+     * @param {complexAV.GeoPoint} northeast
      *     The upper-right inclusive corner of the box.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     withinGeoBox: function withinGeoBox(key, southwest, northeast) {
-      if (!(southwest instanceof AV.GeoPoint)) {
-        southwest = new AV.GeoPoint(southwest);
+      if (!(southwest instanceof complexAV.GeoPoint)) {
+        southwest = new complexAV.GeoPoint(southwest);
       }
-      if (!(northeast instanceof AV.GeoPoint)) {
-        northeast = new AV.GeoPoint(northeast);
+      if (!(northeast instanceof complexAV.GeoPoint)) {
+        northeast = new complexAV.GeoPoint(northeast);
       }
       this._addCondition(key, '$within', { '$box': [southwest, northeast] });
       return this;
     },
 
     /**
-     * Include nested AV.Objects for the provided key.  You can use dot
+     * Include nested complexAV.Objects for the provided key.  You can use dot
      * notation to specify which fields in the included object are also fetch.
      * @param {String[]} keys The name of the key to include.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     include: function include(keys) {
       var _this = this;
@@ -9971,11 +9971,11 @@ module.exports = function (AV) {
     },
 
     /**
-     * Restrict the fields of the returned AV.Objects to include only the
+     * Restrict the fields of the returned complexAV.Objects to include only the
      * provided keys.  If this is called multiple times, then all of the keys
      * specified in each of the calls will be included.
      * @param {String[]} keys The names of the keys to include.
-     * @return {AV.Query} Returns the query, so you can chain this call.
+     * @return {complexAV.Query} Returns the query, so you can chain this call.
      */
     select: function select(keys) {
       var _this2 = this;
@@ -10005,10 +10005,10 @@ module.exports = function (AV) {
 
       if (this._order || this._skip || this._limit >= 0) {
         var error = new Error("Cannot iterate on a query with sort, skip, or limit.");
-        return AV.Promise.reject(error);
+        return complexAV.Promise.reject(error);
       }
 
-      var query = new AV.Query(this.objectClass);
+      var query = new complexAV.Query(this.objectClass);
       // We can override the batch size from the options.
       // This is undocumented, but useful for testing.
       query._limit = options.batchSize || 100;
@@ -10018,11 +10018,11 @@ module.exports = function (AV) {
       query.ascending('objectId');
 
       var finished = false;
-      return AV.Promise._continueWhile(function () {
+      return complexAV.Promise._continueWhile(function () {
         return !finished;
       }, function () {
         return query.find(options).then(function (results) {
-          var callbacksDone = AV.Promise.resolve();
+          var callbacksDone = complexAV.Promise.resolve();
           _.each(results, function (result) {
             callbacksDone = callbacksDone.then(function () {
               return callback(result);
@@ -10041,10 +10041,10 @@ module.exports = function (AV) {
     }
   };
 
-  AV.FriendShipQuery = AV.Query._extend({
-    _objectClass: AV.User,
+  complexAV.FriendShipQuery = complexAV.Query._extend({
+    _objectClass: complexAV.User,
     _newObject: function _newObject() {
-      return new AV.User();
+      return new complexAV.User();
     },
     _processResult: function _processResult(json) {
       if (json && json[this._friendshipTag]) {
@@ -10070,23 +10070,23 @@ module.exports = function (AV) {
 
 var _ = __webpack_require__(0);
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   /**
    * Creates a new Relation for the given parent object and key. This
    * constructor should rarely be used directly, but rather created by
-   * {@link AV.Object#relation}.
-   * @param {AV.Object} parent The parent of this relation.
+   * {@link complexAV.Object#relation}.
+   * @param {complexAV.Object} parent The parent of this relation.
    * @param {String} key The key for this relation on the parent.
-   * @see AV.Object#relation
+   * @see complexAV.Object#relation
    * @class
    *
    * <p>
    * A class that is used to access all of the children of a many-to-many
-   * relationship.  Each instance of AV.Relation is associated with a
+   * relationship.  Each instance of complexAV.Relation is associated with a
    * particular parent object and key.
    * </p>
    */
-  AV.Relation = function (parent, key) {
+  complexAV.Relation = function (parent, key) {
     if (!_.isString(key)) {
       throw new TypeError('key must be a string');
     }
@@ -10099,16 +10099,16 @@ module.exports = function (AV) {
    * Creates a query that can be used to query the parent objects in this relation.
    * @param {String} parentClass The parent class or name.
    * @param {String} relationKey The relation field key in parent.
-   * @param {AV.Object} child The child object.
-   * @return {AV.Query}
+   * @param {complexAV.Object} child The child object.
+   * @return {complexAV.Query}
    */
-  AV.Relation.reverseQuery = function (parentClass, relationKey, child) {
-    var query = new AV.Query(parentClass);
+  complexAV.Relation.reverseQuery = function (parentClass, relationKey, child) {
+    var query = new complexAV.Query(parentClass);
     query.equalTo(relationKey, child._toPointer());
     return query;
   };
 
-  AV.Relation.prototype = {
+  complexAV.Relation.prototype = {
     /**
      * Makes sure that this relation has the right parent and key.
      * @private
@@ -10125,29 +10125,29 @@ module.exports = function (AV) {
     },
 
     /**
-     * Adds a AV.Object or an array of AV.Objects to the relation.
-     * @param {AV.Object|AV.Object[]} objects The item or items to add.
+     * Adds a complexAV.Object or an array of complexAV.Objects to the relation.
+     * @param {complexAV.Object|complexAV.Object[]} objects The item or items to add.
      */
     add: function add(objects) {
       if (!_.isArray(objects)) {
         objects = [objects];
       }
 
-      var change = new AV.Op.Relation(objects, []);
+      var change = new complexAV.Op.Relation(objects, []);
       this.parent.set(this.key, change);
       this.targetClassName = change._targetClassName;
     },
 
     /**
-     * Removes a AV.Object or an array of AV.Objects from this relation.
-     * @param {AV.Object|AV.Object[]} objects The item or items to remove.
+     * Removes a complexAV.Object or an array of complexAV.Objects from this relation.
+     * @param {complexAV.Object|complexAV.Object[]} objects The item or items to remove.
      */
     remove: function remove(objects) {
       if (!_.isArray(objects)) {
         objects = [objects];
       }
 
-      var change = new AV.Op.Relation([], objects);
+      var change = new complexAV.Op.Relation([], objects);
       this.parent.set(this.key, change);
       this.targetClassName = change._targetClassName;
     },
@@ -10161,20 +10161,20 @@ module.exports = function (AV) {
     },
 
     /**
-     * Returns a AV.Query that is limited to objects in this
+     * Returns a complexAV.Query that is limited to objects in this
      * relation.
-     * @return {AV.Query}
+     * @return {complexAV.Query}
      */
     query: function query() {
       var targetClass;
       var query;
       if (!this.targetClassName) {
-        targetClass = AV.Object._getSubclass(this.parent.className);
-        query = new AV.Query(targetClass);
+        targetClass = complexAV.Object._getSubclass(this.parent.className);
+        query = new complexAV.Query(targetClass);
         query._extraOptions.redirectClassNameForKey = this.key;
       } else {
-        targetClass = AV.Object._getSubclass(this.targetClassName);
-        query = new AV.Query(targetClass);
+        targetClass = complexAV.Object._getSubclass(this.targetClassName);
+        query = new complexAV.Query(targetClass);
       }
       query._addCondition("$relatedTo", "object", this.parent._toPointer());
       query._addCondition("$relatedTo", "key", this.key);
@@ -10194,12 +10194,12 @@ module.exports = function (AV) {
 var _ = __webpack_require__(0);
 var AVError = __webpack_require__(3);
 
-module.exports = function (AV) {
-  AV.Role = AV.Object.extend("_Role", /** @lends AV.Role.prototype */{
+module.exports = function (complexAV) {
+  complexAV.Role = complexAV.Object.extend("_Role", /** @lends complexAV.Role.prototype */{
     // Instance Methods
 
     /**
-    * Represents a Role on the AV server. Roles represent groupings of
+    * Represents a Role on the complexAV server. Roles represent groupings of
     * Users for the purposes of granting permissions (e.g. specifying an ACL
     * for an Object). Roles are specified by their sets of child users and
     * child roles, all of which are granted any permissions that the parent
@@ -10207,28 +10207,28 @@ module.exports = function (AV) {
     *
     * <p>Roles must have a name (which cannot be changed after creation of the
     * role), and must specify an ACL.</p>
-    * An AV.Role is a local representation of a role persisted to the AV
+    * An complexAV.Role is a local representation of a role persisted to the complexAV
     * cloud.
-     * @class AV.Role
+     * @class complexAV.Role
      * @param {String} name The name of the Role to create.
-     * @param {AV.ACL} [acl] The ACL for this role. if absent, the default ACL
+     * @param {complexAV.ACL} [acl] The ACL for this role. if absent, the default ACL
      *    `{'*': { read: true }}` will be used.
      */
     constructor: function constructor(name, acl) {
       if (_.isString(name)) {
-        AV.Object.prototype.constructor.call(this, null, null);
+        complexAV.Object.prototype.constructor.call(this, null, null);
         this.setName(name);
       } else {
-        AV.Object.prototype.constructor.call(this, name, acl);
+        complexAV.Object.prototype.constructor.call(this, name, acl);
       }
       if (acl === undefined) {
-        var defaultAcl = new AV.ACL();
+        var defaultAcl = new complexAV.ACL();
         defaultAcl.setPublicReadAccess(true);
         if (!this.getACL()) {
           this.setACL(defaultAcl);
         }
-      } else if (!(acl instanceof AV.ACL)) {
-        throw new TypeError('acl must be an instance of AV.ACL');
+      } else if (!(acl instanceof complexAV.ACL)) {
+        throw new TypeError('acl must be an instance of complexAV.ACL');
       } else {
         this.setACL(acl);
       }
@@ -10262,14 +10262,14 @@ module.exports = function (AV) {
     },
 
     /**
-     * Gets the AV.Relation for the AV.Users that are direct
+     * Gets the complexAV.Relation for the complexAV.Users that are direct
      * children of this role. These users are granted any privileges that this
      * role has been granted (e.g. read or write access through ACLs). You can
      * add or remove users from the role through this relation.
      *
      * <p>This is equivalent to calling role.relation("users")</p>
      *
-     * @return {AV.Relation} the relation for the users belonging to this
+     * @return {complexAV.Relation} the relation for the users belonging to this
      *     role.
      */
     getUsers: function getUsers() {
@@ -10277,14 +10277,14 @@ module.exports = function (AV) {
     },
 
     /**
-     * Gets the AV.Relation for the AV.Roles that are direct
+     * Gets the complexAV.Relation for the complexAV.Roles that are direct
      * children of this role. These roles' users are granted any privileges that
      * this role has been granted (e.g. read or write access through ACLs). You
      * can add or remove child roles from this role through this relation.
      *
      * <p>This is equivalent to calling role.relation("roles")</p>
      *
-     * @return {AV.Relation} the relation for the roles belonging to this
+     * @return {complexAV.Relation} the relation for the roles belonging to this
      *     role.
      */
     getRoles: function getRoles() {
@@ -10310,8 +10310,8 @@ module.exports = function (AV) {
           return new AVError(AVError.OTHER_CAUSE, "A role's name can only contain alphanumeric characters, _," + " -, and spaces.");
         }
       }
-      if (AV.Object.prototype.validate) {
-        return AV.Object.prototype.validate.call(this, attrs, options);
+      if (complexAV.Object.prototype.validate) {
+        return complexAV.Object.prototype.validate.call(this, attrs, options);
       }
       return false;
     }
@@ -10328,23 +10328,23 @@ module.exports = function (AV) {
 var _ = __webpack_require__(0);
 var AVRequest = __webpack_require__(1).request;
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   /**
    * A builder to generate sort string for app searching.For example:
    * @class
    * @since 0.5.1
    * @example
-   *   var builder = new AV.SearchSortBuilder();
+   *   var builder = new complexAV.SearchSortBuilder();
    *   builder.ascending('key1').descending('key2','max');
-   *   var query = new AV.SearchQuery('Player');
+   *   var query = new complexAV.SearchQuery('Player');
    *   query.sortBy(builder);
    *   query.find().then();
    */
-  AV.SearchSortBuilder = function () {
+  complexAV.SearchSortBuilder = function () {
     this._sortFields = [];
   };
 
-  AV.SearchSortBuilder.prototype = {
+  complexAV.SearchSortBuilder.prototype = {
     _addField: function _addField(key, order, mode, missing) {
       var field = {};
       field[key] = {
@@ -10364,7 +10364,7 @@ module.exports = function (AV) {
      *                  'max' or 'min' too.
      * @param {String} missing The missing key behaviour, default is 'last',
      *                  you can choose 'first' too.
-     * @return {AV.SearchSortBuilder} Returns the builder, so you can chain this call.
+     * @return {complexAV.SearchSortBuilder} Returns the builder, so you can chain this call.
      */
     ascending: function ascending(key, mode, missing) {
       return this._addField(key, 'asc', mode, missing);
@@ -10378,7 +10378,7 @@ module.exports = function (AV) {
      *                  'max' or 'min' too.
      * @param {String} missing The missing key behaviour, default is 'last',
      *                  you can choose 'first' too.
-     * @return {AV.SearchSortBuilder} Returns the builder, so you can chain this call.
+     * @return {complexAV.SearchSortBuilder} Returns the builder, so you can chain this call.
      */
     descending: function descending(key, mode, missing) {
       return this._addField(key, 'desc', mode, missing);
@@ -10387,10 +10387,10 @@ module.exports = function (AV) {
     /**
      * Add a proximity based constraint for finding objects with key point
      * values near the point given.
-     * @param {String} key The key that the AV.GeoPoint is stored in.
-     * @param {AV.GeoPoint} point The reference AV.GeoPoint that is used.
+     * @param {String} key The key that the complexAV.GeoPoint is stored in.
+     * @param {complexAV.GeoPoint} point The reference complexAV.GeoPoint that is used.
      * @param {Object} options The other options such as mode,order, unit etc.
-     * @return {AV.SearchSortBuilder} Returns the builder, so you can chain this call.
+     * @return {complexAV.SearchSortBuilder} Returns the builder, so you can chain this call.
      */
     whereNear: function whereNear(key, point, options) {
       options = options || {};
@@ -10416,26 +10416,26 @@ module.exports = function (AV) {
      * @return {String} the sort string.
      */
     build: function build() {
-      return JSON.stringify(AV._encode(this._sortFields));
+      return JSON.stringify(complexAV._encode(this._sortFields));
     }
   };
 
   /**
-   * App searching query.Use just like AV.Query:
+   * App searching query.Use just like complexAV.Query:
    *
    * Visit <a href='https://leancloud.cn/docs/app_search_guide.html'>App Searching Guide</a>
    * for more details.
    * @class
    * @since 0.5.1
    * @example
-   *   var query = new AV.SearchQuery('Player');
+   *   var query = new complexAV.SearchQuery('Player');
    *   query.queryString('*');
    *   query.find().then(function(results) {
    *     console.log('Found %d objects', query.hits());
    *     //Process results
    *   });
    */
-  AV.SearchQuery = AV.Query._extend( /** @lends AV.SearchQuery.prototype */{
+  complexAV.SearchQuery = complexAV.Query._extend( /** @lends complexAV.SearchQuery.prototype */{
     _sid: null,
     _hits: 0,
     _queryString: null,
@@ -10448,7 +10448,7 @@ module.exports = function (AV) {
     /**
      * Sets the sid of app searching query.Default is null.
      * @param {String} sid  Scroll id for searching.
-     * @return {AV.SearchQuery} Returns the query, so you can chain this call.
+     * @return {complexAV.SearchQuery} Returns the query, so you can chain this call.
      */
     sid: function sid(_sid) {
       this._sid = _sid;
@@ -10458,7 +10458,7 @@ module.exports = function (AV) {
     /**
      * Sets the query string of app searching.
      * @param {String} q  The query string.
-     * @return {AV.SearchQuery} Returns the query, so you can chain this call.
+     * @return {complexAV.SearchQuery} Returns the query, so you can chain this call.
      */
     queryString: function queryString(q) {
       this._queryString = q;
@@ -10473,7 +10473,7 @@ module.exports = function (AV) {
      *   query.highlights(['title', 'content'])
      * </code></pre>
      * @param {String[]} highlights a list of fields.
-     * @return {AV.SearchQuery} Returns the query, so you can chain this call.
+     * @return {complexAV.SearchQuery} Returns the query, so you can chain this call.
      */
     highlights: function highlights(_highlights) {
       var objects;
@@ -10488,9 +10488,9 @@ module.exports = function (AV) {
 
     /**
      * Sets the sort builder for this query.
-     * @see AV.SearchSortBuilder
-     * @param { AV.SearchSortBuilder} builder The sort builder.
-     * @return {AV.SearchQuery} Returns the query, so you can chain this call.
+     * @see complexAV.SearchSortBuilder
+     * @param { complexAV.SearchSortBuilder} builder The sort builder.
+     * @return {complexAV.SearchQuery} Returns the query, so you can chain this call.
      *
      */
     sortBy: function sortBy(builder) {
@@ -10519,7 +10519,7 @@ module.exports = function (AV) {
     /**
      * Returns true when there are more documents can be retrieved by this
      * query instance, you can call find function to get more results.
-     * @see AV.SearchQuery#find
+     * @see complexAV.SearchQuery#find
      * @return {Boolean}
      */
     hasMore: function hasMore() {
@@ -10541,8 +10541,8 @@ module.exports = function (AV) {
      * Either options.success or options.error is called when the find
      * completes.
      *
-     * @see AV.Query#find
-     * @return {AV.Promise} A promise that is resolved with the results when
+     * @see complexAV.Query#find
+     * @return {complexAV.Promise} A promise that is resolved with the results when
      * the query completes.
      */
     find: function find() {
@@ -10574,7 +10574,7 @@ module.exports = function (AV) {
     },
 
     toJSON: function toJSON() {
-      var params = AV.SearchQuery.__super__.toJSON.call(this);
+      var params = complexAV.SearchQuery.__super__.toJSON.call(this);
       delete params.where;
       if (this.className) {
         params.clazz = this.className;
@@ -10614,17 +10614,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _ = __webpack_require__(0);
 var AVRequest = __webpack_require__(1).request;
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   var getUser = function getUser() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    return AV.User.currentAsync().then(function (currUser) {
-      return currUser || AV.User._fetchUserBySessionToken(options.sessionToken);
+    return complexAV.User.currentAsync().then(function (currUser) {
+      return currUser || complexAV.User._fetchUserBySessionToken(options.sessionToken);
     });
   };
 
   var getUserPointer = function getUserPointer(options) {
     return getUser(options).then(function (currUser) {
-      return AV.Object.createWithoutData('_User', currUser.id)._toPointer();
+      return complexAV.Object.createWithoutData('_User', currUser.id)._toPointer();
     });
   };
 
@@ -10632,7 +10632,7 @@ module.exports = function (AV) {
    * Contains functions to deal with Status in LeanCloud.
    * @class
    */
-  AV.Status = function (imageUrl, message) {
+  complexAV.Status = function (imageUrl, message) {
     this.data = {};
     this.inboxType = 'default';
     this.query = null;
@@ -10649,7 +10649,7 @@ module.exports = function (AV) {
     return this;
   };
 
-  AV.Status.prototype = {
+  complexAV.Status.prototype = {
     /**
      * Gets the value of an attribute in status data.
      * @param {String} attr The string name of an attribute.
@@ -10673,24 +10673,24 @@ module.exports = function (AV) {
      *     completes.
      */
     destroy: function destroy(options) {
-      if (!this.id) return AV.Promise.reject(new Error('The status id is not exists.'));
+      if (!this.id) return complexAV.Promise.reject(new Error('The status id is not exists.'));
       var request = AVRequest('statuses', null, this.id, 'DELETE', options && options.sessionToken);
       return request;
     },
     /**
-      * Cast the AV.Status object to an AV.Object pointer.
-      * @return {AV.Object} A AV.Object pointer.
+      * Cast the complexAV.Status object to an complexAV.Object pointer.
+      * @return {complexAV.Object} A complexAV.Object pointer.
       */
     toObject: function toObject() {
       if (!this.id) return null;
-      return AV.Object.createWithoutData('_Status', this.id);
+      return complexAV.Object.createWithoutData('_Status', this.id);
     },
     _getDataJSON: function _getDataJSON() {
       var json = _.clone(this.data);
-      return AV._encode(json);
+      return complexAV._encode(json);
     },
     /**
-     * Send a status by a AV.Query object.
+     * Send a status by a complexAV.Query object.
      * @since 0.3.0
      * @param {AuthOptions} options
      * @return {Promise} A promise that is fulfilled when the send
@@ -10698,7 +10698,7 @@ module.exports = function (AV) {
      * @example
      *     // send a status to male users
      *     var status = new AVStatus('image url', 'a message');
-     *     status.query = new AV.Query('_User');
+     *     status.query = new complexAV.Query('_User');
      *     status.query.equalTo('gender', 'male');
      *     status.send().then(function(){
      *              //send status successfully.
@@ -10712,11 +10712,11 @@ module.exports = function (AV) {
 
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-      if (!options.sessionToken && !AV.User.current()) {
+      if (!options.sessionToken && !complexAV.User.current()) {
         throw new Error('Please signin an user.');
       }
       if (!this.query) {
-        return AV.Status.sendStatusToFollowers(this, options);
+        return complexAV.Status.sendStatusToFollowers(this, options);
       }
 
       return getUserPointer(options).then(function (currUser) {
@@ -10732,44 +10732,44 @@ module.exports = function (AV) {
         return AVRequest('statuses', null, null, 'POST', data, options.sessionToken);
       }).then(function (response) {
         _this.id = response.objectId;
-        _this.createdAt = AV._parseDate(response.createdAt);
+        _this.createdAt = complexAV._parseDate(response.createdAt);
         return _this;
       });
     },
 
     _finishFetch: function _finishFetch(serverData) {
       this.id = serverData.objectId;
-      this.createdAt = AV._parseDate(serverData.createdAt);
-      this.updatedAt = AV._parseDate(serverData.updatedAt);
+      this.createdAt = complexAV._parseDate(serverData.createdAt);
+      this.updatedAt = complexAV._parseDate(serverData.updatedAt);
       this.messageId = serverData.messageId;
       delete serverData.messageId;
       delete serverData.objectId;
       delete serverData.createdAt;
       delete serverData.updatedAt;
-      this.data = AV._decode(undefined, serverData);
+      this.data = complexAV._decode(undefined, serverData);
     }
   };
 
   /**
    * Send a status to current signined user's followers.
    * @since 0.3.0
-   * @param {AV.Status} status  A status object to be send to followers.
+   * @param {complexAV.Status} status  A status object to be send to followers.
    * @param {AuthOptions} options
    * @return {Promise} A promise that is fulfilled when the send
    *     completes.
    * @example
    *     var status = new AVStatus('image url', 'a message');
-   *     AV.Status.sendStatusToFollowers(status).then(function(){
+   *     complexAV.Status.sendStatusToFollowers(status).then(function(){
    *              //send status successfully.
    *      }, function(err){
    *             //an error threw.
    *             console.dir(err);
    *      });
    */
-  AV.Status.sendStatusToFollowers = function (status) {
+  complexAV.Status.sendStatusToFollowers = function (status) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    if (!options.sessionToken && !AV.User.current()) {
+    if (!options.sessionToken && !complexAV.User.current()) {
       throw new Error('Please signin an user.');
     }
     return getUserPointer(options).then(function (currUser) {
@@ -10787,7 +10787,7 @@ module.exports = function (AV) {
       var request = AVRequest('statuses', null, null, 'POST', data, options.sessionToken);
       return request.then(function (response) {
         status.id = response.objectId;
-        status.createdAt = AV._parseDate(response.createdAt);
+        status.createdAt = complexAV._parseDate(response.createdAt);
         return status;
       });
     });
@@ -10796,7 +10796,7 @@ module.exports = function (AV) {
   /**
    * <p>Send  a status from current signined user to other user's private status inbox.</p>
    * @since 0.3.0
-   * @param {AV.Status} status  A status object to be send to followers.
+   * @param {complexAV.Status} status  A status object to be send to followers.
    * @param {String} target The target user or user's objectId.
    * @param {AuthOptions} options
    * @return {Promise} A promise that is fulfilled when the send
@@ -10804,17 +10804,17 @@ module.exports = function (AV) {
    * @example
    *     // send a private status to user '52e84e47e4b0f8de283b079b'
    *     var status = new AVStatus('image url', 'a message');
-   *     AV.Status.sendPrivateStatus(status, '52e84e47e4b0f8de283b079b').then(function(){
+   *     complexAV.Status.sendPrivateStatus(status, '52e84e47e4b0f8de283b079b').then(function(){
    *              //send status successfully.
    *      }, function(err){
    *             //an error threw.
    *             console.dir(err);
    *      });
    */
-  AV.Status.sendPrivateStatus = function (status, target) {
+  complexAV.Status.sendPrivateStatus = function (status, target) {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-    if (!options.sessionToken && !AV.User.current()) {
+    if (!options.sessionToken && !complexAV.User.current()) {
       throw new Error('Please signin an user.');
     }
     if (!target) {
@@ -10839,7 +10839,7 @@ module.exports = function (AV) {
       var request = AVRequest('statuses', null, null, 'POST', data, options.sessionToken);
       return request.then(function (response) {
         status.id = response.objectId;
-        status.createdAt = AV._parseDate(response.createdAt);
+        status.createdAt = complexAV._parseDate(response.createdAt);
         return status;
       });
     });
@@ -10854,21 +10854,21 @@ module.exports = function (AV) {
    * @return {Promise} A promise that is fulfilled when the count
    *     completes.
    * @example
-   *  AV.Status.countUnreadStatuses(AV.User.current()).then(function(response){
+   *  complexAV.Status.countUnreadStatuses(complexAV.User.current()).then(function(response){
    *    console.log(response.unread); //unread statuses number.
    *    console.log(response.total);  //total statuses number.
    *  });
    */
-  AV.Status.countUnreadStatuses = function (owner) {
+  complexAV.Status.countUnreadStatuses = function (owner) {
     var options = (!_.isString(arguments[1]) ? arguments[1] : arguments[2]) || {};
     var inboxType = !_.isString(arguments[1]) ? 'default' : arguments[1];
-    if (!options.sessionToken && owner == null && !AV.User.current()) {
+    if (!options.sessionToken && owner == null && !complexAV.User.current()) {
       throw new Error('Please signin an user or pass the owner objectId.');
     }
     return getUser(options).then(function (owner) {
       var params = {};
-      params.inboxType = AV._encode(inboxType);
-      params.owner = AV._encode(owner);
+      params.inboxType = complexAV._encode(inboxType);
+      params.owner = complexAV._encode(owner);
       return AVRequest('subscribe/statuses/count', null, null, 'GET', params, options.sessionToken);
     });
   };
@@ -10877,16 +10877,16 @@ module.exports = function (AV) {
    * Create a status query to find someone's published statuses.
    * @since 0.3.0
    * @param {Object} source The status source.
-   * @return {AV.Query} The query object for status.
+   * @return {complexAV.Query} The query object for status.
    * @example
    *   //Find current user's published statuses.
-   *   var query = AV.Status.statusQuery(AV.User.current());
+   *   var query = complexAV.Status.statusQuery(complexAV.User.current());
    *   query.find().then(function(statuses){
    *      //process statuses
    *   });
    */
-  AV.Status.statusQuery = function (source) {
-    var query = new AV.Query('_Status');
+  complexAV.Status.statusQuery = function (source) {
+    var query = new complexAV.Query('_Status');
     if (source) {
       query.equalTo('source', source);
     }
@@ -10894,17 +10894,17 @@ module.exports = function (AV) {
   };
 
   /**
-   * <p>AV.InboxQuery defines a query that is used to fetch somebody's inbox statuses.</p>
+   * <p>complexAV.InboxQuery defines a query that is used to fetch somebody's inbox statuses.</p>
    * @class
    */
-  AV.InboxQuery = AV.Query._extend( /** @lends AV.InboxQuery.prototype */{
-    _objectClass: AV.Status,
+  complexAV.InboxQuery = complexAV.Query._extend( /** @lends complexAV.InboxQuery.prototype */{
+    _objectClass: complexAV.Status,
     _sinceId: 0,
     _maxId: 0,
     _inboxType: 'default',
     _owner: null,
     _newObject: function _newObject() {
-      return new AV.Status();
+      return new complexAV.Status();
     },
     _createRequest: function _createRequest(params, options) {
       return AVRequest('subscribe/statuses', null, null, 'GET', params || this.toJSON(), options && options.sessionToken);
@@ -10915,7 +10915,7 @@ module.exports = function (AV) {
      * This is useful for pagination.
      * Default is zero.
      * @param {Number} n the mesage id.
-     * @return {AV.InboxQuery} Returns the query, so you can chain this call.
+     * @return {complexAV.InboxQuery} Returns the query, so you can chain this call.
      */
     sinceId: function sinceId(id) {
       this._sinceId = id;
@@ -10926,7 +10926,7 @@ module.exports = function (AV) {
      * This is useful for pagination.
      * Default is zero that is no limition.
      * @param {Number} n the mesage id.
-     * @return {AV.InboxQuery} Returns the query, so you can chain this call.
+     * @return {complexAV.InboxQuery} Returns the query, so you can chain this call.
      */
     maxId: function maxId(id) {
       this._maxId = id;
@@ -10935,7 +10935,7 @@ module.exports = function (AV) {
     /**
      * Sets the owner of the querying inbox.
      * @param {Object} owner The inbox owner.
-     * @return {AV.InboxQuery} Returns the query, so you can chain this call.
+     * @return {complexAV.InboxQuery} Returns the query, so you can chain this call.
      */
     owner: function owner(_owner) {
       this._owner = _owner;
@@ -10944,18 +10944,18 @@ module.exports = function (AV) {
     /**
      * Sets the querying inbox type.default is 'default'.
      * @param {Object} owner The inbox type.
-     * @return {AV.InboxQuery} Returns the query, so you can chain this call.
+     * @return {complexAV.InboxQuery} Returns the query, so you can chain this call.
      */
     inboxType: function inboxType(type) {
       this._inboxType = type;
       return this;
     },
     toJSON: function toJSON() {
-      var params = AV.InboxQuery.__super__.toJSON.call(this);
-      params.owner = AV._encode(this._owner);
-      params.inboxType = AV._encode(this._inboxType);
-      params.sinceId = AV._encode(this._sinceId);
-      params.maxId = AV._encode(this._maxId);
+      var params = complexAV.InboxQuery.__super__.toJSON.call(this);
+      params.owner = complexAV._encode(this._owner);
+      params.inboxType = complexAV._encode(this._inboxType);
+      params.sinceId = complexAV._encode(this._sinceId);
+      params.maxId = complexAV._encode(this._maxId);
       return params;
     }
   });
@@ -10965,19 +10965,19 @@ module.exports = function (AV) {
    * @since 0.3.0
    * @param {Object} owner The inbox's owner
    * @param {String} inboxType The inbox type,'default' by default.
-   * @return {AV.InboxQuery} The inbox query object.
-   * @see AV.InboxQuery
+   * @return {complexAV.InboxQuery} The inbox query object.
+   * @see complexAV.InboxQuery
    * @example
    *   //Find current user's default inbox statuses.
-   *   var query = AV.Status.inboxQuery(AV.User.current());
+   *   var query = complexAV.Status.inboxQuery(complexAV.User.current());
    *   //find the statuses after the last message id
    *   query.sinceId(lastMessageId);
    *   query.find().then(function(statuses){
    *      //process statuses
    *   });
    */
-  AV.Status.inboxQuery = function (owner, inboxType) {
-    var query = new AV.InboxQuery(AV.Status);
+  complexAV.Status.inboxQuery = function (owner, inboxType) {
+    var query = new complexAV.InboxQuery(complexAV.Status);
     if (owner) {
       query._owner = owner;
     }
@@ -11159,17 +11159,17 @@ var getWeappLoginCode = function getWeappLoginCode() {
   });
 };
 
-module.exports = function (AV) {
+module.exports = function (complexAV) {
   /**
    * @class
    *
-   * <p>An AV.User object is a local representation of a user persisted to the
-   * LeanCloud server. This class is a subclass of an AV.Object, and retains the
-   * same functionality of an AV.Object, but also extends it with various
+   * <p>An complexAV.User object is a local representation of a user persisted to the
+   * LeanCloud server. This class is a subclass of an complexAV.Object, and retains the
+   * same functionality of an complexAV.Object, but also extends it with various
    * user specific methods, like authentication, signing up, and validation of
    * uniqueness.</p>
    */
-  AV.User = AV.Object.extend("_User", /** @lends AV.User.prototype */{
+  complexAV.User = complexAV.Object.extend("_User", /** @lends complexAV.User.prototype */{
     // Instance Variables
     _isCurrentUser: false,
 
@@ -11184,7 +11184,7 @@ module.exports = function (AV) {
         this._sessionToken = attrs.sessionToken;
         delete attrs.sessionToken;
       }
-      AV.User.__super__._mergeMagicFields.call(this, attrs);
+      complexAV.User.__super__._mergeMagicFields.call(this, attrs);
     },
 
     /**
@@ -11200,7 +11200,7 @@ module.exports = function (AV) {
       if (!authData) {
         return;
       }
-      AV._objectEach(this.get('authData'), function (value, key) {
+      complexAV._objectEach(this.get('authData'), function (value, key) {
         if (!authData[key]) {
           delete authData[key];
         }
@@ -11218,7 +11218,7 @@ module.exports = function (AV) {
       }
 
       var self = this;
-      AV._objectEach(this.get('authData'), function (value, key) {
+      complexAV._objectEach(this.get('authData'), function (value, key) {
         self._synchronizeAuthData(key);
       });
     },
@@ -11235,7 +11235,7 @@ module.exports = function (AV) {
       var authType;
       if (_.isString(provider)) {
         authType = provider;
-        provider = AV.User._authProviders[authType];
+        provider = complexAV.User._authProviders[authType];
       } else {
         authType = provider.getAuthType();
       }
@@ -11251,7 +11251,7 @@ module.exports = function (AV) {
 
     _handleSaveResult: function _handleSaveResult(makeCurrent) {
       // Clean up and synchronize the authData object, removing any unset values
-      if (makeCurrent && !AV._config.disableCurrentUser) {
+      if (makeCurrent && !complexAV._config.disableCurrentUser) {
         this._isCurrentUser = true;
       }
       this._cleanupAuthData();
@@ -11260,11 +11260,11 @@ module.exports = function (AV) {
       delete this._serverData.password;
       this._rebuildEstimatedDataForKey("password");
       this._refreshCache();
-      if ((makeCurrent || this.isCurrent()) && !AV._config.disableCurrentUser) {
+      if ((makeCurrent || this.isCurrent()) && !complexAV._config.disableCurrentUser) {
         // Some old version of leanengine-node-sdk will overwrite
-        // AV.User._saveCurrentUser which returns no Promise.
+        // complexAV.User._saveCurrentUser which returns no Promise.
         // So we need a Promise wrapper.
-        return Promise.resolve(AV.User._saveCurrentUser(this));
+        return Promise.resolve(complexAV.User._saveCurrentUser(this));
       } else {
         return Promise.resolve();
       }
@@ -11281,7 +11281,7 @@ module.exports = function (AV) {
       var authType;
       if (_.isString(provider)) {
         authType = provider;
-        provider = AV.User._authProviders[provider];
+        provider = complexAV.User._authProviders[provider];
       } else {
         authType = provider.getAuthType();
       }
@@ -11304,7 +11304,7 @@ module.exports = function (AV) {
      * 将用户与小程序用户进行关联。适用于为已经在用户系统中存在的用户关联当前使用小程序的微信帐号。
      * 仅在小程序中可用。
      *
-     * @return {AV.User}
+     * @return {complexAV.User}
      */
     linkWithWeapp: function linkWithWeapp() {
       var _this2 = this;
@@ -11323,7 +11323,7 @@ module.exports = function (AV) {
       var _this3 = this;
 
       if (_.isString(provider)) {
-        provider = AV.User._authProviders[provider];
+        provider = complexAV.User._authProviders[provider];
       }
       return this._linkWith(provider, null).then(function (model) {
         _this3._synchronizeAuthData(provider);
@@ -11361,7 +11361,7 @@ module.exports = function (AV) {
         return;
       }
       var self = this;
-      AV._objectEach(this.get('authData'), function (value, key) {
+      complexAV._objectEach(this.get('authData'), function (value, key) {
         self._logOutWith(key);
       });
     },
@@ -11376,7 +11376,7 @@ module.exports = function (AV) {
         return;
       }
       if (_.isString(provider)) {
-        provider = AV.User._authProviders[provider];
+        provider = complexAV.User._authProviders[provider];
       }
       if (provider && provider.deauthenticate) {
         provider.deauthenticate();
@@ -11385,7 +11385,7 @@ module.exports = function (AV) {
 
     /**
      * Signs up a new user. You should call this instead of save for
-     * new AV.Users. This will create a new AV.User on the server, and
+     * new complexAV.Users. This will create a new complexAV.User on the server, and
      * also persist the session on disk so that you can access the user using
      * <code>current</code>.
      *
@@ -11395,7 +11395,7 @@ module.exports = function (AV) {
      * @param {AuthOptions} options
      * @return {Promise} A promise that is fulfilled when the signup
      *     finishes.
-     * @see AV.User.signUp
+     * @see complexAV.User.signUp
      */
     signUp: function signUp(attrs, options) {
       var error;
@@ -11422,7 +11422,7 @@ module.exports = function (AV) {
     /**
      * Signs up a new user with mobile phone and sms code.
      * You should call this instead of save for
-     * new AV.Users. This will create a new AV.User on the server, and
+     * new complexAV.Users. This will create a new complexAV.User on the server, and
      * also persist the session on disk so that you can access the user using
      * <code>current</code>.
      *
@@ -11432,8 +11432,8 @@ module.exports = function (AV) {
      * @param {AuthOptions} options
      * @return {Promise} A promise that is fulfilled when the signup
      *     finishes.
-     * @see AV.User.signUpOrlogInWithMobilePhone
-     * @see AV.Cloud.requestSmsCode
+     * @see complexAV.User.signUpOrlogInWithMobilePhone
+     * @see complexAV.Cloud.requestSmsCode
      */
     signUpOrlogInWithMobilePhone: function signUpOrlogInWithMobilePhone(attrs) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -11465,13 +11465,13 @@ module.exports = function (AV) {
     },
 
     /**
-     * Logs in a AV.User. On success, this saves the session to localStorage,
+     * Logs in a complexAV.User. On success, this saves the session to localStorage,
      * so you can retrieve the currently logged in user using
      * <code>current</code>.
      *
      * <p>A username and password must be set before calling logIn.</p>
      *
-     * @see AV.User.logIn
+     * @see complexAV.User.logIn
      * @return {Promise} A promise that is fulfilled with the user when
      *     the login is complete.
      */
@@ -11488,7 +11488,7 @@ module.exports = function (AV) {
       });
     },
     /**
-     * @see AV.Object#save
+     * @see complexAV.Object#save
      */
     save: function save(arg1, arg2, arg3) {
       var i, attrs, current, options, saved;
@@ -11502,7 +11502,7 @@ module.exports = function (AV) {
       }
       options = options || {};
 
-      return AV.Object.prototype.save.call(this, attrs, options).then(function (model) {
+      return complexAV.Object.prototype.save.call(this, attrs, options).then(function (model) {
         return model._handleSaveResult(false).then(function () {
           return model;
         });
@@ -11512,7 +11512,7 @@ module.exports = function (AV) {
     /**
      * Follow a user
      * @since 0.3.0
-     * @param {AV.User | String} target The target user or user's objectId to follow.
+     * @param {complexAV.User | String} target The target user or user's objectId to follow.
      * @param {AuthOptions} options
      */
     follow: function follow(target, options) {
@@ -11534,7 +11534,7 @@ module.exports = function (AV) {
     /**
      * Unfollow a user.
      * @since 0.3.0
-     * @param {AV.User | String} target The target user or user's objectId to unfollow.
+     * @param {complexAV.User | String} target The target user or user's objectId to unfollow.
      * @param {AuthOptions} options
      */
     unfollow: function unfollow(target, options) {
@@ -11556,26 +11556,26 @@ module.exports = function (AV) {
     /**
      *Create a follower query to query the user's followers.
      * @since 0.3.0
-     * @see AV.User#followerQuery
+     * @see complexAV.User#followerQuery
      */
     followerQuery: function followerQuery() {
-      return AV.User.followerQuery(this.id);
+      return complexAV.User.followerQuery(this.id);
     },
 
     /**
      *Create a followee query to query the user's followees.
      * @since 0.3.0
-     * @see AV.User#followeeQuery
+     * @see complexAV.User#followeeQuery
      */
     followeeQuery: function followeeQuery() {
-      return AV.User.followeeQuery(this.id);
+      return complexAV.User.followeeQuery(this.id);
     },
 
     /**
-     * @see AV.Object#fetch
+     * @see complexAV.Object#fetch
      */
     fetch: function fetch(fetchOptions, options) {
-      return AV.Object.prototype.fetch.call(this, fetchOptions, options).then(function (model) {
+      return complexAV.Object.prototype.fetch.call(this, fetchOptions, options).then(function (model) {
         return model._handleSaveResult(false).then(function () {
           return model;
         });
@@ -11600,7 +11600,7 @@ module.exports = function (AV) {
 
     /**
      * Returns true if <code>current</code> would return this user.
-     * @see AV.User#current
+     * @see complexAV.User#current
      */
     isCurrent: function isCurrent() {
       return this._isCurrentUser;
@@ -11609,7 +11609,7 @@ module.exports = function (AV) {
     /**
      * Returns get("username").
      * @return {String}
-     * @see AV.Object#get
+     * @see complexAV.Object#get
      */
     getUsername: function getUsername() {
       return this.get("username");
@@ -11618,7 +11618,7 @@ module.exports = function (AV) {
     /**
      * Returns get("mobilePhoneNumber").
      * @return {String}
-     * @see AV.Object#get
+     * @see complexAV.Object#get
      */
     getMobilePhoneNumber: function getMobilePhoneNumber() {
       return this.get("mobilePhoneNumber");
@@ -11629,7 +11629,7 @@ module.exports = function (AV) {
      * @param {String} mobilePhoneNumber
      * @param {AuthOptions} options
      * @return {Boolean}
-     * @see AV.Object#set
+     * @see complexAV.Object#set
      */
     setMobilePhoneNumber: function setMobilePhoneNumber(phone, options) {
       return this.set("mobilePhoneNumber", phone, options);
@@ -11640,7 +11640,7 @@ module.exports = function (AV) {
      * @param {String} username
      * @param {AuthOptions} options
      * @return {Boolean}
-     * @see AV.Object#set
+     * @see complexAV.Object#set
      */
     setUsername: function setUsername(username, options) {
       return this.set("username", username, options);
@@ -11651,7 +11651,7 @@ module.exports = function (AV) {
      * @param {String} password
      * @param {AuthOptions} options
      * @return {Boolean}
-     * @see AV.Object#set
+     * @see complexAV.Object#set
      */
     setPassword: function setPassword(password, options) {
       return this.set("password", password, options);
@@ -11660,7 +11660,7 @@ module.exports = function (AV) {
     /**
      * Returns get("email").
      * @return {String}
-     * @see AV.Object#get
+     * @see complexAV.Object#get
      */
     getEmail: function getEmail() {
       return this.get("email");
@@ -11671,7 +11671,7 @@ module.exports = function (AV) {
      * @param {String} email
      * @param {AuthOptions} options
      * @return {Boolean}
-     * @see AV.Object#set
+     * @see complexAV.Object#set
      */
     setEmail: function setEmail(email, options) {
       return this.set("email", email, options);
@@ -11685,7 +11685,7 @@ module.exports = function (AV) {
      */
     authenticated: function authenticated() {
       console.warn('DEPRECATED: 如果要判断当前用户的登录状态是否有效，请使用 currentUser.isAuthenticated().then()，如果要判断该用户是否是当前登录用户，请使用 user.id === currentUser.id。');
-      return !!this._sessionToken && !AV._config.disableCurrentUser && AV.User.current() && AV.User.current().id === this.id;
+      return !!this._sessionToken && !complexAV._config.disableCurrentUser && complexAV.User.current() && complexAV.User.current().id === this.id;
     },
 
     /**
@@ -11698,7 +11698,7 @@ module.exports = function (AV) {
       var _this4 = this;
 
       return Promise.resolve().then(function () {
-        return !!_this4._sessionToken && AV.User._fetchUserBySessionToken(_this4._sessionToken).then(function () {
+        return !!_this4._sessionToken && complexAV.User._fetchUserBySessionToken(_this4._sessionToken).then(function () {
           return true;
         }, function (error) {
           if (error.code === 211) {
@@ -11725,9 +11725,9 @@ module.exports = function (AV) {
      *     the query is complete.
      */
     getRoles: function getRoles(options) {
-      return AV.Relation.reverseQuery("_Role", "users", this).find(options);
+      return complexAV.Relation.reverseQuery("_Role", "users", this).find(options);
     }
-  }, /** @lends AV.User */{
+  }, /** @lends complexAV.User */{
     // Class Variables
 
     // The currently logged-in user.
@@ -11748,7 +11748,7 @@ module.exports = function (AV) {
 
     /**
      * Signs up a new user with a username (or email) and password.
-     * This will create a new AV.User on the server, and also persist the
+     * This will create a new complexAV.User on the server, and also persist the
      * session in localStorage so that you can access the user using
      * {@link #current}.
      *
@@ -11758,13 +11758,13 @@ module.exports = function (AV) {
      * @param {AuthOptions} options
      * @return {Promise} A promise that is fulfilled with the user when
      *     the signup completes.
-     * @see AV.User#signUp
+     * @see complexAV.User#signUp
      */
     signUp: function signUp(username, password, attrs, options) {
       attrs = attrs || {};
       attrs.username = username;
       attrs.password = password;
-      var user = AV.Object._create("_User");
+      var user = complexAV.Object._create("_User");
       return user.signUp(attrs, options);
     },
 
@@ -11778,10 +11778,10 @@ module.exports = function (AV) {
      * @param {AuthOptions} options
      * @return {Promise} A promise that is fulfilled with the user when
      *     the login completes.
-     * @see AV.User#logIn
+     * @see complexAV.User#logIn
      */
     logIn: function logIn(username, password, options) {
-      var user = AV.Object._create("_User");
+      var user = complexAV.Object._create("_User");
       user._finishFetch({ username: username, password: password });
       return user.logIn(options);
     },
@@ -11804,7 +11804,7 @@ module.exports = function (AV) {
     },
 
     _fetchUserBySessionToken: function _fetchUserBySessionToken(sessionToken) {
-      var user = AV.Object._create("_User");
+      var user = complexAV.Object._create("_User");
       return AVRequest("users", "me", null, "GET", {
         session_token: sessionToken
       }).then(function (resp) {
@@ -11816,19 +11816,19 @@ module.exports = function (AV) {
 
     /**
      * Logs in a user with a mobile phone number and sms code sent by
-     * AV.User.requestLoginSmsCode.On success, this
+     * complexAV.User.requestLoginSmsCode.On success, this
      * saves the session to disk, so you can retrieve the currently logged in
      * user using <code>current</code>.
      *
      * @param {String} mobilePhone The user's mobilePhoneNumber
-     * @param {String} smsCode The sms code sent by AV.User.requestLoginSmsCode
+     * @param {String} smsCode The sms code sent by complexAV.User.requestLoginSmsCode
      * @param {AuthOptions} options
      * @return {Promise} A promise that is fulfilled with the user when
      *     the login completes.
-     * @see AV.User#logIn
+     * @see complexAV.User#logIn
      */
     logInWithMobilePhoneSmsCode: function logInWithMobilePhoneSmsCode(mobilePhone, smsCode, options) {
-      var user = AV.Object._create("_User");
+      var user = complexAV.Object._create("_User");
       user._finishFetch({ mobilePhoneNumber: mobilePhone, smsCode: smsCode });
       return user.logIn(options);
     },
@@ -11839,19 +11839,19 @@ module.exports = function (AV) {
      * logged in user using <code>current</code>.
      *
      * @param {String} mobilePhoneNumber The user's mobilePhoneNumber.
-     * @param {String} smsCode The sms code sent by AV.Cloud.requestSmsCode
+     * @param {String} smsCode The sms code sent by complexAV.Cloud.requestSmsCode
      * @param {Object} attributes  The user's other attributes such as username etc.
      * @param {AuthOptions} options
      * @return {Promise} A promise that is fulfilled with the user when
      *     the login completes.
-     * @see AV.User#signUpOrlogInWithMobilePhone
-     * @see AV.Cloud.requestSmsCode
+     * @see complexAV.User#signUpOrlogInWithMobilePhone
+     * @see complexAV.Cloud.requestSmsCode
      */
     signUpOrlogInWithMobilePhone: function signUpOrlogInWithMobilePhone(mobilePhoneNumber, smsCode, attrs, options) {
       attrs = attrs || {};
       attrs.mobilePhoneNumber = mobilePhoneNumber;
       attrs.smsCode = smsCode;
-      var user = AV.Object._create("_User");
+      var user = complexAV.Object._create("_User");
       return user.signUpOrlogInWithMobilePhone(attrs, options);
     },
 
@@ -11865,10 +11865,10 @@ module.exports = function (AV) {
      * @param {AuthOptions} options
      * @return {Promise} A promise that is fulfilled with the user when
      *     the login completes.
-     * @see AV.User#logIn
+     * @see complexAV.User#logIn
      */
     logInWithMobilePhone: function logInWithMobilePhone(mobilePhone, password, options) {
-      var user = AV.Object._create("_User");
+      var user = complexAV.Object._create("_User");
       user._finishFetch({ mobilePhoneNumber: mobilePhone, password: password });
       return user.logIn(options);
     },
@@ -11882,7 +11882,7 @@ module.exports = function (AV) {
      * @param {string} platform Available platform for sign up.
      * @return {Promise} A promise that is fulfilled with the user when
      *     the login completes.
-     * @example AV.User.signUpOrlogInWithAuthData(authData, platform).then(function(user) {
+     * @example complexAV.User.signUpOrlogInWithAuthData(authData, platform).then(function(user) {
      *   //Access user here
      * }).catch(function(error) {
      *   //console.error("error: ", error);
@@ -11890,16 +11890,16 @@ module.exports = function (AV) {
      * @see {@link https://leancloud.cn/docs/js_guide.html#绑定第三方平台账户}
      */
     signUpOrlogInWithAuthData: function signUpOrlogInWithAuthData(authData, platform) {
-      return AV.User._logInWith(platform, authData);
+      return complexAV.User._logInWith(platform, authData);
     },
 
 
     /**
-     * 使用当前使用小程序的微信用户身份注册或登录，成功后用户的 session 会在设备上持久化保存，之后可以使用 AV.User.current() 获取当前登录用户。
+     * 使用当前使用小程序的微信用户身份注册或登录，成功后用户的 session 会在设备上持久化保存，之后可以使用 complexAV.User.current() 获取当前登录用户。
      * 仅在小程序中可用。
      *
      * @since 2.0.0
-     * @return {AV.User}
+     * @return {complexAV.User}
      */
     loginWithWeapp: function loginWithWeapp() {
       var _this5 = this;
@@ -11913,11 +11913,11 @@ module.exports = function (AV) {
     /**
      * Associate a user with a third party auth data(AccessToken).
      *
-     * @param {AV.User} userObj A user which you want to associate.
+     * @param {complexAV.User} userObj A user which you want to associate.
      * @param {string} platform Available platform for sign up.
      * @param {Object} authData The response json data returned from third party token, maybe like { openid: 'abc123', access_token: '123abc', expires_in: 1382686496 }
      * @return {Promise} A promise that is fulfilled with the user when completed.
-     * @example AV.User.associateWithAuthData(loginUser, 'weixin', {
+     * @example complexAV.User.associateWithAuthData(loginUser, 'weixin', {
      *   openid: 'abc123',
      *   access_token: '123abc',
      *   expires_in: 1382686496
@@ -11938,56 +11938,56 @@ module.exports = function (AV) {
      * @return {Promise}
      */
     logOut: function logOut() {
-      if (AV._config.disableCurrentUser) {
-        console.warn('AV.User.current() was disabled in multi-user environment, call logOut() from user object instead https://leancloud.cn/docs/leanengine-node-sdk-upgrade-1.html');
+      if (complexAV._config.disableCurrentUser) {
+        console.warn('complexAV.User.current() was disabled in multi-user environment, call logOut() from user object instead https://leancloud.cn/docs/leanengine-node-sdk-upgrade-1.html');
         return Promise.resolve(null);
       }
 
-      if (AV.User._currentUser !== null) {
-        AV.User._currentUser._logOutWithAll();
-        AV.User._currentUser._isCurrentUser = false;
+      if (complexAV.User._currentUser !== null) {
+        complexAV.User._currentUser._logOutWithAll();
+        complexAV.User._currentUser._isCurrentUser = false;
       }
-      AV.User._currentUserMatchesDisk = true;
-      AV.User._currentUser = null;
-      return AV.localStorage.removeItemAsync(AV._getAVPath(AV.User._CURRENT_USER_KEY));
+      complexAV.User._currentUserMatchesDisk = true;
+      complexAV.User._currentUser = null;
+      return complexAV.localStorage.removeItemAsync(complexAV._getAVPath(complexAV.User._CURRENT_USER_KEY));
     },
 
     /**
      *Create a follower query for special user to query the user's followers.
      * @param {String} userObjectId The user object id.
-     * @return {AV.FriendShipQuery}
+     * @return {complexAV.FriendShipQuery}
      * @since 0.3.0
      */
     followerQuery: function followerQuery(userObjectId) {
       if (!userObjectId || !_.isString(userObjectId)) {
         throw "Invalid user object id.";
       }
-      var query = new AV.FriendShipQuery('_Follower');
+      var query = new complexAV.FriendShipQuery('_Follower');
       query._friendshipTag = 'follower';
-      query.equalTo('user', AV.Object.createWithoutData('_User', userObjectId));
+      query.equalTo('user', complexAV.Object.createWithoutData('_User', userObjectId));
       return query;
     },
 
     /**
      *Create a followee query for special user to query the user's followees.
      * @param {String} userObjectId The user object id.
-     * @return {AV.FriendShipQuery}
+     * @return {complexAV.FriendShipQuery}
      * @since 0.3.0
      */
     followeeQuery: function followeeQuery(userObjectId) {
       if (!userObjectId || !_.isString(userObjectId)) {
         throw "Invalid user object id.";
       }
-      var query = new AV.FriendShipQuery('_Followee');
+      var query = new complexAV.FriendShipQuery('_Followee');
       query._friendshipTag = 'followee';
-      query.equalTo('user', AV.Object.createWithoutData('_User', userObjectId));
+      query.equalTo('user', complexAV.Object.createWithoutData('_User', userObjectId));
       return query;
     },
 
     /**
      * Requests a password reset email to be sent to the specified email address
      * associated with the user account. This email allows the user to securely
-     * reset their password on the AV site.
+     * reset their password on the complexAV site.
      *
      * @param {String} email The email address associated with the user that
      *     forgot their password.
@@ -12002,7 +12002,7 @@ module.exports = function (AV) {
     /**
      * Requests a verify email to be sent to the specified email address
      * associated with the user account. This email allows the user to securely
-     * verify their email address on the AV site.
+     * verify their email address on the complexAV site.
      *
      * @param {String} email The email address associated with the user that
      *     doesn't verify their email address.
@@ -12017,7 +12017,7 @@ module.exports = function (AV) {
     /**
      * Requests a verify sms code to be sent to the specified mobile phone
      * number associated with the user account. This sms code allows the user to
-     * verify their mobile phone number by calling AV.User.verifyMobilePhone
+     * verify their mobile phone number by calling complexAV.User.verifyMobilePhone
      *
      * @param {String} mobilePhone The mobile phone number  associated with the
      *                  user that doesn't verify their mobile phone number.
@@ -12032,7 +12032,7 @@ module.exports = function (AV) {
     /**
      * Requests a reset password sms code to be sent to the specified mobile phone
      * number associated with the user account. This sms code allows the user to
-     * reset their account's password by calling AV.User.resetPasswordBySmsCode
+     * reset their account's password by calling complexAV.User.resetPasswordBySmsCode
      *
      * @param {String} mobilePhone The mobile phone number  associated with the
      *                  user that doesn't verify their mobile phone number.
@@ -12046,8 +12046,8 @@ module.exports = function (AV) {
 
     /**
      * Makes a call to reset user's account password by sms code and new password.
-     * The sms code is sent by AV.User.requestPasswordResetBySmsCode.
-     * @param {String} code The sms code sent by AV.User.Cloud.requestSmsCode
+     * The sms code is sent by complexAV.User.requestPasswordResetBySmsCode.
+     * @param {String} code The sms code sent by complexAV.User.Cloud.requestSmsCode
      * @param {String} password The new password.
      * @return {Promise} A promise that will be resolved with the result
      * of the function.
@@ -12059,9 +12059,9 @@ module.exports = function (AV) {
     },
 
     /**
-     * Makes a call to verify sms code that sent by AV.User.Cloud.requestSmsCode
+     * Makes a call to verify sms code that sent by complexAV.User.Cloud.requestSmsCode
      * If verify successfully,the user mobilePhoneVerified attribute will be true.
-     * @param {String} code The sms code sent by AV.User.Cloud.requestSmsCode
+     * @param {String} code The sms code sent by complexAV.User.Cloud.requestSmsCode
      * @return {Promise} A promise that will be resolved with the result
      * of the function.
      */
@@ -12073,10 +12073,10 @@ module.exports = function (AV) {
     /**
      * Requests a logIn sms code to be sent to the specified mobile phone
      * number associated with the user account. This sms code allows the user to
-     * login by AV.User.logInWithMobilePhoneSmsCode function.
+     * login by complexAV.User.logInWithMobilePhoneSmsCode function.
      *
      * @param {String} mobilePhone The mobile phone number  associated with the
-     *           user that want to login by AV.User.logInWithMobilePhoneSmsCode
+     *           user that want to login by complexAV.User.logInWithMobilePhoneSmsCode
      * @return {Promise}
      */
     requestLoginSmsCode: function requestLoginSmsCode(mobilePhone) {
@@ -12088,92 +12088,92 @@ module.exports = function (AV) {
     /**
      * Retrieves the currently logged in AVUser with a valid session,
      * either from memory or localStorage, if necessary.
-     * @return {Promise.<AV.User>} resolved with the currently logged in AV.User.
+     * @return {Promise.<complexAV.User>} resolved with the currently logged in complexAV.User.
      */
     currentAsync: function currentAsync() {
-      if (AV._config.disableCurrentUser) {
-        console.warn('AV.User.currentAsync() was disabled in multi-user environment, access user from request instead https://leancloud.cn/docs/leanengine-node-sdk-upgrade-1.html');
+      if (complexAV._config.disableCurrentUser) {
+        console.warn('complexAV.User.currentAsync() was disabled in multi-user environment, access user from request instead https://leancloud.cn/docs/leanengine-node-sdk-upgrade-1.html');
         return Promise.resolve(null);
       }
 
-      if (AV.User._currentUser) {
-        return Promise.resolve(AV.User._currentUser);
+      if (complexAV.User._currentUser) {
+        return Promise.resolve(complexAV.User._currentUser);
       }
 
-      if (AV.User._currentUserMatchesDisk) {
+      if (complexAV.User._currentUserMatchesDisk) {
 
-        return Promise.resolve(AV.User._currentUser);
+        return Promise.resolve(complexAV.User._currentUser);
       }
 
-      return AV.localStorage.getItemAsync(AV._getAVPath(AV.User._CURRENT_USER_KEY)).then(function (userData) {
+      return complexAV.localStorage.getItemAsync(complexAV._getAVPath(complexAV.User._CURRENT_USER_KEY)).then(function (userData) {
         if (!userData) {
           return null;
         }
 
         // Load the user from local storage.
-        AV.User._currentUserMatchesDisk = true;
+        complexAV.User._currentUserMatchesDisk = true;
 
-        AV.User._currentUser = AV.Object._create("_User");
-        AV.User._currentUser._isCurrentUser = true;
+        complexAV.User._currentUser = complexAV.Object._create("_User");
+        complexAV.User._currentUser._isCurrentUser = true;
 
         var json = JSON.parse(userData);
-        AV.User._currentUser.id = json._id;
+        complexAV.User._currentUser.id = json._id;
         delete json._id;
-        AV.User._currentUser._sessionToken = json._sessionToken;
+        complexAV.User._currentUser._sessionToken = json._sessionToken;
         delete json._sessionToken;
-        AV.User._currentUser._finishFetch(json);
-        //AV.User._currentUser.set(json);
+        complexAV.User._currentUser._finishFetch(json);
+        //complexAV.User._currentUser.set(json);
 
-        AV.User._currentUser._synchronizeAllAuthData();
-        AV.User._currentUser._refreshCache();
-        AV.User._currentUser._opSetQueue = [{}];
-        return AV.User._currentUser;
+        complexAV.User._currentUser._synchronizeAllAuthData();
+        complexAV.User._currentUser._refreshCache();
+        complexAV.User._currentUser._opSetQueue = [{}];
+        return complexAV.User._currentUser;
       });
     },
 
     /**
      * Retrieves the currently logged in AVUser with a valid session,
      * either from memory or localStorage, if necessary.
-     * @return {AV.User} The currently logged in AV.User.
+     * @return {complexAV.User} The currently logged in complexAV.User.
      */
     current: function current() {
-      if (AV._config.disableCurrentUser) {
-        console.warn('AV.User.current() was disabled in multi-user environment, access user from request instead https://leancloud.cn/docs/leanengine-node-sdk-upgrade-1.html');
+      if (complexAV._config.disableCurrentUser) {
+        console.warn('complexAV.User.current() was disabled in multi-user environment, access user from request instead https://leancloud.cn/docs/leanengine-node-sdk-upgrade-1.html');
         return null;
       }
 
-      if (AV.User._currentUser) {
-        return AV.User._currentUser;
+      if (complexAV.User._currentUser) {
+        return complexAV.User._currentUser;
       }
 
-      if (AV.User._currentUserMatchesDisk) {
+      if (complexAV.User._currentUserMatchesDisk) {
 
-        return AV.User._currentUser;
+        return complexAV.User._currentUser;
       }
 
       // Load the user from local storage.
-      AV.User._currentUserMatchesDisk = true;
+      complexAV.User._currentUserMatchesDisk = true;
 
-      var userData = AV.localStorage.getItem(AV._getAVPath(AV.User._CURRENT_USER_KEY));
+      var userData = complexAV.localStorage.getItem(complexAV._getAVPath(complexAV.User._CURRENT_USER_KEY));
       if (!userData) {
 
         return null;
       }
-      AV.User._currentUser = AV.Object._create("_User");
-      AV.User._currentUser._isCurrentUser = true;
+      complexAV.User._currentUser = complexAV.Object._create("_User");
+      complexAV.User._currentUser._isCurrentUser = true;
 
       var json = JSON.parse(userData);
-      AV.User._currentUser.id = json._id;
+      complexAV.User._currentUser.id = json._id;
       delete json._id;
-      AV.User._currentUser._sessionToken = json._sessionToken;
+      complexAV.User._currentUser._sessionToken = json._sessionToken;
       delete json._sessionToken;
-      AV.User._currentUser._finishFetch(json);
-      //AV.User._currentUser.set(json);
+      complexAV.User._currentUser._finishFetch(json);
+      //complexAV.User._currentUser.set(json);
 
-      AV.User._currentUser._synchronizeAllAuthData();
-      AV.User._currentUser._refreshCache();
-      AV.User._currentUser._opSetQueue = [{}];
-      return AV.User._currentUser;
+      complexAV.User._currentUser._synchronizeAllAuthData();
+      complexAV.User._currentUser._refreshCache();
+      complexAV.User._currentUser._opSetQueue = [{}];
+      return complexAV.User._currentUser;
     },
 
     /**
@@ -12182,34 +12182,34 @@ module.exports = function (AV) {
      */
     _saveCurrentUser: function _saveCurrentUser(user) {
       var promise;
-      if (AV.User._currentUser !== user) {
-        promise = AV.User.logOut();
+      if (complexAV.User._currentUser !== user) {
+        promise = complexAV.User.logOut();
       } else {
         promise = Promise.resolve();
       }
       return promise.then(function () {
         user._isCurrentUser = true;
-        AV.User._currentUser = user;
+        complexAV.User._currentUser = user;
 
         var json = user.toJSON();
         json._id = user.id;
         json._sessionToken = user._sessionToken;
-        return AV.localStorage.setItemAsync(AV._getAVPath(AV.User._CURRENT_USER_KEY), JSON.stringify(json)).then(function () {
-          AV.User._currentUserMatchesDisk = true;
+        return complexAV.localStorage.setItemAsync(complexAV._getAVPath(complexAV.User._CURRENT_USER_KEY), JSON.stringify(json)).then(function () {
+          complexAV.User._currentUserMatchesDisk = true;
         });
       });
     },
 
     _registerAuthenticationProvider: function _registerAuthenticationProvider(provider) {
-      AV.User._authProviders[provider.getAuthType()] = provider;
+      complexAV.User._authProviders[provider.getAuthType()] = provider;
       // Synchronize the current user with the auth provider.
-      if (!AV._config.disableCurrentUser && AV.User.current()) {
-        AV.User.current()._synchronizeAuthData(provider.getAuthType());
+      if (!complexAV._config.disableCurrentUser && complexAV.User.current()) {
+        complexAV.User.current()._synchronizeAuthData(provider.getAuthType());
       }
     },
 
     _logInWith: function _logInWith(provider, options) {
-      var user = AV.Object._create("_User");
+      var user = complexAV.Object._create("_User");
       return user._linkWith(provider, options);
     }
 

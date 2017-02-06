@@ -5,8 +5,6 @@
   align-items: center;
 }
 
-
-
 .userinfo-avatar {
   width: 128rpx;
   height: 128rpx;

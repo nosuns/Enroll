@@ -1,4 +1,6 @@
-const AV = require('./libs/leancloud-storage');
+const complexAV = require('./libs/leancloud-storage');
+const AV = require('./libs/av-weapp-min');
+
 
 App({
   onLaunch: function () {
@@ -6,12 +8,18 @@ App({
     appId: 'uzAcOWCdWIPdbXWFzkR9Rpbg-gzGzoHsz', 
     appKey: '9Rtj5cumncTkXyk2tUXB3cPD', 
       });
-
-      
     AV.User.loginWithWeapp().then(user => {
         this.globalData.user = user.toJSON();
     }).catch(console.error);
 
+
+    complexAV.init({ 
+    appId: 'uzAcOWCdWIPdbXWFzkR9Rpbg-gzGzoHsz', 
+    appKey: '9Rtj5cumncTkXyk2tUXB3cPD', 
+      });
+    complexAV.User.loginWithWeapp().then(user => {
+        this.globalData.user = user.toJSON();
+    }).catch(console.error);
 
     //调用API从本地缓存中获取数据
     var logs = wx.getStorageSync('logs') || []

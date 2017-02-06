@@ -1,1 +1,11 @@
-{}
+{  
+"tabBar": {
+    "list": [{
+      "pagePath": "index",
+      "text": "首页"
+    },{
+      "pagePath": "other",
+      "text": "其他"
+    }]
+  }
+}

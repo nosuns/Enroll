@@ -1,28 +1,25 @@
+const {Object, User, Query} = require('../../libs/leancloud-storage');
+const AV = require('../../libs/av-weapp-min');
+
 // pages/userlist/userlist.js
 var app = getApp()
 
 Page({
   data: {
-    userNote: '',
-    meetingID: '1234',
-    userNum: '',
-    userID: '',
-
-    userInfo: {}
+    members:[],
   },
 
-  onLoad: function(options) {
-    if (options && options.id) {
-      new Query('userList').get(options.id).then( booklist => {
-        this.setData({
-          objectId: booklist.id,
-          title: booklist.get('title'),
-          books: booklist.get('books')
-        });
-      }).catch(console.error);
-    };
+  onReady: function() {
+    new AV.Query('Members')
+      .descending('createdAt')
+      .find()
+      .then(members => this.setData({ members }))
+      .catch(console.error);
+      
+    
+  },
 
-
+  onLoad: function() {
     var that = this
     //调用应用实例的方法获取全局数据
     app.getUserInfo(function(userInfo){
@@ -33,9 +30,7 @@ Page({
     })
   },
 
-  onReady:function(){
-    // 页面渲染完成
-  },
+
   onShow:function(){
     // 页面显示
   },

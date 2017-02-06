@@ -62,7 +62,7 @@ showTopTips: function(msg){
 
   onSubmit: function() {
     if (this.data.userNote) {
-      new Object('userList').save({
+      new Object('Members').save({
         userID: User.current(),
         meetingID:1234,
         userNum: this.data.userNum,
