@@ -7,6 +7,8 @@ Page({
     userNum: 1,
     userNote: '',
     error: null,
+    userNickname:'',
+    userAvatar:'',
     },
 
 // 更新2个input框里的数据
@@ -44,6 +46,10 @@ showTopTips: function(msg){
         this.setData({
       authur: User.current()
     });
+
+
+
+
   },
 
   onReady:function(){
@@ -61,12 +67,15 @@ showTopTips: function(msg){
 
 
   onSubmit: function() {
+
     if (this.data.userNote) {
       new Object('Members').save({
         userID: User.current(),
         meetingID:1234,
         userNum: this.data.userNum,
         userNote: this.data.userNote,
+        userNickname: userInfo.nickName,
+        userAvatar: userInfo.avatarUrl,
       }).then( () => {
         wx.showToast({
           title: '报名成功',

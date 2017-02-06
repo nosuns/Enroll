@@ -16,7 +16,7 @@
             <image class="weui-userinfo-avatar" src="{{userInfo.avatarUrl}}"/>
         </view>
         <view class="weui-cell__bd">
-            <view>{{member.userID}}</view>
+            <view>{{userinfo.nickName}}{{member.userID.objectId}}</view>
             <view style="font-size: 13px;color: #888888;">{{member.userNote}}</view>
         </view>
         <view class="weui-cell__ft">{{member.userNum}}人</view>
