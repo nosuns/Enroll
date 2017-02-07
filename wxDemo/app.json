@@ -1,8 +1,11 @@
 {
   "pages": [
-    "pages/userlist/userlist",
 
     "pages/index/index",
+    "pages/enroll/enroll",
+
+    "pages/userlist/userlist",
+
     "pages/join/confirm",
 
     "example/index",
@@ -49,34 +52,5 @@
     "uploadFile": 10000,
     "downloadFile": 10000
   },
-
-"tabBar": {
-    "color": "#000",
-    "selectedColor": "#7acfa6",
-    "backgroundColor": "#f8f8f8",
-    "list": [{
-      "pagePath": "pages/index/index",
-      "iconPath": "example/images/icon_nav_form.png",
-      "selectedIconPath": "example/images/icon_nav_form.png",
-      "text": "首页"
-    },{
-      "pagePath": "pages/join/confirm",
-      "iconPath": "example/images/icon_nav_widget.png",
-      "selectedIconPath": "example/images/icon_nav_widget.png",
-      "text": "输入信息"
-    },{
-      "pagePath": "pages/userlist/userlist",
-      "iconPath": "example/images/icon_nav_search.png",
-      "selectedIconPath": "example/images/icon_nav_search.png",
-      "text": "查看名单"
-    },{
-      "pagePath": "example/index",
-      "iconPath": "example/images/icon_nav_nav.png",
-      "selectedIconPath": "example/images/icon_nav_nav.png",
-      "text": "参考示例"
-    }]
-  },
-
-
   "debug": true
 }

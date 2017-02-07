@@ -1,0 +1,40 @@
+<!--<view class="page">-->
+
+    <view class="page__hd">
+        <view class="page__title">
+            <text>请输入你的报名信息</text>
+        </view>
+    </view>
+    <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">{{ errMsg }}</view>
+   
+    <form bindsubmit="formSubmit">
+        <view class="page__bd">
+                <!--<view class="weui-cells weui-cells_after-title">-->
+                    <view class="weui-cell weui-cell_input">
+                            <view class="weui-cell__hd">
+                                <view class="weui-label">人数</view>
+                            </view>
+                            <view class="weui-cell__bd">
+                                <input id="userNum" bindinput="update_userNum" class="weui-input" placeholder="有几人参加" type="number" maxlength="2" auto-focus/>
+                            </view>
+                    </view>
+                    <view class="weui-cell weui-cell_input">
+                            <view class="weui-cell__hd">
+                                <view class="weui-label">备注</view>
+                            </view>
+                            <view class="weui-cell__bd">
+                                <input id="userNote" bindinput="update_userNote" class="weui-input" placeholder="真实姓名或其他补充信息"  maxlength="30"/>
+                            </view>
+                    </view>
+                    <view class="weui-cell weui-cell_input"></view>
+                <!--</view>-->
+        </view>
+
+        <view class="weui-btn-area">
+            <button  ontap='onSubmit' formType="submit" class="weui-btn" type="primary" disabled="{{!(userNum)|!(userNote)}}">确认报名</button>
+        </view>
+    </form>
+
+<!--</view>-->
+
+    
