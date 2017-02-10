@@ -4,7 +4,8 @@ const AV = require('../../libs/av-weapp-min');
 Page({
   data: {
     userInfo: {},
-    enrolled:'0',
+    enrolled:'0', 
+    copyright:"Copyright © 2017 Nople Studio",
   },
   //事件处理函数
   bindViewTap: function() {

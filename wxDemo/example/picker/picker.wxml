@@ -14,6 +14,9 @@
             <picker class="weui-btn" mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
                 <button type="default">日期选择器</button>
             </picker>
+
         </view>
-    </view>
+        </view>
+
+
 </view>

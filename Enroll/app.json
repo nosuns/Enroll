@@ -1,6 +1,7 @@
 {
   "pages": [
 
+    "pages/test/picker",
     "pages/index/index",
     "pages/enroll/enroll",
     "pages/userlist/userlist"

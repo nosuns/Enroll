@@ -1,14 +1,25 @@
 {
   "pages": [
-
     "pages/index/index",
-    "pages/enroll/enroll",
-
-    "pages/userlist/userlist",
-
-    "pages/join/confirm",
 
     "example/index",
+
+    "pages/info/info",
+
+    
+    "pages/success/success",
+
+    
+    "example/picker/picker",
+    "pages/enroll/enroll",
+
+
+    "pages/create/create",
+    
+
+    
+    "pages/userlist/userlist",
+
     "example/button/button",
     "example/list/list",
     "example/input/input",
@@ -32,7 +43,6 @@
     "example/msg/msg",
     "example/msg/msg_success",
     "example/msg/msg_fail",
-    "example/picker/picker",
     "example/toast/toast",
 
     "example/navbar/navbar",

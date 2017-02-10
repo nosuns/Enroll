@@ -1,0 +1,90 @@
+<view style="background-color: #ececec;">
+
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="聚会主题" maxlength="20"/>
+                </view>
+            </view>
+            <view class="weui-cells">
+                <view class="weui-cell">
+                    <view class="weui-cell__bd">
+                        <textarea class="weui-textarea" placeholder="补充信息" style="height: 3.3em" maxlength="100"/>
+                        <view class="weui-textarea-counter">0/100</view>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="weui-spacing"></view>
+
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell weui-cell_switch">
+                <view class="weui-cell__bd">全天</view>
+                <view class="weui-cell__ft">
+                <switch checked bindchange="switchChange"/>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_access">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">开始日期</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
+                        <view class="weui-cell__ft weui-cell__ft_in">{{date}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_access">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">开始时间</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker mode="time" value="{{time}}" start="09:01" end="21:01" bindchange="bindTimeChange">
+                        <view class="weui-cell__ft weui-cell__ft_in">{{time}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_access">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">结束日期</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01" bindchange="bindDateChange">
+                        <view class="weui-cell__ft weui-cell__ft_in">{{date}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_access">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">结束时间</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker mode="time" value="{{time}}" start="09:01" end="21:01" bindchange="bindTimeChange">
+                        <view class="weui-cell__ft weui-cell__ft_in">{{time}}</view>
+                    </picker>
+                </view>
+            </view>
+        </view>
+
+
+        <view class="weui-spacing"></view>
+
+        <view class="weui-cells weui-cells_after-title">
+
+             <view class="weui-cell weui-cell_access">
+                <view class="weui-cell__bd">
+                    <view style="display: inline-block; vertical-align: middle">聚会地点</view>
+                </view>
+                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </view>
+        </view>
+        
+        <view class="weui-spacing"> </view>
+        <view class="weui-spacing"> </view>
+        <view class="weui-spacing"> </view>
+
+        <view class="weui-btn-area">
+            <button  ontap='onSubmit' formType="submit" class="weui-btn" type="primary" disabled="{{!(userNum)|!(userNote)}}">发起聚会</button>
+        </view>
+</view>

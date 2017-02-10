@@ -1,0 +1,69 @@
+<view class="page">
+       
+<view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell">
+        <view class="weui-cell__bd">
+            <view>自驾游第第13期间</view>
+        </view>
+        <view class="weui-cell__ft">
+            <button class="weui-btn mini-btn" type="primary" size="mini" plain="true" style="display: inline-block; vertical-align: middle;">修改信息</button>
+        </view>
+    </view>    
+
+    <view class="weui-cellnoline">       
+        <view class="weui-cell__hd">
+            <image class="weui-userinfo-avatar-mini" style="display: inline-block; vertical-align: middle;" src="http://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIzGH0DW72Ugm3d36icAVqnKknoaGG4KG1HnC4HUorNa6anWX3n32kv0rv6tIsPjad1Gl4E9QUqIRw/0"/>
+        </view>
+        <view class="weui-cell__bd">
+            <view style="display: inline-block; vertical-align: middle; color:#999999; font-size:26rpx;">发起人名称</view>
+            <view class="weui-badge_grey" style="margin-left: 5px;">发起人</view>
+        
+        </view>
+    </view>
+
+    <view class="weui-cellnoline">     
+        <view class="weui-cell__hd">
+              <view class="weui-article__h3">2016年8月18日(星期四) 09:00-18:00</view>
+              <view class="weui-article__h3">地点：北京天安门广场  北京市东城区东长安街</view>
+        </view>      
+    </view>
+    <view class="weui-cell">     
+        <view class="weui-cell__hd">
+              <view class="weui-article__h3">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</view>
+        </view>      
+    </view>          
+</view>
+    
+    <view class="weui-spacing"></view>
+
+    <view class="weui-cells weui-cells_after-title">
+
+            <view class="weui-cell weui-cell_access">
+            <view class="weui-cell__bd">
+                <view style="display: inline-block; vertical-align: middle">已报名</view>
+            </view>
+            <view class="weui-cell__ft weui-cell__ft_in-access">13人</view>
+        </view>
+    </view>
+
+    <view class="weui-spacing"></view>
+    <view class="weui-cells weui-cells_after-title" style="padding:30rpx;">
+        <view  style="border:1rpx solid #D9D9D9;  border-radius: 3rpx;">
+            <map id="map"  longitude="113.324520" latitude="23.099994" scale="14" controls="{{controls}}" bindcontroltap="controltap" markers="{{markers}}" bindmarkertap="markertap" polyline="{{polyline}}" bindregionchange="regionchange" show-location style="width: 100%; height: 300px;"></map>
+        </view>    
+    </view>
+
+
+</view>
+
+<view class="weui-footer-btn">
+    <view class="weui-footer_fixed-bottom">
+        <view class="weui-btn-area">
+            <button class="weui-btn" type="primary">报名参加</button>
+            <!--<button class="weui-btn" type="default">辅助操作</button>-->
+        </view>
+    </view>
+</view>

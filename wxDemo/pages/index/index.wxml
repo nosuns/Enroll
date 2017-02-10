@@ -23,12 +23,35 @@
           <button type="primary"  class="weui-btn">查看已报名人员</button>
       </navigator>
     </view>  
+    
+    
+    <view class="weui-btn-area">
+      <navigator url="../info/info">
+          <button type="default"  class="weui-btn">聚会介绍</button>
+      </navigator>
+    </view>  
+    <view class="weui-btn-area">
+      <navigator url="../success/success">
+          <button type="default"  class="weui-btn">报名成功</button>
+      </navigator>
+    </view>  
 
   </view>
   <view class="weui-footer">
     <view class="weui-footer_fixed-bottom">
-        <text>八达自驾报名工具 内部测试版</text>
+        <text>{{copyright}}</text>
     </view>
   </view>
+</view>
+
+
+<view class="weui-footer-btn">
+    <view class="weui-footer_fixed-bottom">
+        <view class="weui-btn-area">
+            <navigator url="../create/create">
+              <button class="weui-btn" type="primary">发起聚会</button>
+            </navigator>
+        </view>
+    </view>
 </view>
 

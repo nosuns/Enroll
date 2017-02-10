@@ -1,8 +1,8 @@
 // const complexAV = require('./libs/leancloud-storage');
 const AV = require('./libs/av-weapp-min');
 
-
 App({
+
   onLaunch: function () {
     AV.init({ 
     appId: 'uzAcOWCdWIPdbXWFzkR9Rpbg-gzGzoHsz', 
@@ -48,6 +48,7 @@ App({
     }
   },
   globalData:{
-    userInfo:null
+    userInfo:null,
+
   }
 });

@@ -8,7 +8,8 @@ Page({
   data: {
     members:{ },
     userinfo:[],
-    uid:'587c67fe1b69e6006bf31ff9',
+    usercount:'',
+    peoplecount:'',
   },
 
 
