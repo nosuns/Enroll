@@ -9,8 +9,10 @@
         </view>
         <view class="weui-msg__opr-area">
             <view class="weui-btn-area">
-                <button class="weui-btn" type="primary">确认</button>
-                <!--<button class="weui-btn" type="default">辅助操作</button>-->
+                <navigator url="../info/info">
+                    <button class="weui-btn" type="primary">报名参加</button>
+                    <!--<button class="weui-btn" type="default">辅助操作</button>-->
+                </navigator>
             </view>
         </view>
         <view class="weui-msg__extra-area">

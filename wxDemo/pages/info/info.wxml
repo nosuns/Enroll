@@ -41,12 +41,14 @@
 
     <view class="weui-cells weui-cells_after-title">
 
+        <navigator url="../userlist/userlist">
             <view class="weui-cell weui-cell_access">
-            <view class="weui-cell__bd">
-                <view style="display: inline-block; vertical-align: middle">已报名</view>
+                <view class="weui-cell__bd">
+                    <view style="display: inline-block; vertical-align: middle">已报名</view>
+                </view>
+                <view class="weui-cell__ft weui-cell__ft_in-access">13人</view>
             </view>
-            <view class="weui-cell__ft weui-cell__ft_in-access">13人</view>
-        </view>
+        </navigator>
     </view>
 
     <view class="weui-spacing"></view>
@@ -62,8 +64,10 @@
 <view class="weui-footer-btn">
     <view class="weui-footer_fixed-bottom">
         <view class="weui-btn-area">
-            <button class="weui-btn" type="primary">报名参加</button>
-            <!--<button class="weui-btn" type="default">辅助操作</button>-->
+            <navigator url="../enroll/enroll">
+                <button class="weui-btn" type="primary">报名参加</button>
+                <!--<button class="weui-btn" type="default">辅助操作</button>-->
+            </navigator>
         </view>
     </view>
 </view>

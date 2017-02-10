@@ -93,13 +93,13 @@ Page({
     members.set('userNickname', this.data.userNickname);
     members.set('userAvatar', this.data.userAvatar);
     members.save().then( () => {
-        wx.showToast({
-          title: '报名成功',
-          icon: 'success',
-        });
+        // wx.showToast({
+        //   title: '报名成功',
+        //   icon: 'success',
+        // });
         setTimeout(function(){
           wx.navigateTo({
-          url: '../../pages/index/index'
+          url: '../../pages/success/success'
           });
         }, 1200); 
      }, function (error) {
