@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/location/location",
 
     "example/index",
 
@@ -8,16 +9,10 @@
 
     
     "pages/success/success",
-
-    
+     
     "example/picker/picker",
     "pages/enroll/enroll",
-
-
-    "pages/create/create",
-    
-
-    
+    "pages/create/create",      
     "pages/userlist/userlist",
 
     "example/button/button",

@@ -35,7 +35,12 @@
           <button type="default"  class="weui-btn">报名成功</button>
       </navigator>
     </view>  
-
+    <view class="weui-btn-area">
+      <navigator url="../../example/index">
+          <button type="default"  class="weui-btn">参考示例</button>
+      </navigator>
+    </view>  
+    
   </view>
   <view class="weui-footer">
     <view class="weui-footer_fixed-bottom">

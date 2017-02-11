@@ -1017,7 +1017,7 @@ icon {
 .weui-search-bar__text {
   display: inline-block;
   font-size: 14px;
-  vertical-align: middle;
+  /*vertical-align: middle;*/
 }
 .weui-search-bar__form {
   position: relative;
