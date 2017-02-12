@@ -7,12 +7,6 @@ Page({
     enrolled:'0', 
     copyright:"Copyright © 2017 Nople Studio",
   },
-  //事件处理函数
-  bindViewTap: function() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
-  },
 
   onShareAppMessage: function () {
     return {
@@ -24,23 +18,28 @@ Page({
 
   onLoad: function () {
     console.log('onLoad')
-    var that = this
+    // var that = this
     //调用应用实例的方法获取全局数据
-    app.getUserInfo(function(userInfo){
-      //更新数据
-      that.setData({
-        userInfo:userInfo
-      })
+    // app.getUserInfo(function(userInfo){
+    //   //更新数据
+    //   that.setData({
+    //     userInfo:userInfo
+    //   })
+    // })
+    var user = AV.User.current();
+    this.setData({
+      userInfo: user
     })
+    
 
-     new AV.Query('Members')
-      .equalTo('userID',AV.User.current())
-      .count()
-      .then(enrolled => {
-        this.setData({ enrolled });
-      })
-      .catch(console.error); 
-
+    //  new AV.Query('Members')
+    //   .equalTo('userID',AV.User.current())
+    //   .count()
+    //   .then(enrolled => {
+    //     this.setData({ enrolled });
+    //   })
+    //   .catch(console.error); 
 
   }
+
 })

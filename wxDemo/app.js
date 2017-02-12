@@ -1,34 +1,36 @@
-// const complexAV = require('./libs/leancloud-storage');
 const AV = require('./libs/av-weapp-min');
 
 App({
 
   onLaunch: function () {
     AV.init({ 
-    appId: 'uzAcOWCdWIPdbXWFzkR9Rpbg-gzGzoHsz', 
-    appKey: '9Rtj5cumncTkXyk2tUXB3cPD', 
-      });
+    // appId: 'uzAcOWCdWIPdbXWFzkR9Rpbg-gzGzoHsz', 
+    // appKey: '9Rtj5cumncTkXyk2tUXB3cPD',
+      appId: 'BvrDHualRFTEUJRX9BIv5YET-gzGzoHsz',
+      appKey: 'gIYca9nAlvsqzsmPXH7squpX' 
+    });
 
-    // AV.User.loginWithWeapp().then(user => {
-    //     this.globalData.user = user.toJSON();
-    // }).catch(console.error);
+    // 调用leanCloud登录接口
+    AV.User.loginWithWeapp().then(user => {
+      this.globalData.leanUser = user.toJSON();
+      console.log(this.globalData.leanUser)
+    }).catch(console.error);
 
-
-  //   complexAV.init({ 
-  //   appId: 'uzAcOWCdWIPdbXWFzkR9Rpbg-gzGzoHsz', 
-  //   appKey: '9Rtj5cumncTkXyk2tUXB3cPD', 
-  //     });
-  //   complexAV.User.loginWithWeapp().then(user => {
-  //       this.globalData.user = user.toJSON();
-  //   }).catch(console.error);
-
-    // 调用API从本地缓存中获取数据
-    // var logs = wx.getStorageSync('logs') || []
-    // logs.unshift(Date.now())
-    // wx.setStorageSync('logs', logs)
+    // 获得当前登录用户
+    var user = AV.User.current();
+    // 调用小程序API，得到用户信息
+    wx.getUserInfo({
+      success: ({userInfo}) => {
+        // 更新当前用户的信息
+        user.set(userInfo).save().then(user => {
+          // 成功，此时可在控制台中看到更新后的用户信息
+          this.globalData.leanUser = user.toJSON();
+        }).catch(console.error);
+      }
+    });
   },
 
-  
+  // 获取微信用户信息 
   getUserInfo:function(cb){
     var that = this
     if(this.globalData.userInfo){
@@ -48,7 +50,7 @@ App({
     }
   },
   globalData:{
-    userInfo:null,
-
+    userInfo: null,
+    leanUser: null
   }
 });

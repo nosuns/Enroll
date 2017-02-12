@@ -1,60 +1,56 @@
 const AV = require('../../libs/av-weapp-min');
-
-// pages/userlist/userlist.js
-var app = getApp();
-var meetingID = 1234;
+var tempList = [];
+var totalNumber = 0;
+var groupNumber = 0;
 
 Page({
   data: {
-    members:{ },
-    userinfo:[],
-    uid:'587c67fe1b69e6006bf31ff9',
+    enrollList: [],
+    sum: 0,
+    count: 0,
   },
 
-
-
   onReady: function() {
-    new AV.Query('Members')
-      .equalTo('meetingID',meetingID)
-      .descending('createdAt')
-      .find()
-      .then(members => {
-        this.setData({ members });
-         
-        // new AV.Query('_User')
-        //   .equalTo('objectId','0CN587d8e5a128fe1006b095143')
-        //   .find()
-        //   .then(userinfo => {
-        //     this.setData({ userinfo });
-        //   })
-        //   .catch(console.error);
+    // new AV.Query('Members')
+    //   .equalTo('meetingID',meetingID)
+    //   .descending('createdAt')
+    //   .find()
+    //   .then(members => {
+    //     this.setData({ members });
+    //   }).catch(console.error);
+    
+    var that = this;
+    // 获取当前的活动
+    var currentCampaign = AV.Object.createWithoutData('Campaign', '58a048fe8d6d81006c99a5d6');
+    // 查询该活动下所有已报名的人员
+    var campaignQuery = new AV.Query('Enroll');
+    campaignQuery.equalTo('campaign', currentCampaign);
+    var isEnrollQuery = new AV.Query('Enroll');
+    isEnrollQuery.equalTo('isEnroll', 1);
+    var query = AV.Query.and(campaignQuery, isEnrollQuery);
+    query.include('user');
+    query.find().then(function(enrollList) {
+      // 遍历每一条报名信息，查出用户信息
+      enrollList.forEach(function(enroll, i, a){
+        tempList[i] = {'objectId': enroll.get('objectId'),
+                       'nickName': enroll.get('user').get('nickName'),
+                       'avatarUrl': enroll.get('user').get('avatarUrl'),
+                       'number': enroll.get('number'),
+                       'note': enroll.get('note')}
+        totalNumber = totalNumber + enroll.get('number');
+        groupNumber = groupNumber + 1;
+      });
 
-      })
-      .catch(console.error);
-
-    // var GuangDong = AV.Object.createWithoutData('objectId', '587c67fe1b69e6006bf31ff9');
-    // var query = new AV.Query('_User');
-    // query.equalTo('dependent', GuangDong);
-    // query.find().then(function (userinfo) {
-    //     userinfo.forEach(function (nickName, avatarUrl) {
-    //         console.log(city.id);
-    //     });
-    // });
+      that.setData({enrollList: tempList, 
+                    sum: parseInt(totalNumber, 10), 
+                    count: groupNumber});
+    }).catch(console.error);
 
   },
 
   onLoad: function() {
-    // var that = this
-    // //调用应用实例的方法获取全局数据
-    // app.getUserInfo(function(userInfo){
-    //   //更新数据
-    //   that.setData({
-    //     userInfo:userInfo
-    //   })
-    // })
+    // 页面加载
   },
-
-
   onShow:function(){
     // 页面显示
   },
