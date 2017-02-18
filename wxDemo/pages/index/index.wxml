@@ -11,11 +11,49 @@
             </view>
             <view class="weui-tab__panel">
                 <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
+
                     <view class="weui-cells weui-cells_after-title">
                         <!--<block wx:for="{{enrollList}}" wx:for-item="enroll" wx:key="objectId">-->
                         <view class="weui-cell weui-cell_access">
                             <view class="weui-cell__bd">
-                                <view class="weui-badge_green" style="margin-right: 5px;">发起人</view><view style="display: inline-block; vertical-align: middle;">自驾游第13期</view>
+                                <view class="weui-badge_green" style="margin-right: 5px;">发起人</view>
+                                <view style="display: inline-block; vertical-align: middle;">我参加的聚会</view>
+                                
+                                <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
+                                <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
+                            </view>
+                            <view class="weui-cell__ft" style="color:#000">13人</view>
+                        </view>      
+                        <!--</block>-->
+                        <view class="weui-cell weui-cell_access">
+                            <view class="weui-cell__bd">
+                                <view style="display: inline-block; vertical-align: middle;">我参加的聚会</view>
+                                
+                                <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
+                                <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
+                            </view>
+                            <view class="weui-cell__ft" style="color:#000">13人</view>
+                        </view>     
+                        <view class="weui-cell weui-cell_access">
+                            <view class="weui-cell__bd">
+                                <view class="weui-badge_grey" style="margin-right: 5px;">发起人</view>
+                                <view style="display: inline-block; vertical-align: middle; color:#999999">我参加的聚会（已结束）</view>
+                                
+                                <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
+                                <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
+                            </view>
+                            <view class="weui-cell__ft" style="color:#000">13人</view>
+                        </view>    
+                    </view>
+
+                </view>
+                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+                    <view class="weui-cells weui-cells_after-title">
+                        <!--<block wx:for="{{enrollList}}" wx:for-item="enroll" wx:key="objectId">-->
+                        <view class="weui-cell weui-cell_access">
+                            <view class="weui-cell__bd">
+                                <view class="weui-badge_green" style="margin-right: 5px;">发起人</view>
+                                <view style="display: inline-block; vertical-align: middle;">我发起的聚会</view>
                                 
                                 <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
                                 <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
@@ -25,11 +63,50 @@
                         <!--</block>-->
                     </view>
                 </view>
-                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">选项二的内容</view>
+
+<!--测试链接的的TAB页 -- Start-->
+                <view class="weui-tab__content" hidden="{{activeIndex != 2}}">
+                  <view class="weui-btn-area">
+                    <navigator url="../enroll/enroll">
+                        <button type="primary"  class="weui-btn" disabled="{{(enrolled!=0)}}">报名参加</button>
+                    </navigator>
+                  </view>  
+
+                  <view class="weui-btn-area">
+                    <navigator url="../userlist/userlist">
+                        <button type="primary"  class="weui-btn">查看已报名人员</button>
+                    </navigator>
+                  </view>  
+                  
+                  
+                  <view class="weui-btn-area">
+                    <navigator url="../info/info">
+                        <button type="default"  class="weui-btn">聚会介绍</button>
+                    </navigator>
+                  </view>  
+                  <view class="weui-btn-area">
+                    <navigator url="../success/success">
+                        <button type="default"  class="weui-btn">报名成功</button>
+                    </navigator>
+                  </view>  
+                  <view class="weui-btn-area">
+                    <navigator url="../../example/index">
+                        <button type="default"  class="weui-btn">参考示例</button>
+                    </navigator>
+                  </view>  
+                </view>
+<!--测试链接的的TAB页 -- End-->
+
+
             </view>
         </view>
     </view>
 </view>
+
+ 
+    
+
+
 <view class="weui-footer-btn">
     <view class="weui-footer_fixed-bottom">
         <view class="weui-btn-area">

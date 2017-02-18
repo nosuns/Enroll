@@ -7,7 +7,7 @@ Page({
     userInfo: {},
     enrolled:'0', 
     copyright:"Copyright © 2017 Nople Studio",
-    tabs: ["我参加的聚会", "我发起的聚会"],
+    tabs: ["我参加的聚会", "我发起的聚会","测试链接"],
     activeIndex: "0",
     sliderOffset: 0,
     sliderLeft: 0
