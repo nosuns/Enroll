@@ -18,26 +18,13 @@
             <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
         </view>
         <view class="weui-cells searchbar-result" wx:if="{{inputVal.length > 0}}">
-            <navigator url="../create/create" class="weui-cell" hover-class="weui-cell_active">
-                <view class="weui-cell__bd">
-                    <view>实时搜索文本</view>
+            <block wx:for="{{activeAddress}}" wx:for-item="address" wx:key="uid">
+                <view class="weui-cell" hover-class="weui-cell_active" bindtap="chooseAddress" id="{{index}}">
+                    <view class="weui-cell__bd">
+                        <view>{{address.name}} {{address.city}} {{address.district}}</view>
+                    </view>
                 </view>
-            </navigator>
-            <navigator url="../create/create" class="weui-cell" hover-class="weui-cell_active">
-                <view class="weui-cell__bd">
-                    <view>实时搜索文本</view>
-                </view>
-            </navigator>
-            <navigator url="../create/create" class="weui-cell" hover-class="weui-cell_active">
-                <view class="weui-cell__bd">
-                    <view>实时搜索文本</view>
-                </view>
-            </navigator>
-            <navigator url="../create/create" class="weui-cell" hover-class="weui-cell_active">
-                <view class="weui-cell__bd">
-                    <view>实时搜索文本</view>
-                </view>
-            </navigator>
+            </block>
         </view>
     </view>
 </view>
