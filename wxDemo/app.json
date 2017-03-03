@@ -1,9 +1,10 @@
 {
   "pages": [
+    
     "pages/index/index",
 
     "example/index",
-    "pages/location/location",
+    
 
     "pages/info/info",
 
@@ -12,7 +13,8 @@
      
     "example/picker/picker",
     "pages/enroll/enroll",
-    "pages/create/create",      
+    "pages/create/create",
+    "pages/location/location",      
     "pages/userlist/userlist",
 
     "example/button/button",
