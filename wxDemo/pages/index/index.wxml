@@ -1,16 +1,69 @@
-<!--index.wxml-->
 <view class="page">
-  <view class="page__hd">
-    <view class="page__title">
-      <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
-    </view>
-    <view class="page__title">
-      <text>{{userInfo.nickName}}</text>
-    </view>
-  </view>
+    <view class="page__bd">
+        <view class="weui-tab">
+            <view class="weui-navbar">
+                <block wx:for-items="{{tabs}}" wx:key="{{index}}">
+                    <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+                        <view class="weui-navbar__title">{{item}}</view>
+                    </view>
+                </block>
+                <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+            </view>
+            <view class="weui-tab__panel">
+                <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
 
+                    <view class="weui-cells weui-cells_after-title">
+                        <!--<block wx:for="{{enrollList}}" wx:for-item="enroll" wx:key="objectId">-->
+                        <view class="weui-cell weui-cell_access">
+                            <view class="weui-cell__bd">
+                                <view class="weui-badge_green" style="margin-right: 5px;">发起人</view>
+                                <view style="display: inline-block; vertical-align: middle;">我参加的聚会</view>
+                                
+                                <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
+                                <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
+                            </view>
+                            <view class="weui-cell__ft" style="color:#000">13人</view>
+                        </view>      
+                        <!--</block>-->
+                        <view class="weui-cell weui-cell_access">
+                            <view class="weui-cell__bd">
+                                <view style="display: inline-block; vertical-align: middle;">我参加的聚会</view>
+                                
+                                <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
+                                <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
+                            </view>
+                            <view class="weui-cell__ft" style="color:#000">13人</view>
+                        </view>     
+                        <view class="weui-cell weui-cell_access">
+                            <view class="weui-cell__bd">
+                                <view class="weui-badge_grey" style="margin-right: 5px;">发起人</view>
+                                <view style="display: inline-block; vertical-align: middle; color:#999999">我参加的聚会（已结束）</view>
+                                
+                                <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
+                                <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
+                            </view>
+                            <view class="weui-cell__ft" style="color:#000">13人</view>
+                        </view>    
+                    </view>
 
-  <view class="page__bd page__bd_spacing">
+                </view>
+                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+                    <view class="weui-cells weui-cells_after-title">
+                        <!--<block wx:for="{{enrollList}}" wx:for-item="enroll" wx:key="objectId">-->
+                        <view class="weui-cell weui-cell_access">
+                            <view class="weui-cell__bd">
+                                <view class="weui-badge_green" style="margin-right: 5px;">发起人</view>
+                                <view style="display: inline-block; vertical-align: middle;">我发起的聚会</view>
+                                
+                                <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
+                                <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
+                            </view>
+                            <view class="weui-cell__ft" style="color:#000">13人</view>
+                        </view>      
+                        <!--</block>-->
+                    </view>
+                </view>
+
 
     <view class="weui-btn-area">
       <navigator url="../enroll/enroll?campaignId=58a7dbf9b123db005eb9b067">
@@ -45,9 +98,12 @@
   <view class="weui-footer">
     <view class="weui-footer_fixed-bottom">
         <text>{{copyright}}</text>
+
     </view>
-  </view>
 </view>
+
+ 
+    
 
 
 <view class="weui-footer-btn">
@@ -59,4 +115,3 @@
         </view>
     </view>
 </view>
-
