@@ -10,7 +10,7 @@
         <view class="weui-msg__opr-area">
             <view class="weui-btn-area">
                 <navigator url="../info/info">
-                    <button class="weui-btn" type="primary">报名参加</button>
+                    <button class="weui-btn" type="primary">确 认</button>
                     <!--<button class="weui-btn" type="default">辅助操作</button>-->
                 </navigator>
             </view>
