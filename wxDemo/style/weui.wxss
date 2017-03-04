@@ -736,6 +736,19 @@ icon {
   font-size: 26rpx;
   vertical-align: middle;
 }
+.weui-badge_green {
+  display: inline-block;
+  padding: .15em .4em;
+  min-width: 16rpx;
+  border-radius: 36rpx;
+  border:1rpx solid #1aad19;
+  /*background-color: #F43530;*/
+  color: #1aad19;
+  line-height: 1.2;
+  text-align: center;
+  font-size: 26rpx;
+  vertical-align: middle;
+}
 .weui-badge_dot {
   padding: .4em;
   min-width: 0;
