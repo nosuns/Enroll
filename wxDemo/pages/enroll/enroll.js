@@ -31,7 +31,6 @@ Page({
     // 将报名信息存入Enroll表
     var campaign = AV.Object.createWithoutData('Campaign', this.data.campaignId);
     var user = AV.User.current();
-
     var newEnroll = new AV.Object('Enroll');
     // 设置关联
     newEnroll.set('campaign', campaign);
@@ -41,7 +40,7 @@ Page({
     newEnroll.set('note', this.data.userNote);
     newEnroll.set('isEnroll', 1);
     newEnroll.save().then(function(newEnroll){
-      wx.redirectTo({url: '../../pages/success/success'});
+      wx.redirectTo({url: '../../pages/success/success?campaignId='+campaign.id});
     }, function(error){
       var that = this;
       console.error('Failed to create enroll, with error message: ' + error.message);
@@ -51,7 +50,7 @@ Page({
                       showCancel: false,
                       success: function(res) {
                         if (res.confirm) {
-                          wx.redirectTo({url: '../../pages/info/info?campaignId='+that.data.campaignId})
+                          wx.redirectTo({url: '../../pages/info/info?campaignId='+campaign.id})
                         }
                       }
         });
@@ -61,4 +60,3 @@ Page({
   }
 
 });
-

@@ -16,6 +16,36 @@ function formatNumber(n) {
   return n[1] ? n : '0' + n
 }
 
+function parseDay(day) {
+    var dayStr;
+    switch(day) {
+      case 0:
+        dayStr = '(星期日)';
+        break;
+      case 1:
+        dayStr = '(星期一)';
+        break;
+      case 2:
+        dayStr = '(星期二)';
+        break;
+      case 3:
+        dayStr = '(星期三)';
+        break;
+      case 4:
+        dayStr = '(星期四)';
+        break;
+      case 5:
+        dayStr = '(星期五)';
+        break;
+      case 6:
+        dayStr = '(星期六)';
+        break;
+    }
+
+    return dayStr;
+  }
+
 module.exports = {
-  formatTime: formatTime
+  formatTime: formatTime,
+  parseDay: parseDay
 }
