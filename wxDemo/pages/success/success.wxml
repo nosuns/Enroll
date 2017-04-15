@@ -9,7 +9,7 @@
         </view>
         <view class="weui-msg__opr-area">
             <view class="weui-btn-area">
-                <navigator url="../index/index" open-type="redirect">
+                <navigator url="../info/info?campaignId={{campaignId}}" open-type="navigateBack" delta="1">
                     <button class="weui-btn" type="primary">确 认</button>
                 </navigator>
             </view>
