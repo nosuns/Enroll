@@ -1,6 +1,7 @@
 <view style="background-color: #ececec;">
 
-    <!--<form bindsubmit="formSubmit">-->
+    <!--<form bindsubmit="formSubmit">-->    
+        <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">{{ errMsg }}</view>
         <view class="weui-cells weui-cells_after-title">
             <view class="weui-cell weui-cell_input">
                 <view class="weui-cell__bd">
@@ -71,7 +72,6 @@
                 </view>
             </block>
         </view>
-
 
         <view class="weui-spacing"></view>
 
