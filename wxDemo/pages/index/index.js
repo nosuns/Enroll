@@ -65,7 +65,8 @@ Page({
         if(enroll.get('campaign').get('createdBy').id == user.id) {
           isOwner = 1;
         }
-        tempEnrolledList[i] = {'name': enroll.get('campaign').get('name'),
+        tempEnrolledList[i] = {'campaignId': enroll.get('campaign').id,
+                               'name': enroll.get('campaign').get('name'),
                                'startTime': dateList[1],
                                'endTime': dateList[2],
                                'allDay': dateList[0],
@@ -83,6 +84,13 @@ Page({
 
     // 查出用户发起的所有聚会
 
+  },
+
+  gotoInfo: function (e) {
+    console.log(e);
+    wx.navigateTo({
+      url: '../info/info?campaignId=' + e.currentTarget.id
+    })
   },
 
   // 格式化活动时间：根据开始日期与结束日期是否相等，来显示不同格式的活动时间
