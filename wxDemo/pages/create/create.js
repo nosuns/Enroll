@@ -10,7 +10,7 @@ Page({
       endDate: '2017-01-01',
       endTime: '00:00',
       isShow: false,
-      location: '点击选择',
+      location: '',
       lat: 0,
       lng: 0
   },
