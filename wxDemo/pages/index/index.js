@@ -37,29 +37,26 @@ Page({
 
     // 从Enroll表中查出用户参加的所有聚会
     var user = AV.User.current();
-    var query = new AV.Query('Enroll');
-    query.equalTo('user', user);
-    query.include('campaign');
-    query.find().then(function(enrollList) {
-      console.log('-----------------------');
+    var equery = new AV.Query('Enroll');
+    equery.equalTo('user', user);
+    equery.include('campaign');
+    equery.find().then(function(enrollList) {
       var tempEnrolledList = [];
       enrollList.forEach(function(enroll, i, a) {
         // 格式化活动时间
         var dateList = [];
         dateList = that.parseCampaignDate(enroll.get('campaign'));
-        console.log(dateList);
         // 计算参加该活动的总人数
-        var numberQuery = new AV.Query('Enroll');
-        numberQuery.select('number');
-        numberQuery.equalTo('campaign', enroll.get('campaign'));
-        numberQuery.find().then(function(numbers) {
-          var totalNumber = 0;
-          numbers.forEach(function(number, i, a) {
-            totalNumber = totalNumber + number.get('number');
-          })
-          console.log('总人数:'+totalNumber);
-          // that.setData({enrolledNumbers:totalNumber})
-        })
+        // var numberQuery = new AV.Query('Enroll');
+        // numberQuery.select('number');
+        // numberQuery.equalTo('campaign', enroll.get('campaign'));
+        // numberQuery.find().then(function(numbers) {
+        //   var totalNumber = 0;
+        //   numbers.forEach(function(number, i, a) {
+        //     totalNumber = totalNumber + number.get('number');
+        //   })
+        //   that.setData({enrolledNumbers:totalNumber})
+        // })
         // 是否为本人发起
         var isOwner = 0;
         if(enroll.get('campaign').get('createdBy').id == user.id) {
@@ -70,26 +67,35 @@ Page({
                                'startTime': dateList[1],
                                'endTime': dateList[2],
                                'allDay': dateList[0],
-                               'isOwner': isOwner,
-                               'totalNumber': enroll.totalNumber}
-        console.log(tempEnrolledList);
+                               'isOwner': isOwner}
       })
-
-      console.log('1----------------------');
       that.setData({enrolledList: tempEnrolledList});
-      console.log('2----------------------');
       console.log(that.data.enrolledList);
     }).catch(console.error);
 
-
-    // 查出用户发起的所有聚会
+    // 从Campaign表中查出用户发起的所有聚会
+    var cquery = new AV.Query('Campaign');
+    cquery.equalTo('createdBy', user);
+    cquery.find().then(function(campaignList) {
+      var tempCreatedList = [];
+      campaignList.forEach(function(campaign, i, a) {
+        // 格式化活动时间
+        var dateList = [];
+        dateList = that.parseCampaignDate(campaign);
+        tempCreatedList[i] = {'campaignId': campaign.id,
+                              'name': campaign.get('name'),
+                              'startTime': dateList[1],
+                              'endTime': dateList[2],
+                              'allDay': dateList[0]}
+      })
+      that.setData({createdList: tempCreatedList});
+    }).catch(console.error);
 
   },
 
   gotoInfo: function (e) {
-    console.log(e);
     wx.navigateTo({
-      url: '../info/info?campaignId=' + e.currentTarget.id
+      url: '../info/info?campaignId=' + e.currentTarget.dataset.campaignid
     })
   },
 

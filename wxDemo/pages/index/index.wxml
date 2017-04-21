@@ -12,39 +12,43 @@
             <view class="weui-tab__panel">
                 <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
                     <view class="weui-cells weui-cells_after-title">
-                        <block wx:for="{{enrolledList}}" wx:for-item="enroll" wx:key="campaignId">
-                            <!--<navigator url="../info/info?campaignId={{enroll.campaignId}}">-->
-                                <view class="weui-cell weui-cell_access" id="{{enroll.campaignId}}" bindtap="gotoInfo">
-                                    <view class="weui-cell__bd">
-                                        <view wx:if="{{enroll.isOwner == 1}}" class="weui-badge_green" style="margin-right: 5px;">发起人</view>
-                                        <view style="display: inline-block; vertical-align: middle;">{{enroll.name}}</view>                                                              <block wx:if="{{enroll.allDay == ''}}">
-                                            <view style="font-size: 13px;color: #888888;">开始时间：{{enroll.startTime}}</view>
-                                            <view style="font-size: 13px;color: #888888;">结束时间：{{enroll.endTime}}</view>
-                                        </block>
-                                        <block wx:else>
-                                            <view style="font-size: 13px;color: #888888;">{{enroll.allDay}}</view>
-                                        </block>
-                                    </view>
-                                    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        <block wx:for="{{enrolledList}}" wx:for-item="enroll">
+                            <view class="weui-cell weui-cell_access" data-campaignId="{{enroll.campaignId}}" bindtap="gotoInfo">
+                                <view class="weui-cell__bd">
+                                    <view wx:if="{{enroll.isOwner == 1}}" class="weui-badge_green" style="margin-right: 5px;">发起人</view>
+                                    <view style="display: inline-block; vertical-align: middle;">{{enroll.name}}</view>
+                                    <block wx:if="{{enroll.allDay == ''}}">
+                                        <view style="font-size: 13px;color: #888888;">开始时间：{{enroll.startTime}}</view>
+                                        <view style="font-size: 13px;color: #888888;">结束时间：{{enroll.endTime}}</view>
+                                    </block>
+                                    <block wx:else>
+                                        <view style="font-size: 13px;color: #888888;">{{enroll.allDay}}</view>
+                                    </block>
                                 </view>
-                            <!--</navigator>-->
+                                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                            </view>
                         </block>
                     </view>
                 </view>
 
                 <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
                     <view class="weui-cells weui-cells_after-title">
-                        <!--<block wx:for="{{enrollList}}" wx:for-item="enroll" wx:key="objectId">-->
-                        <view class="weui-cell weui-cell_access">
-                            <view class="weui-cell__bd">
-                                <view class="weui-badge_green" style="margin-right: 5px;">发起人</view>
-                                <view style="display: inline-block; vertical-align: middle;">我发起的聚会</view>                               
-                                <view style="font-size: 13px;color: #888888;">开始时间：2016年8月18日(星期四) 09:00</view>
-                                <view style="font-size: 13px;color: #888888;">结束时间：2016年8月18日(星期四) 19:00</view>
-                            </view>
-                            <view class="weui-cell__ft" style="color:#000">13人</view>
-                        </view>      
-                        <!--</block>-->
+                        <block wx:for="{{createdList}}" wx:for-item="campaign">
+                            <view class="weui-cell weui-cell_access" data-campaignId="{{campaign.campaignId}}" bindtap="gotoInfo">
+                                <view class="weui-cell__bd">
+                                    <view class="weui-badge_green" style="margin-right: 5px;">发起人</view>
+                                    <view style="display: inline-block; vertical-align: middle;">{{campaign.name}}</view>                               
+                                    <block  wx:if="{{campaign.allDay == ''}}">
+                                        <view style="font-size: 13px;color: #888888;">开始时间：{{campaign.startTime}}</view>
+                                        <view style="font-size: 13px;color: #888888;">结束时间：{{campaign.endTime}}</view>
+                                    </block>
+                                    <block wx:else>
+                                        <view style="font-size: 13px;color: #888888;">{{campaign.allDay}}</view>
+                                    </block>
+                                </view>
+                                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                            </view>      
+                        </block>
                     </view>
                 </view>
 
