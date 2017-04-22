@@ -1,6 +1,8 @@
 const AV = require('../../libs/av-weapp-min');
 var bmap = require('../../libs/bmap-wx.js');
-var util = require('../../utils/util.js')
+var util = require('../../utils/util.js');
+var user = AV.User.current();
+
 var wxMarkerData = [];
 
 Page({
@@ -22,11 +24,22 @@ Page({
     address: '',
     isEnroll: 1
   },
+  
   // markertap:function(e) {
   //   var that = this; 
   //   var id = e.markerId; 
   //   that.showSearchInfo(wxMarkerData, id); 
   // },
+
+  onShareAppMessage: function () {
+    var that = this;
+    console.log(user)
+    return {
+      title: user.get('nickName') + ' 邀请你参加聚会',
+      desc: that.data.title,
+      path: '/pages/info/info?campaignId=' + that.data.campaignId
+    }
+  },
 
   onLoad:function(options){
     var that = this;
@@ -50,7 +63,6 @@ Page({
         enrollList.forEach(function(enroll, i, a) {
           totalNumber = totalNumber + enroll.get('number');
           // 查看当前用户是否已报名该活动
-          var user = AV.User.current();
           if(user.id == enroll.get('user').id) {
             isEnrolled = 1;
           }
