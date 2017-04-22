@@ -8,9 +8,9 @@ page{
 .page__hd {
     padding: 35rpx;
 }
-.page__bd {
+/*.page__bd {
     padding-bottom: 40px;
-}
+}*/
 .page__bd_spacing {
     padding-left: 15px;
     padding-right: 15px;

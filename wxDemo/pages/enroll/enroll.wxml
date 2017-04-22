@@ -28,7 +28,7 @@
     </view>
 
     <view class="weui-btn-area">
-        <button ontap="onSubmit" formType="submit" class="weui-btn" type="primary" disabled="{{!(userNum)|!(userNote)}}">确认报名</button>
+        <button ontap="onSubmit" formType="submit" class="weui-btn" type="primary" disabled="{{!(userNum)}}">确认报名</button>
     </view>
 </form>
 

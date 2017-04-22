@@ -1,15 +1,18 @@
 const AV = require('../../libs/av-weapp-min');
 var util = require('../../utils/util.js')
-var sliderWidth = 96; // 需要设置slider的宽度，用于计算中间位置
+var sliderPadding = 10; // 需要设置slider的边距
+
 
 Page({
   data: {
     enrolled:'0', 
     copyright:"Copyright © 2017 Nople Studio",
-    tabs: ["我参加的聚会", "我发起的聚会","测试链接"],
+    tabs: ["我参加的聚会", "我发起的聚会"],
     activeIndex: "0",
     sliderOffset: 0,
-    sliderLeft: 0,
+    sliderLeft: sliderPadding,
+    sliderWidth: 0,
+    scrollviewHeight: 0,
     enrolledList: [],
     createdList: [],
     enrolledNumbers: 0
@@ -24,20 +27,28 @@ Page({
   },
 
   onLoad: function () {
-    console.log('onLoad')
     var that = this;
+    var user = AV.User.current();
+
+    if (user.id == "58a073a886b599006b4156c5" ) {
+      that.setData({tabs:["我参加的聚会", "我发起的聚会","测试连接"]});
+    }
+
     // 获取屏幕宽度，计算tab位置
     wx.getSystemInfo({
         success: function(res) {
+            console.log(res.windowHeight)
             that.setData({
-                sliderLeft: (res.windowWidth / that.data.tabs.length - sliderWidth) / 2
+                scrollviewHeight: res.windowHeight - 51 - 74,
+                sliderWidth: res.windowWidth / that.data.tabs.length - sliderPadding * 2
             });
         }
     });
 
     // 从Enroll表中查出用户参加的所有聚会
-    var user = AV.User.current();
     var equery = new AV.Query('Enroll');
+
+
     equery.equalTo('user', user);
     equery.include('campaign');
     equery.find().then(function(enrollList) {
@@ -70,7 +81,6 @@ Page({
                                'isOwner': isOwner}
       })
       that.setData({enrolledList: tempEnrolledList});
-      console.log(that.data.enrolledList);
     }).catch(console.error);
 
     // 从Campaign表中查出用户发起的所有聚会
@@ -128,5 +138,8 @@ Page({
           sliderOffset: e.currentTarget.offsetLeft,
           activeIndex: e.currentTarget.id
       });
+      console.log(e.currentTarget.offsetLeft)
+
   }  
+
 })
