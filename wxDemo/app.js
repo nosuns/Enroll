@@ -13,7 +13,6 @@ App({
     // 调用leanCloud登录接口
     AV.User.loginWithWeapp().then(user => {
       this.globalData.leanUser = user.toJSON();
-      console.log(this.globalData.leanUser)
     }).catch(console.error);
 
     // 获得当前登录用户

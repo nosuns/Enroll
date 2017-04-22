@@ -129,7 +129,14 @@ Page({
       campaign.set('lng', this.data.lng);
       campaign.save().then(function(campaign){
           wx.removeStorageSync('address');
-          wx.redirectTo({url: '../../pages/info/info?campaignId='+campaign.id});
+          wx.showToast({
+              title: '创建成功',
+              icon: 'success',
+          })
+          setTimeout(function(){
+              wx.redirectTo({url: '../../pages/info/info?campaignId='+campaign.id});
+          },1500)
+          
       })
     }
   }

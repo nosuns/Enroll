@@ -2,7 +2,6 @@ const AV = require('../../libs/av-weapp-min');
 var util = require('../../utils/util.js')
 var sliderPadding = 10; // 需要设置slider的边距
 
-
 Page({
   data: {
     enrolled:'0', 
@@ -28,27 +27,27 @@ Page({
 
   onLoad: function () {
     var that = this;
-    var user = AV.User.current();
-
-    if (user.id == "58a073a886b599006b4156c5" ) {
-      that.setData({tabs:["我参加的聚会", "我发起的聚会","测试连接"]});
-    }
-
     // 获取屏幕宽度，计算tab位置
     wx.getSystemInfo({
         success: function(res) {
-            console.log(res.windowHeight)
             that.setData({
                 scrollviewHeight: res.windowHeight - 51 - 74,
                 sliderWidth: res.windowWidth / that.data.tabs.length - sliderPadding * 2
             });
         }
     });
+  },
+
+  onShow: function () {
+    var that = this;
+    var user = AV.User.current();
+
+    if (user.id == "58a073a886b599006b4156c5" ) {
+      that.setData({tabs:["我参加的聚会", "我发起的聚会","测试连接"]});
+    }
 
     // 从Enroll表中查出用户参加的所有聚会
     var equery = new AV.Query('Enroll');
-
-
     equery.equalTo('user', user);
     equery.include('campaign');
     equery.find().then(function(enrollList) {
@@ -118,16 +117,26 @@ Page({
     var endDate = campaign.get('endDate').replace(/-/g, '/');
     var startTime = campaign.get('startTime');
     var endTime = campaign.get('endTime');
+    var isShowTime = campaign.get('isShowTime');
     // 计算星期几
     var startDay = new Date(Date.parse(startDate)).getDay();
     var strStartDay = util.parseDay(startDay);
     var endDay = new Date(Date.parse(endDate)).getDay();
     var strEndDay = util.parseDay(endDay);
     if (startDate == endDate) {
-      oneDay = startDate + strStartDay + ' ' + startTime + '-' + endTime;
+      if (isShowTime == false) {
+        oneDay = startDate + strStartDay + ' 全天';
+      } else {
+        oneDay = startDate + strStartDay + ' ' + startTime + '-' + endTime;
+      }
     } else {
-      startDateTime =  startDate + strStartDay + ' ' + startTime;
-      endDateTime = endDate + strEndDay + ' ' + endTime;
+      if (isShowTime == false) {
+        startDateTime =  startDate + strStartDay;
+        endDateTime = endDate + strEndDay;
+      } else {
+        startDateTime =  startDate + strStartDay + ' ' + startTime;
+        endDateTime = endDate + strEndDay + ' ' + endTime;
+      }
     }
 
     return [oneDay, startDateTime, endDateTime];
@@ -138,8 +147,6 @@ Page({
           sliderOffset: e.currentTarget.offsetLeft,
           activeIndex: e.currentTarget.id
       });
-      console.log(e.currentTarget.offsetLeft)
-
   }  
 
 })
