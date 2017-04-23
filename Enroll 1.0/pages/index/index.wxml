@@ -1,0 +1,68 @@
+<view class="page">
+    <view class="page__bd">
+        <view class="weui-tab">
+            <view class="weui-navbar">
+                <block wx:for-items="{{tabs}}" wx:key="{{index}}">
+                    <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+                        <view class="weui-navbar__title">{{item}}</view>
+                    </view>
+                </block>
+                <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px); width:{{sliderWidth}}px;"></view>
+            </view>
+            <view class="weui-tab__panel" style="margin-bottom:144rpx;">
+                <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
+                    <view class="weui-cells weui-cells_after-title">
+                        <block wx:for="{{enrolledList}}" wx:for-item="enroll" wx:key="campaignId">
+                            <view class="weui-cell weui-cell_access" data-campaignId="{{enroll.campaignId}}" bindtap="gotoInfo">
+                                <view class="weui-cell__bd">
+                                    <view wx:if="{{enroll.isOwner == 1}}" class="weui-badge_green" style="margin-right: 5px;">我发起</view>
+                                    <view style="display: inline-block; vertical-align: middle;">{{enroll.name}}</view>
+                                    <block wx:if="{{enroll.allDay == ''}}">
+                                        <view style="font-size: 13px;color: #888888;">开始时间：{{enroll.startTime}}</view>
+                                        <view style="font-size: 13px;color: #888888;">结束时间：{{enroll.endTime}}</view>
+                                    </block>
+                                    <block wx:else>
+                                        <view style="font-size: 13px;color: #888888;">{{enroll.allDay}}</view>
+                                    </block>
+                                </view>
+                                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                            </view>
+                        </block>
+                    </view>
+                </view>
+
+                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+                    <view class="weui-cells weui-cells_after-title">
+                        <block wx:for="{{createdList}}" wx:for-item="campaign" wx:key="campaignId">
+                            <view class="weui-cell weui-cell_access" data-campaignId="{{campaign.campaignId}}" bindtap="gotoInfo">
+                                <view class="weui-cell__bd">
+                                    <!--<view class="weui-badge_green" style="margin-right: 5px;">发起人</view>-->
+                                    <view style="display: inline-block; vertical-align: middle;">{{campaign.name}}</view>                               
+                                    <block  wx:if="{{campaign.allDay == ''}}">
+                                        <view style="font-size: 13px;color: #888888;">开始时间：{{campaign.startTime}}</view>
+                                        <view style="font-size: 13px;color: #888888;">结束时间：{{campaign.endTime}}</view>
+                                    </block>
+                                    <block wx:else>
+                                        <view style="font-size: 13px;color: #888888;">{{campaign.allDay}}</view>
+                                    </block>
+                                </view>
+                                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                            </view>      
+                        </block>
+                    </view>
+                </view>
+        
+            </view> 
+        </view>
+    </view>
+</view>
+  
+<view class="weui-footer-btn">               
+    <view class="weui-footer_fixed-bottom">
+        <view class="weui-btn-area">
+            <navigator url="../create/create">
+                <button class="weui-btn" type="primary">发起聚会</button>
+            </navigator>
+        </view>
+    </view>
+</view>
