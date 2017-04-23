@@ -11,7 +11,7 @@
             </view>
             <view class="weui-tab__panel" style="margin-bottom:144rpx;">
                 <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
-                    <view class="weui-cells weui-cells_after-title">
+                    <view class="weui-cells weui-cells_after-title" wx:if="{{enrolledList.length != 0}}">
                         <block wx:for="{{enrolledList}}" wx:for-item="enroll" wx:key="campaignId">
                             <view class="weui-cell weui-cell_access" data-campaignId="{{enroll.campaignId}}" bindtap="gotoInfo">
                                 <view class="weui-cell__bd">
@@ -29,10 +29,11 @@
                             </view>
                         </block>
                     </view>
+                    <view class="initial" wx:else>你还没有报名参加任何聚会</view>
                 </view>
 
                 <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
-                    <view class="weui-cells weui-cells_after-title">
+                    <view class="weui-cells weui-cells_after-title" wx:if="{{createdList.length != 0}}">
                         <block wx:for="{{createdList}}" wx:for-item="campaign" wx:key="campaignId">
                             <view class="weui-cell weui-cell_access" data-campaignId="{{campaign.campaignId}}" bindtap="gotoInfo">
                                 <view class="weui-cell__bd">
@@ -50,6 +51,7 @@
                             </view>      
                         </block>
                     </view>
+                    <view class="initial" wx:else>你还没有发起过聚会</view>
                 </view>
         
             </view> 

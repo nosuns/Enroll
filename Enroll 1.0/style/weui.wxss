@@ -730,7 +730,7 @@ icon {
   border:1rpx solid #999999;
   /*background-color: #F43530;*/
   color: #999999;
-  line-height: 1.2;
+  line-height: 1;
   text-align: center;
   font-size: 26rpx;
   vertical-align: middle;

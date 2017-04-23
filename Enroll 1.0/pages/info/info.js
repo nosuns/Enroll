@@ -1,9 +1,8 @@
 const AV = require('../../libs/av-weapp-min');
-var bmap = require('../../libs/bmap-wx.js');
-var util = require('../../utils/util.js')
+var util = require('../../utils/util.js');
 var wxMarkerData = [];
 var user = AV.User.current();
-var app = getApp()
+var app = getApp();
 
 Page({
   data: {
@@ -16,6 +15,7 @@ Page({
     startDateTime: '',
     endDateTime: '',
     location: '',
+    locationAddress: '',
     lat: '',
     lng: '',
     enrollNum: 0,
@@ -25,6 +25,16 @@ Page({
     markers: [],
     address: '',
     isEnroll: 1
+  },
+
+  openLocation: function (e) {
+    var that = this;
+    wx.openLocation({
+      longitude: that.data.lng,
+      latitude: that.data.lat,
+      name: that.data.location,
+      address: that.data.locationAddress
+    })
   },
 
   onShareAppMessage: function () {
@@ -72,27 +82,10 @@ Page({
         createdBy: campaign.get('createdBy').get('nickName'),
         avatarUrl: campaign.get('createdBy').get('avatarUrl'),
         lat: campaign.get('lat'),
-        lng: campaign.get('lng')
+        lng: campaign.get('lng'),
+        location: campaign.get('location'),
+        locationAddress: campaign.get('locationAddress')
       })
-
-      // 根据经纬度来获取地址信息
-      var BMap = new bmap.BMapWX({ 
-        ak: 'ntQQvConZD2oSe4hXE2lfrwNetggT2Ih' 
-      }); 
-      BMap.regeocoding({
-        location: String(that.data.lat)+','+String(that.data.lng),
-        iconPath: '../../img/marker_red.png', 
-        iconTapPath: '../../img/marker_red.png',
-        success: function (res) {
-          wxMarkerData = res.wxMarkerData;
-          var address = wxMarkerData[0].address;
-          that.setData({
-            markers: wxMarkerData,
-            location: campaign.get('location') + ' ' + address
-          })
-        }
-      })
-
     })
   },
 

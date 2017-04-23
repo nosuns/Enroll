@@ -74,18 +74,14 @@
 
     <view class="weui-spacing"></view>
 
-    <view class="weui-cells weui-cells_after-title">
-    <navigator url="../location/location">
+    <view class="weui-cells weui-cells_after-title" bindtap="chooseLocation">
         <view class="weui-cell weui-cell_access">
             <view class="weui-cell__bd">
-                <view style="display: inline-block; vertical-align: middle">聚会地点</view>
+                <view style="display: inline-block; vertical-align: middle">地点</view>
             </view>
-
-            <view wx:if="{{location != ''}}" class="weui-cell__ft weui-cell__ft_in-access">{{location}}</view>
-            <view wx:else class="weui-cell__ft weui-cell__ft_in-access">点击选择</view>
-
+            <view wx:if="{{hasLocation === false}}" class="weui-cell__ft weui-cell__ft_in-access">点击选择</view>
+            <view wx:else class="weui-cell__ft weui-cell__ft_in-access">{{location}}</view>
         </view>
-    </navigator>
     </view>
 
     <view class="weui-spacing"> </view>

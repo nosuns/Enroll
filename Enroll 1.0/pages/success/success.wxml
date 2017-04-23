@@ -9,15 +9,13 @@
         </view>
         <view class="weui-msg__opr-area">
             <view class="weui-btn-area">
-                <navigator url="../info/info?campaignId={{campaignId}}" open-type="navigateBack" delta="1">
-                    <button class="weui-btn" type="primary">确 认</button>
-                </navigator>
+                <button class="weui-btn" type="primary" bindtap="backToInfo">确 认</button>
             </view>
         </view>
         <view class="weui-msg__extra-area">
             <view class="weui-footer">            
-                <button plain open-type="contact" style="line-height:28rpx; font-size:24rpx; color: #999999; border-color: #EFEFF4;">{{copyright}}</button>  
-                <button plain open-type="contact" style="line-height:28rpx; font-size:24rpx; color: #586C94; border-color: #EFEFF4;">{{email}}</button>    
+                <button plain open-type="contact" style="line-height:28rpx; font-size:24rpx; color: #999999; border-color: #ffffff;">{{copyright}}</button>  
+                <button plain open-type="contact" style="line-height:28rpx; font-size:24rpx; color: #586C94; border-color: #ffffff;">{{email}}</button>    
                 <!--<view class="weui-footer__text">{{copyright}}</view>                
                 <view class="weui-footer__link">{{email}}</view>-->
             </view>

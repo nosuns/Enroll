@@ -15,8 +15,30 @@ Page({
     endTime: '18:00',
     isShow: false,
     location: '',
+    locationAddress: '',
+    hasLocation: false,
     lat: 0,
     lng: 0
+  },
+
+  chooseLocation: function () {
+    var that = this
+    wx.chooseLocation({
+      success: function (res) {
+        that.setData({
+          hasLocation: true,
+          lat: Number(res.latitude),
+          lng: Number(res.longitude),
+          location: res.name,
+          locationAddress: res.address
+        })
+      }
+    })
+  },
+  clear: function () {
+    this.setData({
+      hasLocation: false
+    })
   },
 
   onLoad: function () {  
@@ -70,22 +92,6 @@ Page({
       })
   },
 
-  onShow: function() {
-    // 页面显示
-    try {
-      var address = wx.getStorageSync('address')
-      if (address) {
-        this.setData({
-            location: address.name,
-            lat: address.lat,
-            lng: address.lng
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  },
-
   // 顶部的红色错误提示   
   showTopTips: function(msg) {
     var that = this;
@@ -128,19 +134,18 @@ Page({
       campaign.set('endTime', this.data.endTime);
       campaign.set('isShowTime', this.data.isShow);
       campaign.set('location', this.data.location);
+      campaign.set('locationAddress', this.data.locationAddress);
       campaign.set('lat', this.data.lat);
       campaign.set('lng', this.data.lng);
       campaign.save().then(function(campaign){
-          wx.removeStorageSync('address');
           wx.showToast({
               title: '创建成功',
               icon: 'success',
           })
           setTimeout(function(){
               wx.redirectTo({url: '../../pages/info/info?campaignId='+campaign.id});
-          },1500)
-          
-      })
+          },1500)       
+      }).catch(console.error)
     }
   }
 

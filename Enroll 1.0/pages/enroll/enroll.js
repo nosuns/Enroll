@@ -2,7 +2,7 @@ const AV = require('../../libs/av-weapp-min');
 
 Page({
   data:{
-    userNum: 1,
+    userNum: 0,
     userNote: '',
     campaignId: ''
   },

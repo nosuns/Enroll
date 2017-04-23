@@ -1,0 +1,6 @@
+.initial{
+  padding: 100rpx;
+  color: #999999;
+  font-size: 30rpx;
+  text-align: center;  
+}

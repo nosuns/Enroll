@@ -13,7 +13,7 @@
                 <view class="weui-label">人数</view>
             </view>
             <view class="weui-cell__bd">
-                <input id="userNum" bindinput="updateUserNum" class="weui-input" placeholder="有几人参加" type="number" maxlength="2" auto-focus/>
+                <input id="userNum" bindinput="updateUserNum" class="weui-input" placeholder="有几人参加" type="number" maxlength="2" focus/>
             </view>
         </view>
         <view class="weui-cell weui-cell_input">

@@ -5,7 +5,6 @@
     "pages/success/success",
     "pages/enroll/enroll",
     "pages/create/create",
-    "pages/location/location",      
     "pages/userlist/userlist"
   ],
   "window": {
