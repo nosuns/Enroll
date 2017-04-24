@@ -161,6 +161,29 @@ Page({
         })
       }
     }
+  },
+
+  enroll: function(){
+    var that = this;
+    if (typeof(user.get('nickName')) != "undefined") {
+      wx.navigateTo({
+        url: '../enroll/enroll?campaignId='+that.data.campaignId
+      });
+    } 
+    else {
+      wx.showModal({
+        title: '该功能需要授权',
+        content: '请先在您的小程序列表中删除小程序，再重新搜索「聚会报名」并打开，即可重新授权。（我们只需要您的昵称，请放心授权）',
+        showCancel: false,
+        confirmText: '我知道了',
+        success: function (res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+          }
+        }
+      })
+    }
   }
+
   
 })

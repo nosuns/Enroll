@@ -1,6 +1,7 @@
 const AV = require('../../libs/av-weapp-min');
 var util = require('../../utils/util.js')
 var sliderPadding = 10; // 需要设置slider的边距
+var user = AV.User.current();
 
 Page({
   data: {
@@ -39,7 +40,6 @@ Page({
 
   onShow: function () {
     var that = this;
-    var user = AV.User.current();
 
     // 从Enroll表中查出用户参加的所有聚会
     var equery = new AV.Query('Enroll');
@@ -142,6 +142,29 @@ Page({
           sliderOffset: e.currentTarget.offsetLeft,
           activeIndex: e.currentTarget.id
       });
-  }  
+  },  
+
+  create: function(){
+    console.log(user);
+    console.log(user.get('nickName'));
+    if (typeof(user.get('nickName')) != "undefined") { 
+      wx.navigateTo({
+        url: '../create/create'
+      });
+    } 
+    else {
+      wx.showModal({
+        title: '该功能需要授权',
+        content: '请先在您的小程序列表中删除小程序，再重新搜索「聚会报名」并打开，即可重新授权。（我们只需要您的昵称，请放心授权）',
+        showCancel: false,
+        confirmText: '我知道了',
+        success: function (res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+          }
+        }
+      })
+    }
+  }
 
 })

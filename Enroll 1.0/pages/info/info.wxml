@@ -67,10 +67,8 @@
 
     <view class="weui-spacing"></view>
     <view class="weui-msg__opr-area"  style="z-index:1000">
-        <view class="weui-btn-area"  wx:if="{{!isEnroll}}">
-            <navigator url="../enroll/enroll?campaignId={{campaignId}}">
-                <button class="weui-btn" type="primary">报名参加</button>
-            </navigator>
+        <view class="weui-btn-area"  wx:if="{{!isEnroll}}" bindtap="enroll">
+            <button class="weui-btn" type="primary">报名参加</button>
         </view>
         <view class="weui-btn-area"  wx:else>
             <button class="weui-btn" type="default" disabled>你已报名参加本次聚会</button>

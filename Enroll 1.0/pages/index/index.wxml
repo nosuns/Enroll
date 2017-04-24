@@ -61,10 +61,8 @@
   
 <view class="weui-footer-btn">               
     <view class="weui-footer_fixed-bottom">
-        <view class="weui-btn-area">
-            <navigator url="../create/create">
-                <button class="weui-btn" type="primary">发起聚会</button>
-            </navigator>
+        <view class="weui-btn-area" bindtap="create">
+            <button class="weui-btn" type="primary">发起聚会</button>
         </view>
     </view>
 </view>
