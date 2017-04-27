@@ -162,6 +162,24 @@ Page({
       }
     }
   },
+  
+  toIndex:function(){
+      try {
+        var res = wx.getSystemInfoSync()
+      } catch (e) {
+        // Do something when catch error
+      }
+
+    if (wx.canIUse('reLaunch') && res.platform == 'ios'){
+      wx.reLaunch({
+        url: '../index/index'
+      });
+    } else{
+      wx.redirectTo({
+        url: '../index/index',
+      });
+    }
+  },
 
   enroll: function(){
     var that = this;

@@ -1,10 +1,8 @@
 <view class="page">
        
     <view class="weui-cells weui-cells_after-title">
-        <view class="weui-cell">
-            <view class="weui-cell__bd">
-                {{title}}
-            </view>
+        <view class="weui-cell" style="padding-bottom:5rpx">
+            <view class="weui-cell__bd">{{title}}</view>
         </view>    
 
         <view class="weui-cellnoline">       
@@ -71,8 +69,11 @@
             <button class="weui-btn" type="primary">报名参加</button>
         </view>
         <view class="weui-btn-area"  wx:else>
-            <button class="weui-btn" type="default" disabled>你已报名参加本次聚会</button>
-        </view>        
+            <button class="weui-btn" type="primary" disabled>你已报名参加本次聚会</button>
+        </view>
+        <view class="weui-btn-area" bindtap="toIndex">
+            <button class="weui-btn" type="default">我的全部聚会</button>
+        </view>       
     </view>
     <view class="weui-msg__extra-area" style="z-index:0">
         <view class="weui-footer" style="z-index:0">
