@@ -12,21 +12,46 @@ App({
 
     // 调用leanCloud登录接口
     AV.User.loginWithWeapp().then(user => {
-      this.globalData.leanUser = user.toJSON();
+      console.log("AVlogin:");
+      console.log(user);
+      wx.getUserInfo({
+        success: ({userInfo}) => {
+          // 更新当前用户的信息
+          user.set(userInfo).save().then(user => {
+            // 成功，此时可在控制台中看到更新后的用户信息
+            this.globalData.leanUser = user.toJSON();
+          }).catch(console.error);
+        }
+      });
+      // this.globalData.leanUser = user.toJSON();
     }).catch(console.error);
 
-    // 获得当前登录用户
-    var user = AV.User.current();
-    // 调用小程序API，得到用户信息
     wx.getUserInfo({
-      success: ({userInfo}) => {
-        // 更新当前用户的信息
-        user.set(userInfo).save().then(user => {
-          // 成功，此时可在控制台中看到更新后的用户信息
-          this.globalData.leanUser = user.toJSON();
-        }).catch(console.error);
+      success: function(res) {
+        console.log("get user info success");
+      },
+      fail: function() {
+        console.log("fail to get user info");
       }
     });
+    // 获得当前登录用户
+    // var user = AV.User.current();
+    // console.log("2:");
+    // console.log(user);
+    // // 调用小程序API，得到用户信息
+    // wx.getUserInfo({
+    //   success: ({userInfo}) => {
+    //     // 更新当前用户的信息
+    //     if(user != null) {
+    //       user.set(userInfo).save().then(user => {
+    //         // 成功，此时可在控制台中看到更新后的用户信息
+    //         this.globalData.leanUser = user.toJSON();
+    //       }).catch(console.error);
+    //     }
+        
+    //   }
+    // });
+
   },
 
   // 获取微信用户信息 

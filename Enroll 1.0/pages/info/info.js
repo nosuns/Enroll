@@ -24,7 +24,8 @@ Page({
     oneDay: '',
     markers: [],
     address: '',
-    isEnroll: 1
+    isEnroll: 1,
+    moreDescription: 0,
   },
 
   openLocation: function (e) {
@@ -69,18 +70,65 @@ Page({
     var query = new AV.Query('Campaign');
     query.include('createdBy');
     query.get(campaignId).then(function(campaign) {
+
       // 设置当前页面标题为活动名称
       wx.setNavigationBarTitle({
         title: campaign.get('name'),
       });
+
       // 格式化活动时间
       that.parseCampaignDate(campaign);
+
+      // 判断活动介绍的文字长度
+      var description = campaign.get('description');
+      var desLineLimit = 100;  
+      var info = '';
+      try {
+        var res = wx.getSystemInfoSync()
+
+        console.log(res.model)
+        console.log(res.pixelRatio)
+        console.log(res.windowWidth)
+        console.log(res.windowHeight)
+        console.log(res.language)
+        console.log(res.version)
+        console.log(res.platform)
+
+        desLineLimit = (res.windowWidth - 30)/15 * 4 
+
+        console.log(desLineLimit)
+
+      } catch (e) {
+        // Do something when catch error
+      }
+      if(description.length > (desLineLimit) ) {
+        info = description.substring(0,desLineLimit-8)
+        wx.setStorage({
+          key:"description",
+          data:description
+        })
+        that.setData({
+          moreDescription: 1
+        })
+      }else{
+        info = description
+      }
+
+      // 4.29匿名处理
+      var nickName = campaign.get('createdBy').get('nickName');
+      var avatarUrl = campaign.get('createdBy').get('avatarUrl');
+      if (nickName == null){
+        nickName = "匿名";
+        avatarUrl = "../../img/anonymous.png";
+      }
+
       // 赋值其他活动信息
       that.setData({
         title: campaign.get('name'),
-        info: campaign.get('description'),
-        createdBy: campaign.get('createdBy').get('nickName'),
-        avatarUrl: campaign.get('createdBy').get('avatarUrl'),
+        info: info,
+        // info: campaign.get('description'),
+        createdBy: nickName,
+        avatarUrl: avatarUrl,
         lat: campaign.get('lat'),
         lng: campaign.get('lng'),
         location: campaign.get('location'),
@@ -116,7 +164,6 @@ Page({
           isEnrolled = 1;
         }
       })
-
       that.setData({
         enrollNum: totalNumber,
         isEnroll: isEnrolled
@@ -182,26 +229,32 @@ Page({
   },
 
   enroll: function(){
-    var that = this;
-    if (typeof(user.get('nickName')) != "undefined") {
       wx.navigateTo({
-        url: '../enroll/enroll?campaignId='+that.data.campaignId
-      });
-    } 
-    else {
-      wx.showModal({
-        title: '该功能需要授权',
-        content: '请先在您的小程序列表中删除小程序，再重新搜索「聚会报名」并打开，即可重新授权。（我们只需要您的昵称，请放心授权）',
-        showCancel: false,
-        confirmText: '我知道了',
-        success: function (res) {
-          if (res.confirm) {
-            console.log('用户点击确定')
-          }
-        }
-      })
-    }
+      url: '../enroll/enroll?campaignId='+this.data.campaignId
+    });   
   }
+
+  // enroll: function(){
+  //   var that = this;
+  //   if (typeof(user.get('nickName')) != "undefined") {
+  //     wx.navigateTo({
+  //       url: '../enroll/enroll?campaignId='+that.data.campaignId
+  //     });
+  //   } 
+  //   else {
+  //     wx.showModal({
+  //       title: '该功能需要授权',
+  //       content: '请先在您的小程序列表中删除小程序，再重新搜索「聚会报名」并打开，即可重新授权。（我们只需要您的昵称，请放心授权）',
+  //       showCancel: false,
+  //       confirmText: '我知道了',
+  //       success: function (res) {
+  //         if (res.confirm) {
+  //           console.log('用户点击确定')
+  //         }
+  //       }
+  //     })
+  //   }
+  // }
 
   
 })

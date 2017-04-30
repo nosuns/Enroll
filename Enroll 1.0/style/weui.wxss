@@ -504,6 +504,8 @@ icon {
   font-weight: 400;
   font-size: 15px;
   margin-bottom: .34em;
+  word-break:break-all;
+
 }
 .weui-article__dim {
   color: #999999;

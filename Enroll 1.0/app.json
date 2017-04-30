@@ -2,6 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/info/info",
+    "pages/info/description",
     "pages/success/success",
     "pages/enroll/enroll",
     "pages/create/create",

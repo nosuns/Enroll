@@ -10,8 +10,8 @@
         <view class="weui-cells">
             <view class="weui-cell">
                 <view class="weui-cell__bd">
-                    <textarea class="weui-textarea" placeholder="补充信息" style="height: 3.3em" maxlength="100"  bindinput="updateInfo"/>
-                    <view class="weui-textarea-counter">{{infoLength}}/100</view>
+                    <textarea class="weui-textarea" placeholder="补充信息" style="height: 3.3em" maxlength="500"  bindinput="updateInfo"/>
+                    <view class="weui-textarea-counter">{{infoLength}}/500</view>
                 </view>
             </view>
         </view>

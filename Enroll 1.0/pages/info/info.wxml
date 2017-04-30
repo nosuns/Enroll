@@ -26,8 +26,14 @@
                 </block>
             </view>      
         </view>
-
-        <view class="weui-cell">     
+        <view class="weui-cell" wx:if="{{moreDescription == 1}}">   
+            <navigator url="../info/description">
+                <view class="weui-cell__hd">
+                    <view class="weui-article__h3"><text>{{info}}...</text><text style="color:#586C94;"> 查看全部</text></view>
+                </view>             
+            </navigator>
+        </view>   
+        <view class="weui-cell" wx:else>     
             <view class="weui-cell__hd">
                 <view class="weui-article__h3">{{info}}</view>
             </view>      
@@ -69,18 +75,18 @@
             <button class="weui-btn" type="primary">报名参加</button>
         </view>
         <view class="weui-btn-area"  wx:else>
-            <button class="weui-btn" type="primary" disabled>你已报名参加本次聚会</button>
+            <button class="weui-btn" type="default" disabled>你已报名参加本次聚会</button>
         </view>
         <view class="weui-btn-area" bindtap="toIndex">
             <button class="weui-btn" type="default">我的全部聚会</button>
         </view>       
     </view>
-    <view class="weui-msg__extra-area" style="z-index:0">
+    <!--<view class="weui-msg__extra-area" style="z-index:0">
         <view class="weui-footer" style="z-index:0">
             <button plain open-type="contact" style="line-height:28rpx; font-size:24rpx; color: #999999; border-color: #EFEFF4;">{{copyright}}</button>  
             <button plain open-type="contact" style="line-height:28rpx; font-size:24rpx; color: #586C94; border-color: #EFEFF4;">{{email}}</button>               
         </view>
-    </view>
+    </view>-->
 
 </view>
 

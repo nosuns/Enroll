@@ -28,11 +28,21 @@ Page({
     query.find().then(function(enrollList) {
       var tempList = [];
       var totalNumber = 0;
+
       // 遍历每一条报名信息，查出用户信息
       enrollList.forEach(function(enroll, i, a){
+
+        // 4.29匿名处理
+        var nickName = enroll.get('user').get('nickName');
+        var avatarUrl = enroll.get('user').get('avatarUrl');
+        if (nickName == null){
+          nickName = "匿名";
+          avatarUrl = "../../img/anonymous.png";
+        }
+
         tempList[i] = {'objectId': enroll.get('objectId'),
-                       'nickName': enroll.get('user').get('nickName'),
-                       'avatarUrl': enroll.get('user').get('avatarUrl'),
+                       'nickName': nickName,
+                       'avatarUrl': avatarUrl,
                        'number': enroll.get('number'),
                        'note': enroll.get('note')}
         totalNumber = totalNumber + enroll.get('number');
