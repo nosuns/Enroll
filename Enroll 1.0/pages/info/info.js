@@ -26,6 +26,7 @@ Page({
     address: '',
     isEnroll: 1,
     moreDescription: 0,
+    isAuth : 0
   },
 
   openLocation: function (e) {
@@ -49,18 +50,12 @@ Page({
 
   onLoad:function(options){
     var that = this;
-
-    wx.getSystemInfo({
-        success: function(res) {
-          if (res.windowHeight < 450){
-            
-            that.setData({
-                copyright: '',
-                email: ''
-            });
-          }
-        }
-    });
+    // 获取用户信息
+    app.getUserInfo(function(userInfo){
+      that.setData({
+        isAuth: 1
+      })
+    })
 
     var campaignId = options.campaignId;
     that.setData({
@@ -85,19 +80,7 @@ Page({
       var info = '';
       try {
         var res = wx.getSystemInfoSync()
-
-        console.log(res.model)
-        console.log(res.pixelRatio)
-        console.log(res.windowWidth)
-        console.log(res.windowHeight)
-        console.log(res.language)
-        console.log(res.version)
-        console.log(res.platform)
-
         desLineLimit = (res.windowWidth - 30)/15 * 4 
-
-        console.log(desLineLimit)
-
       } catch (e) {
         // Do something when catch error
       }
@@ -229,32 +212,25 @@ Page({
   },
 
   enroll: function(){
+    if (this.data.isAuth == 1) { 
       wx.navigateTo({
-      url: '../enroll/enroll?campaignId='+this.data.campaignId
-    });   
+        url: '../enroll/enroll?campaignId='+this.data.campaignId
+      });
+    } 
+    else {
+      wx.showModal({
+        title: '该功能需要授权',
+        content: '请先在您的小程序列表中删除小程序，再重新搜索「聚会报名」并打开，即可重新授权。（我们只需要您的昵称，请放心授权）',
+        showCancel: false,
+        confirmText: '我知道了',
+        success: function (res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+          }
+        }
+      })
+    }
   }
-
-  // enroll: function(){
-  //   var that = this;
-  //   if (typeof(user.get('nickName')) != "undefined") {
-  //     wx.navigateTo({
-  //       url: '../enroll/enroll?campaignId='+that.data.campaignId
-  //     });
-  //   } 
-  //   else {
-  //     wx.showModal({
-  //       title: '该功能需要授权',
-  //       content: '请先在您的小程序列表中删除小程序，再重新搜索「聚会报名」并打开，即可重新授权。（我们只需要您的昵称，请放心授权）',
-  //       showCancel: false,
-  //       confirmText: '我知道了',
-  //       success: function (res) {
-  //         if (res.confirm) {
-  //           console.log('用户点击确定')
-  //         }
-  //       }
-  //     })
-  //   }
-  // }
 
   
 })

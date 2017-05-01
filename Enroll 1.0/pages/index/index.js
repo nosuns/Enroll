@@ -2,6 +2,7 @@ const AV = require('../../libs/av-weapp-min');
 var util = require('../../utils/util.js')
 var sliderPadding = 10; // 需要设置slider的边距
 var user = AV.User.current();
+var app = getApp()
 
 Page({
   data: {
@@ -14,7 +15,8 @@ Page({
     scrollviewHeight: 0,
     enrolledList: [],
     createdList: [],
-    enrolledNumbers: 0
+    enrolledNumbers: 0,
+    isAuth: 0,
   },
 
   onShareAppMessage: function () {
@@ -27,6 +29,14 @@ Page({
 
   onLoad: function () {
     var that = this;
+
+    // 获取用户信息
+    app.getUserInfo(function(userInfo){
+      that.setData({
+        // wxNickName:userInfo.nickName,
+        isAuth:1
+      })
+    })
     // 获取屏幕宽度，计算tab位置
     wx.getSystemInfo({
         success: function(res) {
@@ -40,7 +50,6 @@ Page({
 
   onShow: function () {
     var that = this;
-
     // 从Enroll表中查出用户参加的所有聚会
     var equery = new AV.Query('Enroll');
     equery.equalTo('user', user);
@@ -144,33 +153,62 @@ Page({
       });
   },  
 
-
   create: function(){
-    wx.navigateTo({
-      url: '../create/create'
-    });
+    if (this.data.isAuth == 1) { 
+      wx.navigateTo({
+        url: '../create/create'
+      });
+    } 
+    else {
+      // if(wx.openSetting){
+      //   wx.openSetting({
+      //     success: (res) => {
+      //       if(res.authSetting["scope.userInfo"]){
+      //         this.setData({
+      //           isAuth: 1
+      //         })
+      //         wx.getUserInfo({
+      //           success: ({userInfo}) => {
+      //             console.log(user);
+      //             // 更新当前用户的信息
+      //             user.set(userInfo).save().then(user => {
+      //               // 成功，此时可在控制台中看到更新后的用户信息
+      //               console.log("save success");
+      //             }).catch(console.error);
+      //           }
+      //         });
+      //         wx.navigateTo({
+      //           url: '../create/create'
+      //         });
+      //       }else{
+      //         wx.showModal({
+      //           title: '该功能需要授权',
+      //           content: '请重新尝试一次，并开启「用户信息」授权',
+      //           showCancel: false,
+      //           confirmText: '我知道了',
+      //           success: function (res) {
+      //             if (res.confirm) {
+      //               console.log('用户点击确定')
+      //             }
+      //           }
+      //         })
+      //       }
+      //     }
+      //   })
+      // }
+      // else{
+      wx.showModal({
+        title: '该功能需要授权',
+        content: '请先在您的小程序列表中删除小程序，再重新搜索「聚会报名」并打开，即可重新授权。（我们只需要您的昵称，请放心授权）',
+        showCancel: false,
+        confirmText: '我知道了',
+        success: function (res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+          }
+        }
+      })
+      // }
+    }
   }
-  // create: function(){
-  //   console.log(user);
-  //   console.log(user.get('nickName'));
-  //   if (typeof(user.get('nickName')) != "undefined") { 
-  //     wx.navigateTo({
-  //       url: '../create/create'
-  //     });
-  //   } 
-  //   else {
-  //     wx.showModal({
-  //       title: '该功能需要授权',
-  //       content: '请先在您的小程序列表中删除小程序，再重新搜索「聚会报名」并打开，即可重新授权。（我们只需要您的昵称，请放心授权）',
-  //       showCancel: false,
-  //       confirmText: '我知道了',
-  //       success: function (res) {
-  //         if (res.confirm) {
-  //           console.log('用户点击确定')
-  //         }
-  //       }
-  //     })
-  //   }
-  // }
-
 })

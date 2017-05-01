@@ -12,8 +12,7 @@ App({
 
     // 调用leanCloud登录接口
     AV.User.loginWithWeapp().then(user => {
-      console.log("AVlogin:");
-      console.log(user);
+      console.log("Login");
       wx.getUserInfo({
         success: ({userInfo}) => {
           // 更新当前用户的信息
@@ -23,21 +22,10 @@ App({
           }).catch(console.error);
         }
       });
-      // this.globalData.leanUser = user.toJSON();
     }).catch(console.error);
 
-    wx.getUserInfo({
-      success: function(res) {
-        console.log("get user info success");
-      },
-      fail: function() {
-        console.log("fail to get user info");
-      }
-    });
     // 获得当前登录用户
     // var user = AV.User.current();
-    // console.log("2:");
-    // console.log(user);
     // // 调用小程序API，得到用户信息
     // wx.getUserInfo({
     //   success: ({userInfo}) => {
