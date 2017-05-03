@@ -18,7 +18,8 @@ Page({
     locationAddress: '',
     hasLocation: false,
     lat: 0,
-    lng: 0
+    lng: 0,
+    isSubmit: 0
   },
 
   chooseLocation: function () {
@@ -107,16 +108,17 @@ Page({
     },
 
   onSubmit: function() {
-    // var startDateValue = this.data.startDate.replace(/-/g, '/');
-    // var endDateValue = this.data.endDate.replace(/-/g, '/');
-    // var startTimeValue = this.data.startTime.replace(/:/g, '/');
-    // var endTimeValue = this.data.endTime.replace(/:/g, '/');
+    //按钮点击后立即设为disable，防连点  
+    this.setData({isSubmit: 1});  
+
     if(this.data.startDate > this.data.endDate) {
         this.showTopTips('开始日期 必须早于 结束日期');
+        this.setData({isSubmit: 0});  
         return false;
     }
     else if(this.data.startDate == this.data.endDate && this.data.startTime > this.data.endTime) {
         this.showTopTips('开始时间 必须早于 结束时间');
+        this.setData({isSubmit: 0});  
         return false;
     }
     else{

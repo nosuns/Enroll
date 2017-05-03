@@ -87,7 +87,7 @@
     <view class="weui-spacing"> </view>
 
     <view class="weui-btn-area">
-        <button  ontap='onSubmit' formType="submit" class="weui-btn" type="primary" disabled="{{!(title)}}">发起聚会</button>
+        <button  ontap='onSubmit' formType="submit" class="weui-btn" type="primary" disabled="{{!(title)||(isSubmit)}}">发起聚会</button>
     </view>
     <!--<view class="weui-msg__extra-area">
         <view class="weui-footer">
