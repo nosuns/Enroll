@@ -17,6 +17,7 @@ Page({
     createdList: [],
     enrolledNumbers: 0,
     isAuth: 0,
+    scrollHeight: 0,
   },
 
   onShareAppMessage: function () {
@@ -37,12 +38,12 @@ Page({
         isAuth:1
       })
     })
-    // 获取屏幕宽度，计算tab位置
+    // 获取屏幕宽度，计算tab位置、scrollHeight
     wx.getSystemInfo({
         success: function(res) {
             that.setData({
-                scrollviewHeight: res.windowHeight - 51 - 74,
-                sliderWidth: res.windowWidth / that.data.tabs.length - sliderPadding * 2
+              scrollHeight: res.windowHeight - 144 * res.windowWidth/750 - 50,
+              sliderWidth: res.windowWidth / that.data.tabs.length - sliderPadding * 2
             });
         }
     });
@@ -109,6 +110,7 @@ Page({
   gotoInfo: function (e) {
     wx.navigateTo({
       url: '../info/info?campaignId=' + e.currentTarget.dataset.campaignid
+      // url: '../info/info?campaignId=59083ac25c497d00584e14c0'
     })
   },
 

@@ -9,7 +9,8 @@
                 </block>
                 <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px); width:{{sliderWidth}}px;"></view>
             </view>
-            <view class="weui-tab__panel" style="margin-bottom:144rpx;">
+            <view class="weui-tab__panel">
+              <scroll-view enable-back-to-top="true" scroll-y="true" height="{{scrollHeight}}px">
                 <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
                     <view class="weui-cells weui-cells_after-title" wx:if="{{enrolledList.length != 0}}">
                         <block wx:for="{{enrolledList}}" wx:for-item="enroll" wx:key="campaignId">
@@ -53,7 +54,7 @@
                     </view>
                     <view class="initial" wx:else>你还没有发起过聚会</view>
                 </view>
-        
+              </scroll-view>
             </view> 
         </view>
     </view>

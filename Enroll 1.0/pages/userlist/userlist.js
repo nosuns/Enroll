@@ -5,13 +5,23 @@ Page({
     enrollList: [],
     sum: 0,
     count: 0,
-    campaignId: ''
+    campaignId: '',
+    scrollHeight: 0,
   },
 
   onLoad: function(options) {
     this.setData({
       campaignId: options.campaignId
     })
+    var that = this;
+    // 获取屏幕高度、scrollHeight
+    wx.getSystemInfo({
+      success: function (res) {
+        that.setData({
+          scrollHeight: res.windowHeight - 144 * res.windowWidth / 750,
+        });
+      }
+    });
   },
 
   onReady: function() {
