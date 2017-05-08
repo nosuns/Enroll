@@ -1,29 +1,30 @@
 <!--pages/userlist/userlist.wxml-->
-<view class="page">
-  <view class="weui-cells weui-cells_after-title" style="margin-bottom:144rpx;">
-    <scroll-view enable-back-to-top="true" scroll-y="true" height="{{scrollHeight}}px">
-      <block wx:for="{{enrollList}}" wx:for-item="enroll" wx:key="objectId">
-        <view class="weui-cell weui-cell_access"  style="padding:0 15px">
-          <!--<view class="weui-cell__hd" style="position: relative;margin-right: 10rpx;">-->
-              <image class="weui-userinfo-avatar" src="{{enroll.avatarUrl}}"/>
-          <!--</view>-->
-          <view class="weui-cell__bd" style="position: relative;margin-left: 10px;">
-              <view>{{enroll.nickName}}</view>
-              <view style="font-size: 13px;color: #888888;">{{enroll.note}}</view>
-          </view>
-          <view class="weui-cell__ft">{{enroll.number}}人</view>
-        </view>      
-      </block>
-    </scroll-view>
-  </view>
-  <view class="weui-footer-btn">
-      <view class="weui-footer_fixed-bottom" style="margin-bottom:30rpx;font-size:40rpx;">
-          总计：{{count}}组 {{sum}}人
-          <!--<view class="weui-btn-area" style="margin-top:18rpx;">
-              <navigator url="../create/create">
-                <button class="weui-btn" type="primary">导出名单</button>
-              </navigator>
-          </view>-->
-      </view>
-  </view>  
+<view class="page">    
+  <scroll-view enable-back-to-top="true" scroll-y="true" style="height:{{scrollHeight}}px">
+    <view class="weui-cells weui-cells_after-title">
+        <block wx:for="{{enrollList}}" wx:for-item="enroll" wx:key="objectId">
+          <view class="weui-cell weui-cell_access"  style="padding:0 15px">
+            <!--<view class="weui-cell__hd" style="position: relative;margin-right: 10rpx;">-->
+                <image class="weui-userinfo-avatar" src="{{enroll.avatarUrl}}"/>
+            <!--</view>-->
+            <view class="weui-cell__bd" style="position: relative;margin-left: 10px;">
+                <view>{{enroll.nickName}}</view>
+                <view style="font-size: 13px;color: #888888;">{{enroll.note}}</view>
+            </view>
+            <view class="weui-cell__ft">{{enroll.number}}人</view>
+          </view>      
+        </block>
+    </view>    
+  </scroll-view>
 </view>
+
+<view class="weui-footer-btn">
+    <view class="weui-footer_fixed-bottom" style="margin-bottom:30rpx;font-size:40rpx;">
+        总计：{{count}}组 {{sum}}人
+        <!--<view class="weui-btn-area" style="margin-top:18rpx;">
+            <navigator url="../create/create">
+              <button class="weui-btn" type="primary">导出名单</button>
+            </navigator>
+        </view>-->
+    </view>
+</view>  

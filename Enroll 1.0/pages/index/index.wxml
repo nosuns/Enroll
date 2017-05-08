@@ -10,7 +10,7 @@
                 <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px); width:{{sliderWidth}}px;"></view>
             </view>
             <view class="weui-tab__panel">
-              <scroll-view enable-back-to-top="true" scroll-y="true" height="{{scrollHeight}}px">
+              <scroll-view enable-back-to-top="true" scroll-y="true" style="height:{{scrollHeight}}px">
                 <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
                     <view class="weui-cells weui-cells_after-title" wx:if="{{enrolledList.length != 0}}">
                         <block wx:for="{{enrolledList}}" wx:for-item="enroll" wx:key="campaignId">
